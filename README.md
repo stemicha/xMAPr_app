@@ -33,6 +33,9 @@ technology](www/xMAPr_manual/figures/serological_assay_workflow.png)
   - R (min. version 3.5.1) <https://cran.r-project.org>
   - RStudio Desktop (min. version 1.1.414)
     <https://www.rstudio.com/products/rstudio-desktop/>
+  - **Windows user MUST install RTools**
+    <https://cran.r-project.org/bin/windows/Rtools/> on **C:** drive
+    (final path: C:\\RTools)
 
 other demanding R packages will be installed on the first startup of the
 xMAPr app (this might take a while)

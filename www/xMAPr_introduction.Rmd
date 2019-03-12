@@ -1,0 +1,141 @@
+---
+title: "Welcome to xMAPr"
+author: "S. Michalik"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    html_document:
+    includes:
+      in_header: xMAPr_introduction_logo_title.html
+link-citations: yes
+number_sections: true
+---
+
+
+<style>
+.main-container {
+  max-width: 940px;
+  margin-left: 20px;
+  margin-right: auto;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+# Introduction
+
+In order to be able to measure antibodies in patient plasma/serums in high throughput, the xMAP® technology from Luminex® is used. In the process, proteins of e.g. pathogenic microorganisms are covalently bound to magnetic particles only a few micrometers in size (MagPlex™). A unique fluorescence signature for each particle species makes it possible to re-identify the individual magnetic spheres in mixtures. Thus, different bacterial antigens can be analyzed in a multiplex approach.
+
+The immune response to some antigens can be extremely strong and extremely weak to others. Thus, the quantitative dynamic range of analysis extends over several orders of magnitude. In a standard measurement, the patient's plasma/serum is diluted 1000-fold and / or e.g. 10000-fold. Since this commonly used approach carries the risk of generating quantitative data at saturation or detection limits, a novel approach has been developed that measures patient series in a serial dilution series with 7 dilution levels (e.g., 50-fold to 200,000-fold) (Figure 1).
+
+![serological assay workflow using the xMAP® technology](xMAPr_manual/figures/serological_assay_workflow.png){width="60%"}
+
+[insepct serological assay workflow using the xMAP® technology](xMAPr_manual/figures/serological_assay_workflow.png){target="_blank"}
+
+The resulting variable data could not be analyzed with any conventional software. For this an iterative complex analysis procedure was developed and implemented using the programming language R and shiny resulting the the xMAPr app.
+
+
+# xMAPr
+
+xMAPr was developed to analyze and visualize data from bead-based experiments performed with the xMAP® technology. The whole basis of the the analysis is the utilization of serial dilutions per sample to avoid saturation effects. Figure 2 illustrate the mode of operation of xMAPr. 
+
+![xMAPr workflow is depicted as flow chart](xMAPr_manual/figures/xMAPr_analysis_workflow.png){width="60%"}
+
+[insepct workflow flow chart](xMAPr_manual/figures/xMAPr_analysis_workflow.png){target="_blank"}
+
+
+# xMAPr Analysis
+
+## xPONENT® raw data processing
+
+For the analysis several files are mandatory. After you performed the serological assay including coupling control the resulting csv-files can be exported using the xPONENT® software from Luminex®. The resulting files can be imported into xMAPr, which will automatically genrate the correct input files for the analysis.
+The generated raw input files can be inspected and as they are txt-files manipulated if there are some naming errors or some samples should be excluded from the analysis.
+
+![xMAPr xPONENT® raw file  processing screenshot](xMAPr_manual/figures/xPONENT_raw_file_processing.png){width="60%"}
+
+## xMAPr analysis pipeline
+
+the resulting files from the raw file processing step are mandatory for the analysis with xMAPr:
+
+1. assay MFI file 
+2. assay bead count file
+3. coupling control MFI file
+4. coupling control bead count file
+5. sample meta data (additional file !)
+
+In addition to the above mentioned files several parameters can be set (figure 3).
+
+![xMAPr anaylsis pipeline screenshot](xMAPr_manual/figures/pipeline.png){width="60%"}
+
+In the first instance, the data are corrected for their measurement background, bead count and normalized to their respective coupling efficiency. This is followed by the process of sequential multiple regression. Here, a saturation curve regression model is first assumed and calculated by means of "non-least squared". If such a calculation is not possible, a linear regression is assumed. If this calculation is successful, even a 50-fold dilution of the patient sample is still in the linear range and the respective antigen thus shows a very low immune response. In order to obtain individual quantitative values per patient and antigen, the different individual regression curves had to be converted into a meaningful value, whereby the antibody titer, which is represented over the individual dilution stages, represents the most important quantitative quantity. Here, in the saturation curve model, the half-maximal intensity was multiplied by the reciprocal dilution at the half-maximal intensity (e.g., half maximal norm. MFI intensity = 50 / dilution at half maximal norm. MFI intensity = 0.001 --> 50 * 1 / 0.001 = immune response of 50,000). Linear regression multiplies the first serial dilution step by the intensity at that step. This results in a very small quantitative value.
+
+xMAPr will perform multiple regression modeling on the data of each sample/antigen combination and subsequently decide which fit type is most characteristic for the sample/antigen specific data (decision tree figure 5)
+
+### Decision tree
+
+The decision tree was build to elucidate the best fit for the data.
+![xMAPr decision tree](xMAPr_manual/figures/fit_decision_tree_small.png){width="60%"}
+
+
+[insepct fit decision tree](xMAPr_manual/figures/fit_decision_tree_small.png){target="_blank"}
+
+
+## xMAPr data inspection
+
+In addition to the data analysis pipeline xMAPr possess a interactive data inspection modul, which allows the user to easily check the fits and the resulting response values.
+
+###global analysis inspection (Screenshots)
+
+![xMAPr anaylsis output data inspection >> global overview](xMAPr_manual/figures/global_result_overview.png){width="60%"}
+
+![xMAPr anaylsis output data inspection >> dynamic range dilution wise](xMAPr_manual/figures/global_result_overview_dyn_range_dilution_wise.png){width="60%"}
+
+
+
+![xMAPr anaylsis output data inspection >> 2D-PCA of data colored by selected meta data](xMAPr_manual/figures/global_result_overview_PCA.png){width="60%"}
+
+![xMAPr anaylsis output data inspection >> interactive 3D-PCA colored by selected meta data](xMAPr_manual/figures/global_result_overview_PCA3D.png){width="60%"}
+
+![xMAPr anaylsis output data inspection >> screeplot of PCA analysis](xMAPr_manual/figures/global_result_overview_PCA_scree.png){width="60%"}
+
+![xMAPr anaylsis output data inspection >> response heatmap](xMAPr_manual/figures/response_heatmap.png){width="60%"}
+
+
+### global analysis inspection: quality check of data (Screenshots)
+
+It is important to evaluate the data quality. Therefore basic measures like the bead count or coefficient of variation between replicates are very informative
+in terms of quality.
+A bead count below 35 beads resulting by default (factory suggestion) in a missing value since the MFI (Median fluorescence intensity) is unsure using only 35 beads or below.
+
+![xMAPr quality measures: bead count and CV histograms](xMAPr_manual/figures/quality_measures__general_overview.png){width="60%"}
+
+![xMAPr quality measures: MFI of coupling control](xMAPr_manual/figures/quality_measures__coupling_control_MFI.png){width="60%"}
+
+The MFI of the coupling control represents the loading of the beads with the individual antigens, which can be different but should not be very low to keep a certain dynamic range for the detection of the antibody titer.
+
+![xMAPr quality measures: LOD...limit of detection](xMAPr_manual/figures/quality_measures__LOD.png){width="60%"}
+
+![xMAPr quality measures: stacked barplots of value filtering](xMAPr_manual/figures/quality_measures__value_filtering.png){width="60%"}
+The stacked barplot of the "values filtered stacked barplot" tab are displaying the filtering for low bead count, for CV filtering and showing how many fits failed or get rejected and in which dilutions how many signal drops were detected.
+
+![xMAPr quality measures: NA (missing) value heatmap](xMAPr_manual/figures/quality_measures__NA_value_heatmap.png){width="60%"}
+The missing value heatmap depicts in a compact format were and how many values are missing the the dataset after the response calculation was performed.
+
+![xMAPr quality measures: bead count heatmap](xMAPr_manual/figures/quality_measures__bead_count_heatmap.png){width="60%"}
+The bead count heatmap is designed for quickly identifying problematic antigens or patient samples, which often resulting in a low bead count.
+
+
+
+### single antigen/sample inspection (Screenshots)
+
+![xMAPr anaylsis output data inspection >> single antigen/sample combination fit inspection](xMAPr_manual/figures/inspect_single_results.png){width="60%"}
+
+### statistical analysis of calculated response data  (Screenshots)
+
+![xMAPr anaylsis output data inspection >> statistical anaylsis using a wilcox ranked sum test on sample reponse data and the the selcted meta data for grouping](xMAPr_manual/figures/statistical_analysis.png){width="60%"}
+
+
+

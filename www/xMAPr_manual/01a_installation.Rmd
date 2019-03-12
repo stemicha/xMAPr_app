@@ -1,0 +1,25 @@
+# Installation
+
+## Download xMAPr from GitHub and run locally
+
+### Requirements
+
+- R (min. version 3.5.1) [https://cran.r-project.org](https://cran.r-project.org)
+- RStudio Desktop (min. version 1.1.414) [https://www.rstudio.com/products/rstudio-desktop/](https://www.rstudio.com/products/rstudio-desktop/)
+- **Windows user MUST install RTools** [https://cran.r-project.org/bin/windows/Rtools/](https://cran.r-project.org/bin/windows/Rtools/) on **C:** drive (final path: C:\\RTools)
+
+other demanding R packages will be installed on the first startup of the xMAPr app (this might take a while)
+
+### Running the app locally^[xMAPr app perform best with Firefox or Chrome web browser]
+
+
+
+1. download the app from github [https://github.com/stemicha/xMAPr_app](https://github.com/stemicha/xMAPr_app) by using the **clone or download** button
+2. after extracting the zip file please open the **ui.R** or **server.R** in RStudio
+3. select **Run external**
+4. press **Run App** to start the app (first run will take a while, due to package installations)
+
+```{r RunAppLocally,echo=F,fig.align='center'}
+knitr::include_graphics("figures/run_app_locally.png")
+```
+

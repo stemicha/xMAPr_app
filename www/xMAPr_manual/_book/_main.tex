@@ -1,0 +1,902 @@
+\documentclass[]{book}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={xMAPr - manual},
+            pdfauthor={Stephan Michalik},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{natbib}
+\bibliographystyle{plainnat}
+\usepackage{longtable,booktabs}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{xMAPr - manual}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Stephan Michalik}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{2018-12-21}
+
+\usepackage{booktabs}
+
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+\newtheorem{corollary}{Corollary}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{conjecture}{Conjecture}[chapter]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\theoremstyle{definition}
+\newtheorem{example}{Example}[chapter]
+\theoremstyle{definition}
+\newtheorem{exercise}{Exercise}[chapter]
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newtheorem*{solution}{Solution}
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{1}
+\tableofcontents
+}
+\chapter{Preamble}\label{preamble}
+
+\includegraphics[width=7.07in]{figures/xMAPr_logo_mod_hexbin}
+
+Every human being has a highly specific mixture of antibody
+specificities in the blood, which reflecting the individual history of
+interactions with body-foreign substances like virulence factors of
+pathogens.
+
+The determination of antigen-specific antibody content is a central
+quantitative measure for diagnostics and vaccine development. The
+\textbf{xMAPr app} was designed to analyze xMAP® technology derived
+serological assay data measured in serial dilutions (hyper-dynamic-range
+{[}HDR{]} data).
+
+xMAPr was developed under GNU GENERAL PUBLIC LICENSE Version 3.
+
+\textbf{You may adjust the font size in your browser by using the zoom
+in and zoom out functionality of your browser.}
+
+\begin{longtable}[]{@{}lcr@{}}
+\toprule
+operating system & shortcut & function\tabularnewline
+\midrule
+\endhead
+MacOS & Cmd \& + & \emph{zoom in (larger font)}\tabularnewline
+MacOS & Cmd \& - & \emph{zoom out (smaller font)}\tabularnewline
+Windows & Strg \& + & \emph{zoom in (larger font)}\tabularnewline
+Windows & Strg \& - & \emph{zoom out (smaller font)}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\chapter{Introduction}\label{introduction}
+
+Measuring the antibody response to multiple antigens in biofluids can be
+achieved using the xMAP® technology supplied by Luminex®. For the
+multiplexing assay all antigens are covalently bound to small
+paramagnetic particles (MagPlex™) of unique fluorescence dye combination
+making it possible to distinguish between the mixed spheres in the full
+assay.
+
+The immune response to some antigens can be extremely strong and
+extremely weak to others. Thus, the quantitative dynamic range of
+analysis extends over several orders of magnitude. In a standard
+measurement, the patient's plasma/serum is diluted 1000-fold and / or
+10000-fold. Since this commonly used approach carries the risk of
+generating quantitative data close to the detection limit when including
+multiple antigens with a wide variance in the expected antibody
+responses. This results in error prone data sets making the
+interpretation of the data very difficult. An advanced approach has been
+developed to overcome this issue including a serial dilution based
+measurement of samples granting results derived from the linear range of
+each antigen.
+
+\begin{figure}
+\includegraphics[width=84.01in]{figures/serological_assay_workflow} \caption{serological assay workflow using the xMAP® technology}\label{fig:workflow}
+\end{figure}
+
+\href{figures/serological_assay_workflow.png}{inspect workflow flow
+chart}
+
+The resulting complex data set could not be analyzed to date. Therefore,
+an iterative analysis procedure was developed and implemented using the
+programming language R and the shiny framework resulting the the
+\textbf{xMAPr app}.
+
+\chapter{Installation}\label{installation}
+
+\section{Download xMAPr from GitHub and run
+locally}\label{download-xmapr-from-github-and-run-locally}
+
+\subsection{Requirements}\label{requirements}
+
+\begin{itemize}
+\tightlist
+\item
+  R (min. version 3.5.1) \url{https://cran.r-project.org}
+\item
+  RStudio Desktop (min. version 1.1.414)
+  \url{https://www.rstudio.com/products/rstudio-desktop/}
+\item
+  \textbf{Windows user MUST install RTools}
+  \url{https://cran.r-project.org/bin/windows/Rtools/} on \textbf{C:}
+  drive (final path: C:\textbackslash{}RTools)
+\end{itemize}
+
+other demanding R packages will be installed on the first startup of the
+xMAPr app (this might take a while)
+
+\subsection[Running the app locally]{\texorpdfstring{Running the app
+locally\footnote{xMAPr app perform best with Firefox or Chrome web
+  browser}}{Running the app locally}}\label{running-the-app-locally}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  download the app from github
+  \url{https://github.com/stemicha/xMAPr_app} by using the \textbf{clone
+  or download} button
+\item
+  after extracting the zip file please open the \textbf{ui.R} or
+  \textbf{server.R} in RStudio
+\item
+  select \textbf{Run external}
+\item
+  press \textbf{Run App} to start the app (first run will take a while,
+  due to package installations)
+\end{enumerate}
+
+\begin{center}\includegraphics[width=27.78in]{figures/run_app_locally} \end{center}
+
+\chapter{xMAPr}\label{xmapr}
+
+xMAPr was developed to analyze and visualize data from bead-based
+experiments performed with the xMAP® technology. The whole basis of the
+the analysis is the utilization of serial dilutions per sample to avoid
+saturation effects. Figure \ref{fig:xMAPrWorkflow} illustrates the mode
+of operation of xMAPr.
+
+\begin{figure}
+
+{\centering \includegraphics[width=49.22in]{figures/xMAPr_analysis_workflow} 
+
+}
+
+\caption{xMAPr workflow depicted as flow chart}\label{fig:xMAPrWorkflow}
+\end{figure}
+
+{[}inspect xMA
+
+\section{xMAPr Analysis}\label{xmapr-analysis}
+
+\subsection{xPONENT® raw data
+processing}\label{xponent-raw-data-processing}
+
+For the analysis several files are mandatory. After you performed the
+serological assay including a coupling control the resulting csv-files
+can be exported using the xPONENT® software from Luminex® (Figure
+\ref{fig:xPonentCSVexport}). The resulting files can be imported into
+xMAPr, which will automatically genrate the correct input files for the
+analysis.
+
+\begin{figure}
+
+{\centering \includegraphics[width=17.81in]{figures/xPonent_export} 
+
+}
+
+\caption{xPonent csv-file export}\label{fig:xPonentCSVexport}
+\end{figure}
+
+\href{figures/xMAPr_analysis_workflow.png}{inspect xPonent csv-file
+export}
+
+The gerated raw input files can be inspected and manipulated after
+prepartion since they are stored as easily accessible txt-files in case
+of naming errors or removale of specific samples for the later analysis
+(e.g.~included standard wells to monitor the inter-plate
+reproduceability).
+
+If multiple csv-files should be used for the generation of the xMAPr
+input files, make sure to store them all in one folder for the upload
+selection. When all necessary files are selected start processing the
+data by clicking on the ``Run data processing''-button. When processing
+is done you can download the raw txt-files as a zip-folder by clicking
+on the green download button.
+
+\begin{figure}
+
+{\centering \includegraphics[width=50.58in]{figures/xPONENT_raw_file_processing} 
+
+}
+
+\caption{xMAPr xPONENT® raw file  processing screenshot}\label{fig:xMAPrxPONENT}
+\end{figure}
+
+\href{figures/xPONENT_raw_file_processing.png}{inspect xMAPr xPONENT®
+raw file processing screenshot}
+
+\subsection{xMAPr analysis pipeline}\label{xmapr-analysis-pipeline}
+
+the resulting files from the raw file processing step are mandatory for
+the analysis with xMAPr:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  assay MFI file
+\item
+  assay bead count file
+\item
+  coupling control MFI file
+\item
+  coupling control bead count file
+\item
+  sample meta data (additional file, which provides all the sample meta
+  data !)
+\end{enumerate}
+
+In addition to the above mentioned files several parameters can be set
+(figure \ref{fig:xMAPrPipeline}).
+
+\begin{figure}
+
+{\centering \includegraphics[width=50.92in]{figures/pipeline} 
+
+}
+
+\caption{xMAPr anaylsis pipeline screenshot}\label{fig:xMAPrPipeline}
+\end{figure}
+
+\href{figures/pipeline.png}{inspect xMAPr anaylsis pipeline screenshot}
+
+If a naming parameter does not fit the input data frames the pipeline
+will detect that and will report the error in a pop-up error message.
+
+\textbf{What will be checked?}
+
+\begin{itemize}
+\tightlist
+\item
+  is the used dilution name found in assay data header
+\item
+  is the used dilution name found in assay bead count data header
+\item
+  is the used dilution name found in assay data header
+\item
+  is the used replicate name found in assay bead count data header
+\item
+  is the used sample name found in assay data header
+\item
+  is the used sample name found in assay bead count data header
+\item
+  is the used sample name found in meta data header
+\item
+  is the used blank name found in assay data first column
+\item
+  is the used blank name found in assay bead count data first column
+\item
+  is the used antiTag name found in coupling control data first column
+\item
+  is the used antiTag name found in coupling control bead count data
+  first column
+\item
+  is the used blank name found in coupling control data first column
+\item
+  is the used blank name found in coupling control bead count data first
+  column
+\item
+  do assay data and control coupling data share the same number of
+  antigens or antigens and do they have the same order
+\item
+  do assay bead count data and control coupling bead count data share
+  the same number of antigens and do they have the same order
+\item
+  do control coupling bead count data and control coupling data share
+  the same number of antigens or antigens and do they hove the same
+  order
+\item
+  is the used number of dilutions below 5 (min. 5 different dilutions
+  required !)
+\end{itemize}
+
+\begin{figure}
+
+{\centering \includegraphics[width=15.92in]{figures/pipeline_error} 
+
+}
+
+\caption{xMAPr anaylsis pipeline error pop-up (used antiTag name was wrong) }\label{fig:pipelineError}
+\end{figure}
+
+In the first instance of the pipeline, the data are corrected for their
+measurement background, bead count and normalized to their respective
+coupling efficiency. This is followed by the process of sequential
+multiple regression. Here, a saturation curve regression model is first
+assumed and calculated by means of ``non-least squared''. If such a
+calculation is not possible, a linear regression is assumed. If this
+calculation is successful, even a 50-fold dilution of the patient sample
+is still in the linear range and the respective antigen thus shows a
+very low immune response. In order to obtain individual quantitative
+values per patient and antigen, the different individual regression
+curves had to be converted into a meaningful value, whereby the antibody
+titer, which is represented over the individual dilution stages,
+represents the most important quantitative quantity. Here, in the
+saturation curve model, the half-maximal intensity was multiplied by the
+reciprocal dilution at the half-maximal intensity
+\texttt{(e.g.,\ half\ maximal\ norm.\ MFI\ intensity\ =\ 50\ \ \&\ dilution\ at\ half\ maximalnorm.\ MFI\ intensity\ \ =\ 0.001\ -\/-\textgreater{}\ 50\ *\ (1\ /\ 0.001)\ =\ immune\ response\ of\ 50,000)}.
+Linear regression multiplies the first serial dilution step by the
+intensity at that step. This results in a very small quantitative value.
+
+xMAPr will perform multiple regression modeling on the data of each
+sample/antigen combination and subsequently decide which fit type is
+most characteristic for the sample/antigen specific data (decision tree
+figure \ref{fig:xMAPrDecTree})
+
+\subsubsection{Decision tree}\label{decision-tree}
+
+The decision tree was build to elucidate the best fit for the data.
+
+\begin{figure}
+\includegraphics[width=33.58in]{figures/fit_decision_tree_small} \caption{xMAPr decision tree}\label{fig:xMAPrDecTree}
+\end{figure}
+
+\href{figures/fit_decision_tree_small.png}{inspect xMAPr decision tree}
+
+\subsection{xMAPr data inspection}\label{xmapr-data-inspection}
+
+In addition to the data analysis pipeline xMAPr possess a interactive
+data inspection modul, which allows the user to easily check the fits
+and the resulting response values.
+
+\subsubsection{global analysis inspection
+(Screenshots)}\label{global-analysis-inspection-screenshots}
+
+\begin{figure}
+
+{\centering \includegraphics[width=50.5in]{figures/global_result_overview} 
+
+}
+
+\caption{xMAPr anaylsis output data inspection >> global overview}\label{fig:globalResultOverview}
+\end{figure}
+
+\href{figures/global_result_overview.png}{inspect xMAPr anaylsis output
+data inspection \textgreater{}\textgreater{} global overview}
+
+The \texttt{overview\ of\ responses} (figure
+\ref{fig:globalResultOverview}) tab depicts the used fit count histogram
+(figure \ref{fig:globalResultOverview} \textbf{left plot}), which should
+have a majority of \emph{nls} (non-least squared) fits (saturation curve
+fits).
+
+A \emph{nls\_with\_exclusion} fit - is a nls fit that appears to posses
+a signal drop in the first sample dilutions in the measured curve. This
+happens if the secondary antibody \textbf{did not saturate the bound
+sample antibodies on the bead}. Therefore the automatic detection of a
+signal drops in the dilution response curve will flagged and not use the
+responsible data points for the fit (\emph{nls\_wih\_exclusion}).
+
+If linear fits were used for the majority of curve fittings the used
+serial dilution range did not end up in a saturation making a saturation
+curve fit impossible. The resulting response data should be used
+carefully ! In that case a one dilution data analysis is more
+reasonable.
+
+The dynamic range of responses plot (figure
+\ref{fig:globalResultOverview} \textbf{center plot}) depicts the dynamic
+range which is covered by the data over all sample and antigen
+combinations used.
+
+\begin{figure}
+
+{\centering \includegraphics[width=14.56in]{figures/global_result_overview1} 
+
+}
+
+\caption{xMAPr anaylsis output data inspection >> global overview (interactive hover feature)}\label{fig:globalResultOverview1}
+\end{figure}
+
+\href{figures/global_result_overview1.png}{inspect xMAPr anaylsis output
+data inspection \textgreater{}\textgreater{} global overview
+(interactive hover feature)}
+
+The fit type histogram ((figure \ref{fig:globalResultOverview}
+\textbf{right plot}) displays the used fit histogram in correlation to
+the calculated response. In the example screenshot it apparent that the
+\emph{nls\_with\_exclusion} is primarily being used in the high response
+range. This makes sense since a high sample antibody titer against one
+antigen is resulting in a very high load of the sample antibodies on the
+individual bead. Thus a signal drop in the very first dilutions (low
+sample dilution) are more likely to happen.
+
+The \texttt{dilution\ wise\ dynamic\ range\ plots} (figure
+\ref{fig:dynamicRangeDilutionWise}) tab depicts intensity ranked order
+of sample/antigen combinations (x-axis) versus log. MFI (median
+fluorescence intensity) (y-axis). The plot is being used for visually
+estimating the saturation effect (upper and lower LOD) in each dilution
+used.
+
+\begin{figure}
+
+{\centering \includegraphics[width=50.5in]{figures/global_result_overview_dyn_range_dilution_wise} 
+
+}
+
+\caption{xMAPr anaylsis output data inspection >> dynamic range dilution wise}\label{fig:dynamicRangeDilutionWise}
+\end{figure}
+
+\href{figures/global_result_overview_dyn_range_dilution_wise.png}{inspect
+xMAPr anaylsis output data inspection \textgreater{}\textgreater{}
+dynamic range dilution wise}
+
+\subsubsection{global analysis inspection: quality check of data
+(Screenshots)}\label{global-analysis-inspection-quality-check-of-data-screenshots}
+
+It is important to evaluate the data quality (figure
+\ref{fig:beadCountCVhist};
+\texttt{quality\ measures\ \textgreater{}\ general\ overview}).
+Therefore basic measures like the bead count or coefficient of variation
+between technical replicates are very informative in terms of quality. A
+bead count below \textbf{35 beads} results by default (factory
+suggestion) in a missing value since the MFI (Median fluorescence
+intensity) is unsure using only 35 beads or below. The CV cut-off can be
+set in the pipeline settings (figure \ref{fig:xMAPrPipeline})
+
+\begin{figure}
+\includegraphics[width=50.47in]{figures/quality_measures__general_overview} \caption{xMAPr quality measures: bead count and CV histograms}\label{fig:beadCountCVhist}
+\end{figure}
+
+\href{figures/quality_measures__general_overview.png}{inspect xMAPr
+quality measures: bead count and CV histograms}
+
+Since a EDC-NHS coupling of the carboxylated beads with the desired
+antigens is being used the coupling efficiency might be varying due to
+the differences in amino acid composition and length of the antigens.
+The coupling control plot (figure \ref{fig:MFIcouplingControl}) displays
+in a ranked fasion the coupling efficiency measured with a detection
+antibody directed against the recombinant tag the antigens. The
+interactive hover feature returns the absolute value measured for each
+antigen.
+
+The MFI of the coupling control
+(\texttt{quality\ measures\ \textgreater{}\ coupling\ control})
+represents the loading of the beads with the individual antigens, which
+can be different but should not be very low to keep a certain dynamic
+range for the detection of the antibody titer.
+
+\begin{figure}
+\includegraphics[width=50.47in]{figures/quality_measures__coupling_control_MFI} \caption{xMAPr quality measures: MFI of coupling control}\label{fig:MFIcouplingControl}
+\end{figure}
+
+\href{figures/quality_measures__coupling_control_MFI.png}{inspect xMAPr
+quality measures: MFI of coupling control}
+
+The noise MFI (figure \ref{fig:LOD})
+(\texttt{quality\ measures\ \textgreater{}\ noise\ MFI}) depicts the
+ranked ordered mean BLANK values + 3 x SD of the BLANK values, which is
+being used to estimate the LOD (limit of detection) for each antigen.
+Again the interactive hover feature show details for each entigen.
+
+\begin{figure}
+\includegraphics[width=50.53in]{figures/quality_measures__LOD} \caption{xMAPr quality measures: LOD...limit of detection}\label{fig:LOD}
+\end{figure}
+
+\href{figures/quality_measures__LOD.png}{inspect xMAPr quality measures:
+LOD\ldots{}limit of detection}
+
+The stacked barplots (figure \ref{fig:BarplotsValueFiltering})
+(\texttt{quality\ measures\ \textgreater{}\ bead-count\ and\ LOD\ filtering})
+are displaying the filtering for low bead count, for CV filtering with
+the used cut-off and showing how many fits failed or get rejected.
+
+\begin{figure}
+\includegraphics[width=50.47in]{figures/quality_measures__value_filtering} \caption{xMAPr quality measures: stacked barplots of value filtering}\label{fig:BarplotsValueFiltering}
+\end{figure}
+
+\href{figures/quality_measures__value_filtering.png}{inspect xMAPr
+quality measures: stacked barplots of value filtering}
+
+\begin{figure}
+\includegraphics[width=50.47in]{figures/quality_measures__value_filtering1} \caption{xMAPr quality measures: stacked barplots of value filtering (interactive hover)}\label{fig:BarplotsValueFiltering1}
+\end{figure}
+
+The implemented signal drop detection alg. uses the maximum value of the
+measured data points and inspect the data points with a lower dilution
+begining from the maximal MFI data point
+(\texttt{quality\ measures\ \textgreater{}\ dilution-wise\ signal\ drop\ filtering}).
+For example signal drops in the first dilution step of the serial
+dilution range is normal. But also having a huge amount of signal drops
+in later dilutions is the result of using a low concentration of the
+detection antibody or the dilution steps were not well choosen.
+
+\begin{figure}
+\includegraphics[width=50.5in]{figures/quality_measures__value_filtering_signal_drop} \caption{xMAPr quality measures: stacked barplots of dilution-wise signal drop detection (interactive hover)}\label{fig:BarplotsValueFiltering2}
+\end{figure}
+
+\href{figures/quality_measures__value_filtering_signal_drop.png}{``xMAPr
+quality measures: stacked barplots of dilution-wise signal drop
+detection}
+
+The interative hover feature (figure \ref{fig:BarplotsValueFiltering1})
+displays information like which antigen, the count of filtered values
+and what is the percentage of filtered values form the data matrix.
+Making it easy to identify problematic antigen or sample candidates.
+
+\begin{figure}
+\includegraphics[width=50.47in]{figures/quality_measures__NA_value_heatmap} \caption{xMAPr quality measures: NA (missing) value heatmap}\label{fig:heatmapNA}
+\end{figure}
+
+\href{figures/quality_measures__NA_value_heatmap.png}{inspect xMAPr
+quality measures: NA (missing) value heatmap}
+
+The missing value heatmap (figure \ref{fig:heatmapNA})
+(\texttt{quality\ measures\ \textgreater{}\ heatmap\ of\ NA\ values})
+depicts in a compact format where and how many values are missing the
+the dataset after the response calculation was performed.
+
+\begin{figure}
+\includegraphics[width=50.5in]{figures/quality_measures__bead_count_heatmap} \caption{xMAPr quality measures: bead count heatmap}\label{fig:heatmapBeadCount}
+\end{figure}
+
+\href{figures/quality_measures__bead_count_heatmap.png}{inspect xMAPr
+quality measures: bead count heatmap}
+
+The bead count heatmap (figure \ref{fig:heatmapBeadCount})
+(\texttt{quality\ measures\ \textgreater{}\ bead\ count\ heatmap}) is
+designed for quickly identifying problematic antigens or patient samples
+over the dilution series, which also often resulting in a low bead
+count.
+
+\subsubsection{global data analysis: PCA \&
+heatmap}\label{global-data-analysis-pca-heatmap}
+
+A first look at the data can be performed in the xMAPr app. A PCA
+(principle component analysis) is automatically generated plotted and
+colored based on the selected meta data.
+
+\begin{figure}
+
+{\centering \includegraphics[width=42.36in]{figures/global_result_overview_PCA} 
+
+}
+
+\caption{xMAPr anaylsis output data inspection >> 2D-PCA of data colored by selected meta data}\label{fig:PCA2D}
+\end{figure}
+
+\href{figures/global_result_overview_PCA.png}{inspect xMAPr anaylsis
+output data inspection \textgreater{}\textgreater{} 2D-PCA of data
+colored by selected meta data}
+
+The principle component analysis is performed using the factomineR
+package with missing values removed. The data centering was done by
+subtracting the column means (omitting NAs) of the data from their
+corresponding columns. To unify variances scaling of data was done by
+dividing the (centered) columns of the data by their standard
+deviations. The 2D PCA (figure \ref{fig:PCA2D}) (\texttt{2D\ PCA})
+displays the resulting PCA plot. 1D density plots supporting the
+interpretaion of the PCA results.
+
+The PCA dimension for the plot can be be selected using the
+\emph{knobs}. Furthermore advanced plot adjustment like group ellipsis
+can be set as well using the \emph{``wrench'' button}.
+
+\begin{figure}
+\includegraphics[width=50.5in]{figures/global_result_overview_PCA3D} \caption{xMAPr anaylsis output data inspection >> interactive 3D-PCA colored by selected meta data}\label{fig:PCA3D}
+\end{figure}
+
+\href{figures/global_result_overview_PCA3D.png}{inspect xMAPr anaylsis
+output data inspection \textgreater{}\textgreater{} interactive 3D-PCA
+colored by selected meta data}
+
+The 3D PCA (figure \ref{fig:PCA3D}) (\texttt{3D\ PCA}) displays the
+resulting PCA plot in the first 3 dimensions.
+
+\begin{figure}
+\includegraphics[width=50.5in]{figures/global_result_overview_PCA_scree} \caption{xMAPr anaylsis output data inspection >> screeplot of PCA analysis}\label{fig:PCAscreeplot}
+\end{figure}
+
+\href{figures/global_result_overview_PCA_scree.png}{inspect xMAPr
+anaylsis output data inspection \textgreater{}\textgreater{} screeplot
+of PCA analysis}
+
+The Screeplot visualize the variances of dimensions of the PCA (figure
+\ref{fig:PCAscreeplot}) (\texttt{Scree\ plot\ of\ PCA}).
+
+\begin{figure}
+\includegraphics[width=50.47in]{figures/response_heatmap} \caption{xMAPr anaylsis output data inspection >> response heatmap}\label{fig:responseHeatmap}
+\end{figure}
+
+\href{figures/response_heatmap.png}{inspect xMAPr anaylsis output data
+inspection \textgreater{}\textgreater{} response heatmap}
+
+The heatamp (figure \ref{fig:responseHeatmap})
+(\texttt{heatmap\ (response\ data)}) displays the clustered heatmap of
+the calculated response data. If a sample or a antigen possess only NA
+values it is excluded from the heatmap, which is indicated in the grey
+text below the \emph{``download heatmap''} button. The heatmap is fully
+interactive with hover information feature, zoom and screenshot feature.
+Furthermore the heatmap can be download in its interative form as html
+using the \emph{``download heatmap''} button. Several parameters can be
+set like number of clusters of rows and columns or cluster methods to
+name a few.
+
+\subsubsection{single antigen/sample inspection
+(Screenshots)}\label{single-antigensample-inspection-screenshots}
+
+\begin{figure}
+\includegraphics[width=50.5in]{figures/inspect_single_results} \caption{xMAPr anaylsis output data inspection >> single antigen/sample combination fit inspection}\label{fig:SingleResults}
+\end{figure}
+
+\href{figures/inspect_single_results.png}{inspect xMAPr anaylsis output
+data inspection \textgreater{}\textgreater{} single antigen/sample
+combination fit inspection}
+
+The single result view (figure \ref{fig:SingleResults})
+(\texttt{inspect\ analysis/response\ table}) enables a inspection of the
+data down to raw data level by diplaying the results on a antigen/sample
+combination basis. The upper panel displays the different presentations
+of the data.
+
+The \textbf{left plot} displays the raw data and the dashed red line
+indicate the LOD. In addition detected signal drops were marked with a
+blue cross.
+
+The \textbf{center plot} displays the calulated curve and the curve
+point, which is being used for the response calculation. The dashed
+violett vertical line inidcating the lower and upper end of the used
+dilution steps.
+
+The \textbf{right plot} displays the residuals from the used fit.
+
+\begin{figure}
+\includegraphics[width=54.53in]{figures/inspect_single_results1} \caption{xMAPr anaylsis output data inspection >> single antigen/sample combination fit inspection (antigen selection)}\label{fig:SingleResults1}
+\end{figure}
+
+\href{figures/inspect_single_results1.png}{inspect xMAPr anaylsis output
+data inspection \textgreater{}\textgreater{} single antigen/sample
+combination fit inspection (antigen selection)}
+
+\begin{figure}
+\includegraphics[width=54.97in]{figures/inspect_single_results2} \caption{xMAPr anaylsis output data inspection >> single antigen/sample combination fit inspection (log. scale)}\label{fig:SingleResults2}
+\end{figure}
+
+\href{figures/inspect_single_results2.png}{inspect xMAPr anaylsis output
+data inspection \textgreater{}\textgreater{} single antigen/sample
+combination fit inspection (log. scale)}
+
+When hitting the e.g.~log. scale buttons the plots were generated using
+a log. scale on the selected axis (figure \ref{fig:SingleResults2}).
+
+One method to choose the antigen and sample which should plotted are the
+drop down selection list (figure \ref{fig:SingleResults1}). In the
+elements the desired selection can also being typed in.
+
+Another method to choose the antigen and sample which should plotted is
+to use the interactive data table in the lower panel of the inspect
+analysis/reponse (figure \ref{fig:SingleResults3}. The desired
+antigen/sample combination can be directly selected inside the table and
+when looking for a antigen or sample the search field is very helpful.
+
+\begin{figure}
+\includegraphics[width=54.75in]{figures/inspect_single_results3} \caption{xMAPr anaylsis output data inspection >> single antigen/sample combination fit inspection (interactive data table)}\label{fig:SingleResults3}
+\end{figure}
+
+\href{figures/inspect_single_results3.png}{inspect xMAPr anaylsis output
+data inspection \textgreater{}\textgreater{} single antigen/sample
+combination fit inspection (interactive data table)}
+
+In addition if the
+\texttt{highlight\ select\ antigen/sample\ combination\ in\ global\ plots?}
+is being switch on the selected antigen/sample combination is being
+marked in the global plots (figure \ref{fig:SingleResultsMarked1} \&
+\ref{fig:SingleResultsMarked2}).
+
+\begin{figure}
+\includegraphics[width=13.5in]{figures/inspect_single_results2_dyn_range} \caption{xMAPr anaylsis output data inspection >> single antigen/sample combination marked in global dynamic range plots over dilutions}\label{fig:SingleResultsMarked1}
+\end{figure}
+
+\href{figures/inspect_single_results2_dyn_range.png}{xMAPr anaylsis
+output data inspection \textgreater{}\textgreater{} single
+antigen/sample combination marked in global dynamic range plots over
+dilutions}
+
+\begin{figure}
+\includegraphics[width=28.83in]{figures/inspect_single_results2_dilution_wise_range} \caption{xMAPr anaylsis output data inspection >> single antigen/sample combination marked in global dynamic range plots}\label{fig:SingleResultsMarked2}
+\end{figure}
+
+\href{figures/inspect_single_results2_dilution_wise_range.png}{xMAPr
+anaylsis output data inspection \textgreater{}\textgreater{} single
+antigen/sample combination marked in global dynamic range plots}
+
+\subsubsection{statistical analysis of calculated response data
+(Screenshots)}\label{statistical-analysis-of-calculated-response-data-screenshots}
+
+The statistical data analysis is based on samples groups defined by the
+selected meta data. A wilcox rank sum test is performed using multiple
+test correction if the number of groups are more than two. The test
+statistics with p-value, adjusted p-value and confidence intervals etc.
+can be interactively inspected and the data is plotted using a violin
+plot with a bars indicating significant changes.
+
+\begin{figure}
+\includegraphics[width=49.08in]{figures/statistical_analysis} \caption{xMAPr anaylsis output data inspection >> statistical anaylsis using a wilcox ranked sum test on sample reponse data and the the selcted meta data for grouping}\label{fig:ResponseStats}
+\end{figure}
+
+\href{figures/statistical_analysis.png}{inspect xMAPr anaylsis output
+data inspection \textgreater{}\textgreater{} statistical anaylsis using
+a wilcox ranked sum test on sample reponse data and the the selcted meta
+data for grouping}
+
+\begin{figure}
+\includegraphics[width=49.03in]{figures/statistical_analysis1} \caption{xMAPr anaylsis output data inspection >> statistical anaylsis using a wilcox ranked sum test on sample reponse data and the the selcted meta data for grouping (meta data selection)}\label{fig:ResponseStats1}
+\end{figure}
+
+\href{figures/statistical_analysis1.png}{inspect xMAPr anaylsis output
+data inspection \textgreater{}\textgreater{} statistical anaylsis using
+a wilcox ranked sum test on sample reponse data and the the selcted meta
+data for grouping (meta data selection)}
+
+\chapter{used R-packages for xMAPr}\label{used-r-packages-for-xmapr}
+
+\begin{itemize}
+\tightlist
+\item
+  R: A Language and Environment for Statistical Computing
+  (\citet{R-base})
+\item
+  bookdown: Authoring Books and Technical Documents with R Markdown
+  (\citet{R-bookdown})
+\item
+  rmarkdown: Dynamic Documents for R (\citet{R-rmarkdown})
+\item
+  data.table: Extension of \texttt{data.frame} (\citet{R-data.table})
+\item
+  DT: A Wrapper of the JavaScript Library `DataTables' (\citet{R-DT})
+\item
+  factoextra: Extract and Visualize the Results of Multivariate Data
+  Analyses (\citet{R-factoextra})
+\item
+  FactoMineR: Multivariate Exploratory Data Analysis and Data Mining
+  (\citet{R-FactoMineR})
+\item
+  ggrepel: Automatically Position Non-Overlapping Text Labels with
+  `ggplot2' (\citet{R-ggrepel})
+\item
+  ggsignif: Significance Brackets for `ggplot2' (\citet{R-ggsignif})
+\item
+  gridExtra: Miscellaneous Functions for ``Grid'' Graphics
+  (\citet{R-gridExtra})
+\item
+  heatmaply: Interactive Cluster Heat Maps Using `plotly'
+  (\citet{R-heatmaply})
+\item
+  knitr: A General-Purpose Package for Dynamic Report Generation in R
+  (\citet{R-knitr})
+\item
+  magrittr: A Forward-Pipe Operator for R (\citet{R-magrittr})
+\item
+  minpack.lm: R Interface to the Levenberg-Marquardt Nonlinear
+  Least-Squares Algorithm Found in MINPACK, Plus Support for Bounds
+  (\citet{R-minpack.lm})
+\item
+  plotly: Create Interactive Web Graphics via `plotly.js'
+  (\citet{R-plotly})
+\item
+  RColorBrewer: ColorBrewer Palettes (\citet{R-RColorBrewer})
+\item
+  reshape: Flexibly Reshape Data (\citet{R-reshape})
+\item
+  reshape2: Flexibly Reshape Data: A Reboot of the Reshape Package
+  (\citet{R-reshape2})
+\item
+  rlang: Functions for Base Types and Core R and `Tidyverse' Features
+  (\citet{R-rlang})
+\item
+  scales: Scale Functions for Visualization (\citet{R-scales})
+\item
+  shiny: Web Application Framework for R (\citet{R-shiny})
+\item
+  shinyalert: Easily Create Pretty Popup Messages (Modals) in `Shiny'
+  (\citet{R-shinyalert})
+\item
+  shinyBS: Twitter Bootstrap Components for Shiny (\citet{R-shinyBS})
+\item
+  shinycssloaders: Add CSS Loading Animations to `shiny' Outputs
+  (\citet{R-shinycssloaders})
+\item
+  shinydashboard: Create Dashboards with `Shiny'
+  (\citet{R-shinydashboard})
+\item
+  shinyFiles: A Server-Side File System Viewer for Shiny
+  (\citet{R-shinyFiles})
+\item
+  shinyjs: Easily Improve the User Experience of Your Shiny Apps in
+  Seconds (\citet{R-shinyjs})
+\item
+  shinyWidgets: Custom Inputs Widgets for Shiny (\citet{R-shinyWidgets})
+\item
+  tidyverse: Easily Install and Load the `Tidyverse'
+  (\citet{R-tidyverse})
+\end{itemize}
+
+\bibliography{packages.bib}
+
+
+\end{document}

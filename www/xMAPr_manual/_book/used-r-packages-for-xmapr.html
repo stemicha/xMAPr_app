@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>xMAPr - manual</title>
+  <meta name="description" content="xMAPr manual explains the usage of the xMAPr app to analyse dilution based serological assays with the xMAP® technology">
+  <meta name="generator" content="bookdown 0.7.12 and GitBook 2.6.7">
+
+  <meta property="og:title" content="xMAPr - manual" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:image" content="figures/logo.png" />
+  <meta property="og:description" content="xMAPr manual explains the usage of the xMAPr app to analyse dilution based serological assays with the xMAP® technology" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="xMAPr - manual" />
+  
+  <meta name="twitter:description" content="xMAPr manual explains the usage of the xMAPr app to analyse dilution based serological assays with the xMAP® technology" />
+  <meta name="twitter:image" content="figures/logo.png" />
+
+<meta name="author" content="Stephan Michalik">
+
+
+<meta name="date" content="2018-12-13">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  <link rel="shortcut icon" href="figures/Favicons/favicon.ico" type="image/x-icon">
+<link rel="prev" href="xmapr.html">
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Preamble</a></li>
+<li class="chapter" data-level="2" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>2</b> Introduction</a></li>
+<li class="chapter" data-level="3" data-path="installation.html"><a href="installation.html"><i class="fa fa-check"></i><b>3</b> Installation</a><ul>
+<li class="chapter" data-level="3.1" data-path="installation.html"><a href="installation.html#download-xmapr-from-github-and-run-locally"><i class="fa fa-check"></i><b>3.1</b> Download xMAPr from GitHub and run locally</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="installation.html"><a href="installation.html#requirements"><i class="fa fa-check"></i><b>3.1.1</b> Requirements</a></li>
+<li class="chapter" data-level="3.1.2" data-path="installation.html"><a href="installation.html#running-the-app-locally"><i class="fa fa-check"></i><b>3.1.2</b> Running the app locally</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="xmapr.html"><a href="xmapr.html"><i class="fa fa-check"></i><b>4</b> xMAPr</a><ul>
+<li class="chapter" data-level="4.1" data-path="xmapr.html"><a href="xmapr.html#xmapr-analysis"><i class="fa fa-check"></i><b>4.1</b> xMAPr Analysis</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="xmapr.html"><a href="xmapr.html#xponent-raw-data-processing"><i class="fa fa-check"></i><b>4.1.1</b> xPONENT® raw data processing</a></li>
+<li class="chapter" data-level="4.1.2" data-path="xmapr.html"><a href="xmapr.html#xmapr-analysis-pipeline"><i class="fa fa-check"></i><b>4.1.2</b> xMAPr analysis pipeline</a></li>
+<li class="chapter" data-level="4.1.3" data-path="xmapr.html"><a href="xmapr.html#xmapr-data-inspection"><i class="fa fa-check"></i><b>4.1.3</b> xMAPr data inspection</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="used-r-packages-for-xmapr.html"><a href="used-r-packages-for-xmapr.html"><i class="fa fa-check"></i><b>5</b> used R-packages for xMAPr</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">xMAPr - manual</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="used-r-packages-for-xmapr" class="section level1">
+<h1><span class="header-section-number">5</span> used R-packages for xMAPr</h1>
+<ul>
+<li>R: A Language and Environment for Statistical Computing (<span class="citation">R Core Team (<a href="#ref-R-base">2018</a>)</span>)</li>
+<li>bookdown: Authoring Books and Technical Documents with R Markdown (<span class="citation">Xie (<a href="#ref-R-bookdown">2018</a><a href="#ref-R-bookdown">a</a>)</span>)</li>
+<li>rmarkdown: Dynamic Documents for R (<span class="citation">Allaire et al. (<a href="#ref-R-rmarkdown">2018</a>)</span>)</li>
+<li>data.table: Extension of <code>data.frame</code> (<span class="citation">Dowle and Srinivasan (<a href="#ref-R-data.table">2018</a>)</span>)</li>
+<li>DT: A Wrapper of the JavaScript Library ‘DataTables’ (<span class="citation">Xie (<a href="#ref-R-DT">2018</a><a href="#ref-R-DT">b</a>)</span>)</li>
+<li>factoextra: Extract and Visualize the Results of Multivariate Data Analyses (<span class="citation">Kassambara and Mundt (<a href="#ref-R-factoextra">2017</a>)</span>)</li>
+<li>FactoMineR: Multivariate Exploratory Data Analysis and Data Mining (<span class="citation">Husson et al. (<a href="#ref-R-FactoMineR">2018</a>)</span>)</li>
+<li>ggrepel: Automatically Position Non-Overlapping Text Labels with ‘ggplot2’ (<span class="citation">Slowikowski (<a href="#ref-R-ggrepel">2018</a>)</span>)</li>
+<li>ggsignif: Significance Brackets for ‘ggplot2’ (<span class="citation">Ahlmann-Eltze (<a href="#ref-R-ggsignif">2017</a>)</span>)</li>
+<li>gridExtra: Miscellaneous Functions for “Grid” Graphics (<span class="citation">Auguie (<a href="#ref-R-gridExtra">2017</a>)</span>)</li>
+<li>heatmaply: Interactive Cluster Heat Maps Using ‘plotly’ (<span class="citation">Galili (<a href="#ref-R-heatmaply">2018</a>)</span>)</li>
+<li>knitr: A General-Purpose Package for Dynamic Report Generation in R (<span class="citation">Xie (<a href="#ref-R-knitr">2018</a><a href="#ref-R-knitr">c</a>)</span>)</li>
+<li>magrittr: A Forward-Pipe Operator for R (<span class="citation">Bache and Wickham (<a href="#ref-R-magrittr">2014</a>)</span>)</li>
+<li>minpack.lm: R Interface to the Levenberg-Marquardt Nonlinear Least-Squares Algorithm Found in MINPACK, Plus Support for Bounds (<span class="citation">Elzhov et al. (<a href="#ref-R-minpack.lm">2016</a>)</span>)</li>
+<li>plotly: Create Interactive Web Graphics via ‘plotly.js’ (<span class="citation">Sievert et al. (<a href="#ref-R-plotly">2018</a>)</span>)</li>
+<li>RColorBrewer: ColorBrewer Palettes (<span class="citation">Neuwirth (<a href="#ref-R-RColorBrewer">2014</a>)</span>)</li>
+<li>reshape: Flexibly Reshape Data (<span class="citation">(<span class="citeproc-not-found" data-reference-id="R-reshape"><strong>???</strong></span>)</span>)</li>
+<li>reshape2: Flexibly Reshape Data: A Reboot of the Reshape Package (<span class="citation">(<span class="citeproc-not-found" data-reference-id="R-reshape2"><strong>???</strong></span>)</span>)</li>
+<li>rlang: Functions for Base Types and Core R and ‘Tidyverse’ Features (<span class="citation">Henry and Wickham (<a href="#ref-R-rlang">2018</a>)</span>)</li>
+<li>scales: Scale Functions for Visualization (<span class="citation">Wickham and Seidel (<a href="#ref-R-scales">2018</a>)</span>)</li>
+<li>shiny: Web Application Framework for R (<span class="citation">Chang et al. (<a href="#ref-R-shiny">2018</a>)</span>)</li>
+<li>shinyalert: Easily Create Pretty Popup Messages (Modals) in ‘Shiny’ (<span class="citation">Attali and Edwards (<a href="#ref-R-shinyalert">2018</a>)</span>)</li>
+<li>shinyBS: Twitter Bootstrap Components for Shiny (<span class="citation">Bailey (<a href="#ref-R-shinyBS">2015</a>)</span>)</li>
+<li>shinycssloaders: Add CSS Loading Animations to ‘shiny’ Outputs (<span class="citation">Sali (<a href="#ref-R-shinycssloaders">2017</a>)</span>)</li>
+<li>shinydashboard: Create Dashboards with ‘Shiny’ (<span class="citation">Chang and Borges Ribeiro (<a href="#ref-R-shinydashboard">2018</a>)</span>)</li>
+<li>shinyFiles: A Server-Side File System Viewer for Shiny (<span class="citation">Pedersen, Nijs, and Nantz (<a href="#ref-R-shinyFiles">2018</a>)</span>)</li>
+<li>shinyjs: Easily Improve the User Experience of Your Shiny Apps in Seconds (<span class="citation">Attali (<a href="#ref-R-shinyjs">2018</a>)</span>)</li>
+<li>shinyWidgets: Custom Inputs Widgets for Shiny (<span class="citation">Perrier, Meyer, and Granjon (<a href="#ref-R-shinyWidgets">2018</a>)</span>)</li>
+<li>tidyverse: Easily Install and Load the ‘Tidyverse’ (<span class="citation">Wickham (<a href="#ref-R-tidyverse">2018</a>)</span>)</li>
+</ul>
+
+<div id="refs" class="references">
+<div>
+<p>Ahlmann-Eltze, Constantin. 2017. <em>Ggsignif: Significance Brackets for ’Ggplot2’</em>. <a href="https://CRAN.R-project.org/package=ggsignif" class="uri">https://CRAN.R-project.org/package=ggsignif</a>.</p>
+</div>
+<div>
+<p>Allaire, JJ, Yihui Xie, Jonathan McPherson, Javier Luraschi, Kevin Ushey, Aron Atkins, Hadley Wickham, Joe Cheng, and Winston Chang. 2018. <em>Rmarkdown: Dynamic Documents for R</em>. <a href="https://CRAN.R-project.org/package=rmarkdown" class="uri">https://CRAN.R-project.org/package=rmarkdown</a>.</p>
+</div>
+<div>
+<p>Attali, Dean. 2018. <em>Shinyjs: Easily Improve the User Experience of Your Shiny Apps in Seconds</em>. <a href="https://CRAN.R-project.org/package=shinyjs" class="uri">https://CRAN.R-project.org/package=shinyjs</a>.</p>
+</div>
+<div>
+<p>Attali, Dean, and Tristan Edwards. 2018. <em>Shinyalert: Easily Create Pretty Popup Messages (Modals) in ’Shiny’</em>. <a href="https://CRAN.R-project.org/package=shinyalert" class="uri">https://CRAN.R-project.org/package=shinyalert</a>.</p>
+</div>
+<div>
+<p>Auguie, Baptiste. 2017. <em>GridExtra: Miscellaneous Functions for “Grid” Graphics</em>. <a href="https://CRAN.R-project.org/package=gridExtra" class="uri">https://CRAN.R-project.org/package=gridExtra</a>.</p>
+</div>
+<div>
+<p>Bache, Stefan Milton, and Hadley Wickham. 2014. <em>Magrittr: A Forward-Pipe Operator for R</em>. <a href="https://CRAN.R-project.org/package=magrittr" class="uri">https://CRAN.R-project.org/package=magrittr</a>.</p>
+</div>
+<div>
+<p>Bailey, Eric. 2015. <em>ShinyBS: Twitter Bootstrap Components for Shiny</em>. <a href="https://CRAN.R-project.org/package=shinyBS" class="uri">https://CRAN.R-project.org/package=shinyBS</a>.</p>
+</div>
+<div>
+<p>Chang, Winston, and Barbara Borges Ribeiro. 2018. <em>Shinydashboard: Create Dashboards with ’Shiny’</em>. <a href="https://CRAN.R-project.org/package=shinydashboard" class="uri">https://CRAN.R-project.org/package=shinydashboard</a>.</p>
+</div>
+<div>
+<p>Chang, Winston, Joe Cheng, JJ Allaire, Yihui Xie, and Jonathan McPherson. 2018. <em>Shiny: Web Application Framework for R</em>. <a href="http://shiny.rstudio.com" class="uri">http://shiny.rstudio.com</a>.</p>
+</div>
+<div>
+<p>Dowle, Matt, and Arun Srinivasan. 2018. <em>Data.table: Extension of ‘Data.frame‘</em>. <a href="https://CRAN.R-project.org/package=data.table" class="uri">https://CRAN.R-project.org/package=data.table</a>.</p>
+</div>
+<div>
+<p>Elzhov, Timur V., Katharine M. Mullen, Andrej-Nikolai Spiess, and Ben Bolker. 2016. <em>Minpack.lm: R Interface to the Levenberg-Marquardt Nonlinear Least-Squares Algorithm Found in Minpack, Plus Support for Bounds</em>. <a href="https://CRAN.R-project.org/package=minpack.lm" class="uri">https://CRAN.R-project.org/package=minpack.lm</a>.</p>
+</div>
+<div>
+<p>Galili, Tal. 2018. <em>Heatmaply: Interactive Cluster Heat Maps Using ’Plotly’</em>. <a href="https://CRAN.R-project.org/package=heatmaply" class="uri">https://CRAN.R-project.org/package=heatmaply</a>.</p>
+</div>
+<div>
+<p>Henry, Lionel, and Hadley Wickham. 2018. <em>Rlang: Functions for Base Types and Core R and ’Tidyverse’ Features</em>. <a href="https://CRAN.R-project.org/package=rlang" class="uri">https://CRAN.R-project.org/package=rlang</a>.</p>
+</div>
+<div>
+<p>Husson, Francois, Julie Josse, Sebastien Le, and Jeremy Mazet. 2018. <em>FactoMineR: Multivariate Exploratory Data Analysis and Data Mining</em>. <a href="https://CRAN.R-project.org/package=FactoMineR" class="uri">https://CRAN.R-project.org/package=FactoMineR</a>.</p>
+</div>
+<div>
+<p>Kassambara, Alboukadel, and Fabian Mundt. 2017. <em>Factoextra: Extract and Visualize the Results of Multivariate Data Analyses</em>. <a href="https://CRAN.R-project.org/package=factoextra" class="uri">https://CRAN.R-project.org/package=factoextra</a>.</p>
+</div>
+<div>
+<p>Neuwirth, Erich. 2014. <em>RColorBrewer: ColorBrewer Palettes</em>. <a href="https://CRAN.R-project.org/package=RColorBrewer" class="uri">https://CRAN.R-project.org/package=RColorBrewer</a>.</p>
+</div>
+<div>
+<p>Pedersen, Thomas Lin, Vincent Nijs, and Eric Nantz. 2018. <em>ShinyFiles: A Server-Side File System Viewer for Shiny</em>. <a href="https://CRAN.R-project.org/package=shinyFiles" class="uri">https://CRAN.R-project.org/package=shinyFiles</a>.</p>
+</div>
+<div>
+<p>Perrier, Victor, Fanny Meyer, and David Granjon. 2018. <em>ShinyWidgets: Custom Inputs Widgets for Shiny</em>. <a href="https://CRAN.R-project.org/package=shinyWidgets" class="uri">https://CRAN.R-project.org/package=shinyWidgets</a>.</p>
+</div>
+<div>
+<p>R Core Team. 2018. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>.</p>
+</div>
+<div>
+<p>Sali, Andras. 2017. <em>Shinycssloaders: Add Css Loading Animations to ’Shiny’ Outputs</em>. <a href="https://CRAN.R-project.org/package=shinycssloaders" class="uri">https://CRAN.R-project.org/package=shinycssloaders</a>.</p>
+</div>
+<div>
+<p>Sievert, Carson, Chris Parmer, Toby Hocking, Scott Chamberlain, Karthik Ram, Marianne Corvellec, and Pedro Despouy. 2018. <em>Plotly: Create Interactive Web Graphics via ’Plotly.js’</em>. <a href="https://CRAN.R-project.org/package=plotly" class="uri">https://CRAN.R-project.org/package=plotly</a>.</p>
+</div>
+<div>
+<p>Slowikowski, Kamil. 2018. <em>Ggrepel: Automatically Position Non-Overlapping Text Labels with ’Ggplot2’</em>. <a href="https://CRAN.R-project.org/package=ggrepel" class="uri">https://CRAN.R-project.org/package=ggrepel</a>.</p>
+</div>
+<div>
+<p>Wickham, Hadley. 2018. <em>Tidyverse: Easily Install and Load the ’Tidyverse’</em>.</p>
+</div>
+<div>
+<p>Wickham, Hadley, and Dana Seidel. 2018. <em>Scales: Scale Functions for Visualization</em>.</p>
+</div>
+<div>
+<p>Xie, Yihui. 2018a. <em>Bookdown: Authoring Books and Technical Documents with R Markdown</em>. <a href="https://github.com/rstudio/bookdown" class="uri">https://github.com/rstudio/bookdown</a>.</p>
+</div>
+<div>
+<p>———. 2018b. <em>DT: A Wrapper of the Javascript Library ’Datatables’</em>. <a href="https://CRAN.R-project.org/package=DT" class="uri">https://CRAN.R-project.org/package=DT</a>.</p>
+</div>
+<div>
+<p>———. 2018c. <em>Knitr: A General-Purpose Package for Dynamic Report Generation in R</em>. <a href="https://CRAN.R-project.org/package=knitr" class="uri">https://CRAN.R-project.org/package=knitr</a>.</p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-R-base">
+<p>R Core Team. 2018. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>.</p>
+</div>
+<div id="ref-R-bookdown">
+<p>Xie, Yihui. 2018a. <em>Bookdown: Authoring Books and Technical Documents with R Markdown</em>. <a href="https://github.com/rstudio/bookdown" class="uri">https://github.com/rstudio/bookdown</a>.</p>
+</div>
+<div id="ref-R-rmarkdown">
+<p>Allaire, JJ, Yihui Xie, Jonathan McPherson, Javier Luraschi, Kevin Ushey, Aron Atkins, Hadley Wickham, Joe Cheng, and Winston Chang. 2018. <em>Rmarkdown: Dynamic Documents for R</em>. <a href="https://CRAN.R-project.org/package=rmarkdown" class="uri">https://CRAN.R-project.org/package=rmarkdown</a>.</p>
+</div>
+<div id="ref-R-data.table">
+<p>Dowle, Matt, and Arun Srinivasan. 2018. <em>Data.table: Extension of ‘Data.frame‘</em>. <a href="https://CRAN.R-project.org/package=data.table" class="uri">https://CRAN.R-project.org/package=data.table</a>.</p>
+</div>
+<div id="ref-R-DT">
+<p>Xie, Yihui. 2018b. <em>DT: A Wrapper of the Javascript Library ’Datatables’</em>. <a href="https://CRAN.R-project.org/package=DT" class="uri">https://CRAN.R-project.org/package=DT</a>.</p>
+</div>
+<div id="ref-R-factoextra">
+<p>Kassambara, Alboukadel, and Fabian Mundt. 2017. <em>Factoextra: Extract and Visualize the Results of Multivariate Data Analyses</em>. <a href="https://CRAN.R-project.org/package=factoextra" class="uri">https://CRAN.R-project.org/package=factoextra</a>.</p>
+</div>
+<div id="ref-R-FactoMineR">
+<p>Husson, Francois, Julie Josse, Sebastien Le, and Jeremy Mazet. 2018. <em>FactoMineR: Multivariate Exploratory Data Analysis and Data Mining</em>. <a href="https://CRAN.R-project.org/package=FactoMineR" class="uri">https://CRAN.R-project.org/package=FactoMineR</a>.</p>
+</div>
+<div id="ref-R-ggrepel">
+<p>Slowikowski, Kamil. 2018. <em>Ggrepel: Automatically Position Non-Overlapping Text Labels with ’Ggplot2’</em>. <a href="https://CRAN.R-project.org/package=ggrepel" class="uri">https://CRAN.R-project.org/package=ggrepel</a>.</p>
+</div>
+<div id="ref-R-ggsignif">
+<p>Ahlmann-Eltze, Constantin. 2017. <em>Ggsignif: Significance Brackets for ’Ggplot2’</em>. <a href="https://CRAN.R-project.org/package=ggsignif" class="uri">https://CRAN.R-project.org/package=ggsignif</a>.</p>
+</div>
+<div id="ref-R-gridExtra">
+<p>Auguie, Baptiste. 2017. <em>GridExtra: Miscellaneous Functions for “Grid” Graphics</em>. <a href="https://CRAN.R-project.org/package=gridExtra" class="uri">https://CRAN.R-project.org/package=gridExtra</a>.</p>
+</div>
+<div id="ref-R-heatmaply">
+<p>Galili, Tal. 2018. <em>Heatmaply: Interactive Cluster Heat Maps Using ’Plotly’</em>. <a href="https://CRAN.R-project.org/package=heatmaply" class="uri">https://CRAN.R-project.org/package=heatmaply</a>.</p>
+</div>
+<div id="ref-R-knitr">
+<p>Xie, Yihui. 2018c. <em>Knitr: A General-Purpose Package for Dynamic Report Generation in R</em>. <a href="https://CRAN.R-project.org/package=knitr" class="uri">https://CRAN.R-project.org/package=knitr</a>.</p>
+</div>
+<div id="ref-R-magrittr">
+<p>Bache, Stefan Milton, and Hadley Wickham. 2014. <em>Magrittr: A Forward-Pipe Operator for R</em>. <a href="https://CRAN.R-project.org/package=magrittr" class="uri">https://CRAN.R-project.org/package=magrittr</a>.</p>
+</div>
+<div id="ref-R-minpack.lm">
+<p>Elzhov, Timur V., Katharine M. Mullen, Andrej-Nikolai Spiess, and Ben Bolker. 2016. <em>Minpack.lm: R Interface to the Levenberg-Marquardt Nonlinear Least-Squares Algorithm Found in Minpack, Plus Support for Bounds</em>. <a href="https://CRAN.R-project.org/package=minpack.lm" class="uri">https://CRAN.R-project.org/package=minpack.lm</a>.</p>
+</div>
+<div id="ref-R-plotly">
+<p>Sievert, Carson, Chris Parmer, Toby Hocking, Scott Chamberlain, Karthik Ram, Marianne Corvellec, and Pedro Despouy. 2018. <em>Plotly: Create Interactive Web Graphics via ’Plotly.js’</em>. <a href="https://CRAN.R-project.org/package=plotly" class="uri">https://CRAN.R-project.org/package=plotly</a>.</p>
+</div>
+<div id="ref-R-RColorBrewer">
+<p>Neuwirth, Erich. 2014. <em>RColorBrewer: ColorBrewer Palettes</em>. <a href="https://CRAN.R-project.org/package=RColorBrewer" class="uri">https://CRAN.R-project.org/package=RColorBrewer</a>.</p>
+</div>
+<div id="ref-R-rlang">
+<p>Henry, Lionel, and Hadley Wickham. 2018. <em>Rlang: Functions for Base Types and Core R and ’Tidyverse’ Features</em>. <a href="https://CRAN.R-project.org/package=rlang" class="uri">https://CRAN.R-project.org/package=rlang</a>.</p>
+</div>
+<div id="ref-R-scales">
+<p>Wickham, Hadley, and Dana Seidel. 2018. <em>Scales: Scale Functions for Visualization</em>.</p>
+</div>
+<div id="ref-R-shiny">
+<p>Chang, Winston, Joe Cheng, JJ Allaire, Yihui Xie, and Jonathan McPherson. 2018. <em>Shiny: Web Application Framework for R</em>. <a href="http://shiny.rstudio.com" class="uri">http://shiny.rstudio.com</a>.</p>
+</div>
+<div id="ref-R-shinyalert">
+<p>Attali, Dean, and Tristan Edwards. 2018. <em>Shinyalert: Easily Create Pretty Popup Messages (Modals) in ’Shiny’</em>. <a href="https://CRAN.R-project.org/package=shinyalert" class="uri">https://CRAN.R-project.org/package=shinyalert</a>.</p>
+</div>
+<div id="ref-R-shinyBS">
+<p>Bailey, Eric. 2015. <em>ShinyBS: Twitter Bootstrap Components for Shiny</em>. <a href="https://CRAN.R-project.org/package=shinyBS" class="uri">https://CRAN.R-project.org/package=shinyBS</a>.</p>
+</div>
+<div id="ref-R-shinycssloaders">
+<p>Sali, Andras. 2017. <em>Shinycssloaders: Add Css Loading Animations to ’Shiny’ Outputs</em>. <a href="https://CRAN.R-project.org/package=shinycssloaders" class="uri">https://CRAN.R-project.org/package=shinycssloaders</a>.</p>
+</div>
+<div id="ref-R-shinydashboard">
+<p>Chang, Winston, and Barbara Borges Ribeiro. 2018. <em>Shinydashboard: Create Dashboards with ’Shiny’</em>. <a href="https://CRAN.R-project.org/package=shinydashboard" class="uri">https://CRAN.R-project.org/package=shinydashboard</a>.</p>
+</div>
+<div id="ref-R-shinyFiles">
+<p>Pedersen, Thomas Lin, Vincent Nijs, and Eric Nantz. 2018. <em>ShinyFiles: A Server-Side File System Viewer for Shiny</em>. <a href="https://CRAN.R-project.org/package=shinyFiles" class="uri">https://CRAN.R-project.org/package=shinyFiles</a>.</p>
+</div>
+<div id="ref-R-shinyjs">
+<p>Attali, Dean. 2018. <em>Shinyjs: Easily Improve the User Experience of Your Shiny Apps in Seconds</em>. <a href="https://CRAN.R-project.org/package=shinyjs" class="uri">https://CRAN.R-project.org/package=shinyjs</a>.</p>
+</div>
+<div id="ref-R-shinyWidgets">
+<p>Perrier, Victor, Fanny Meyer, and David Granjon. 2018. <em>ShinyWidgets: Custom Inputs Widgets for Shiny</em>. <a href="https://CRAN.R-project.org/package=shinyWidgets" class="uri">https://CRAN.R-project.org/package=shinyWidgets</a>.</p>
+</div>
+<div id="ref-R-tidyverse">
+<p>Wickham, Hadley. 2018. <em>Tidyverse: Easily Install and Load the ’Tidyverse’</em>.</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="xmapr.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "paper",
+"family": "sans",
+"size": 2,
+"sharing": {
+"facebook": false,
+"twitter": false
+}
+},
+"edit": null,
+"download": null,
+"toc": {
+"collapse": "subsection",
+"scroll_highlight": true
+},
+"toolbar": {
+"position": "fixed"
+},
+"search": true
+});
+});
+</script>
+
+</body>
+
+</html>

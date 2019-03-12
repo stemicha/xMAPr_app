@@ -1,0 +1,78 @@
+---
+title: "xMAPr - manual"
+author: "Stephan Michalik"
+date: "`r Sys.Date()`"
+cover-image: "figures/logo.png"
+favicon: "figures/Favicons/favicon.ico"
+bibliography: packages.bib
+documentclass: book
+link-citations: yes
+description: "xMAPr manual explains the usage of the xMAPr app to analyse dilution based serological assays with the xMAP® technology"
+site: bookdown::bookdown_site
+output: 
+ bookdown::gitbook:
+  highlight: tango
+  config:
+    toc:
+      collapse: subsection
+      scroll_highlight: yes
+      before: null
+      after: null
+    toolbar:
+      position: fixed
+    edit : null
+    download: null
+    search: yes
+    fontsettings:
+      theme: paper
+      family: sans
+      size: 2
+      sharing:
+        facebook: no
+        twitter: no
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+
+# Preamble
+
+
+<div style= "float:right;position: relative;">
+```{r pressure, echo=FALSE}
+knitr::include_graphics("figures/xMAPr_logo_mod_hexbin.png")
+```
+</div>
+
+
+Every human being has a highly specific mixture of antibody specificities in the blood, which reflecting the individual history of interactions with body-foreign substances like virulence factors of pathogens.
+
+The determination of antigen-specific antibody content is a central quantitative measure for diagnostics and vaccine development. The **xMAPr app** was designed to analyze xMAP® technology derived serological assay data measured in serial dilutions (hyper-dynamic-range [HDR] data).
+
+xMAPr was developed under GNU GENERAL PUBLIC LICENSE Version 3.
+
+**You may adjust the font size in your browser by using the zoom in and zoom out functionality of your browser.**
+
+<center>
+
+operating system | shortcut | function
+:------------- | :-------------: | -------------:
+MacOS | <kbd>Cmd</kbd> & <kbd>+</kbd> | *zoom in (larger font)*
+MacOS | <kbd>Cmd</kbd> & <kbd>-</kbd> | *zoom out (smaller font)*
+Windows | <kbd>Strg</kbd> & <kbd>+</kbd> | *zoom in (larger font)*
+Windows | <kbd>Strg</kbd> & <kbd>-</kbd> | *zoom out (smaller font)*
+</center>
+
+
+
+```{r include=FALSE}
+# automatically create a bib database for R packages
+knitr::write_bib(c(
+  .packages(), "bookdown", "knitr", "rmarkdown","plotly","ggsignif","factoextra","FactoMineR","RColorBrewer","gridExtra","ggrepel","tidyverse","rlang","data.table","minpack.lm","shinyFiles","shinyWidgets","shiny","shinyjs","magrittr","shinydashboard","shinycssloaders","scales","shinyBS","shinyalert","heatmaply","DT"
+), "packages.bib")
+```

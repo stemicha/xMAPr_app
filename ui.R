@@ -27,6 +27,34 @@
 #
 
 
+# #load libraries
+# library(plotly)
+# library(ggsignif)
+# library(colourpicker)
+# library(factoextra)
+# library(FactoMineR)
+# library(RColorBrewer)
+# library(gridExtra)
+# library(grid)
+# library(ggrepel)
+# library(ggpubr)
+# library(heatmaply)
+# library(rlang)
+# library(data.table)
+# library(minpack.lm)
+# library(shinyFiles)
+# library(shinyWidgets)
+# library(tidyverse)
+# library(shiny)
+# library(shinyjs)
+# library(magrittr)
+# library(shinydashboard)
+# library(shinycssloaders)
+# library(scales)
+# library(shinyBS)
+# library(shinyalert)
+# library(DT)
+# library(utils)
 
 
 ## start dashboard page ----
@@ -618,7 +646,7 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
                           tabPanel(title = "overview of responses",value="overview.of.responses",
                                    fluidPage(
                                            fluidRow(
-                                             
+                                        
                                              column(width = 2,offset = 8,
                                                     valueBoxOutput("AnalyteCountbox",width = 12)
                                              ),
@@ -629,6 +657,7 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
                                            fluidRow(
                                                     column(4,
                                                            addSpinner(plotlyOutput("proc.response.fitdist"), spin = "folding-cube", color = "#FF6600")
+                                                                 
                                                            ),
                                                     column(4,
                                                            addSpinner(plotlyOutput("proc.response.overview1") , spin = "folding-cube", color = "#FF6600")
@@ -636,7 +665,15 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
                                                     column(4,
                                                            addSpinner(plotlyOutput("proc.response.overview2") , spin = "folding-cube", color = "#FF6600")
                                                            )
-                                                    )
+                                                    ),
+                                           fluidRow(
+                                             column(12,
+                                                    actionButton(inputId="fit_types_help",
+                                                                 label="explanation",
+                                                                 icon = icon("question-circle"),
+                                                                 style = "margin-top: 25px;",
+                                                                 width = "100%"))
+                                           )
                                            
                                    )
                                           

@@ -488,6 +488,30 @@ shinyServer(function(input,output, session){
                     animation = TRUE
                   )
                 })
+                #fit types explanation
+                observeEvent(input$fit_types_help, {
+                  # Show a modal when the button is pressed
+                  shinyalert(
+                    title = "fit types explanation",
+                    text = "nls (nonlinear least squares);
+                    nls_with_exclusion (nonlinear least squares + value exclusion [signal drop off]);
+                    linear (linear fit, no saturation occurs over dilution stages);
+                    rejected / fit_failed (no model applicable or model does not fit with choosen paramters",
+                    closeOnEsc = TRUE,
+                    closeOnClickOutside = TRUE,
+                    html = TRUE,
+                    type = "info",
+                    showConfirmButton = TRUE,
+                    showCancelButton = FALSE,
+                    confirmButtonText = "OK",
+                    confirmButtonCol = "#000000",
+                    timer = 0,
+                    imageUrl = "fit_types.png",
+                    imageWidth = 450,
+                    imageHeight = 500,
+                    animation = TRUE
+                  )
+                })
                 
                 
   #_________________________________________ ===================

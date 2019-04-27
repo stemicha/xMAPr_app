@@ -1,4 +1,4 @@
-xMAPr app - hyper-dynamic-range (HDR) xMAP® data analysis
+xMAPr app - high-dynamic range xMAP® data analysis pipeline
 ================
 
 ## Introduction

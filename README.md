@@ -42,6 +42,18 @@ xMAPr app (this might take a while)
 
 ### Running the app locally
 
+#### Method 1
+
+``` r
+#install shiny package
+install.packages("shiny")
+#install xMAPr_app
+shiny::runGitHub(repo = "xMAPr_app",username = "stemicha")
+#this might take a while for downloading and installation
+```
+
+#### Method 2
+
 1.  download the app from github <https://github.com/stemicha/xMAPr_app>
     by using the **clone or download** button
 2.  after extracting the zip file please open the **ui.R** or

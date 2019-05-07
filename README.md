@@ -67,8 +67,6 @@ installations)
 
 ## Used packages for the xMAPr app
 
-# used R-packages for xMAPr
-
   - R: A Language and Environment for Statistical Computing (R Core Team
     (2018))
   - bookdown: Authoring Books and Technical Documents with R Markdown
@@ -117,7 +115,7 @@ installations)
     Granjon (2018))
   - tidyverse: Easily Install and Load the ‘Tidyverse’ (Wickham (2018))
 
-## References
+### References
 
 R Core Team. 2018. R: A Language and Environment for Statistical
 Computing. Vienna, Austria: R Foundation for Statistical Computing.

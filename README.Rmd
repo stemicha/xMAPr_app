@@ -55,8 +55,6 @@ knitr::include_graphics("www/xMAPr_manual/figures/run_app_locally.png")
 
 ## Used packages for the xMAPr app
 
-# used R-packages for xMAPr
-
 - R: A Language and Environment for Statistical Computing (R Core Team (2018))
 - bookdown: Authoring Books and Technical Documents with R Markdown (Xie (2018a))
 - rmarkdown: Dynamic Documents for R (Allaire et al. (2018))
@@ -86,7 +84,7 @@ knitr::include_graphics("www/xMAPr_manual/figures/run_app_locally.png")
 - shinyWidgets: Custom Inputs Widgets for Shiny (Perrier, Meyer, and Granjon (2018))
 - tidyverse: Easily Install and Load the ‘Tidyverse’ (Wickham (2018))
 
-## References
+### References
 
 R Core Team. 2018. R: A Language and Environment for Statistical Computing. Vienna, Austria: R Foundation for Statistical Computing. https://www.R-project.org/.
 

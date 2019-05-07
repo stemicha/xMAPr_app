@@ -3,8 +3,13 @@ title: "xMAPr app - high-dynamic range xMAP® data analysis pipeline"
 output: github_document
 ---
 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r logo,echo=F,fig.align='center'}
+knitr::include_graphics("www/logo.png")
 ```
 
 

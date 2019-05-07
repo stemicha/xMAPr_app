@@ -1,6 +1,8 @@
 xMAPr app - high-dynamic range xMAP® data analysis pipeline
 ================
 
+<img src="www/logo.png" style="display: block; margin: auto;" />
+
 ## Introduction
 
 Measuring the antibody response to multiple antigens in biofluids can be

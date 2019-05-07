@@ -23,7 +23,6 @@
 - shiny: Web Application Framework for R (@R-shiny)
 - shinyalert: Easily Create Pretty Popup Messages (Modals) in 'Shiny' (@R-shinyalert)
 - shinyBS: Twitter Bootstrap Components for Shiny (@R-shinyBS)
-- shinycssloaders: Add CSS Loading Animations to 'shiny' Outputs (@R-shinycssloaders)
 - shinydashboard: Create Dashboards with 'Shiny' (@R-shinydashboard)
 - shinyFiles: A Server-Side File System Viewer for Shiny (@R-shinyFiles)
 - shinyjs: Easily Improve the User Experience of Your Shiny Apps in Seconds (@R-shinyjs)

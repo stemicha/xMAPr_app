@@ -12,6 +12,11 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::include_graphics("www/logo.png")
 ```
 
+<hr>
+
+xMAPr app on shinyapps.io (*25 active hours*): [https://michalik.shinyapps.io/xMAPr_app/](https://michalik.shinyapps.io/xMAPr_app/)
+
+**if 25 active hours are reached the app will be disabled until the next month cycle start**
 
 ## Introduction
 

@@ -3,6 +3,14 @@ xMAPr app - high-dynamic range xMAP® data analysis pipeline
 
 <img src="www/logo.png" style="display: block; margin: auto;" />
 
+<hr>
+
+xMAPr app on shinyapps.io (*25 active hours*):
+<https://michalik.shinyapps.io/xMAPr_app/>
+
+**if 25 active hours are reached the app will be disabled until the next
+month cycle start**
+
 ## Introduction
 
 Measuring the antibody response to multiple antigens in biofluids can be

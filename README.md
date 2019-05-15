@@ -5,7 +5,7 @@ xMAPr app - high-dynamic range xMAP® data analysis pipeline
 
 <hr>
 
-xMAPr app on shinyapps.io (*25 active hours*):
+functional version of xMAPr app on shinyapps.io (*25 active hours*):
 <https://michalik.shinyapps.io/xMAPr_app/>
 
 **if 25 active hours are reached the app will be disabled until the next

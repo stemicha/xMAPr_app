@@ -18,6 +18,12 @@ xMAPr app on shinyapps.io (*25 active hours*): [https://michalik.shinyapps.io/xM
 
 **if 25 active hours are reached the app will be disabled until the next month cycle start**
 
+## Manual
+
+```{r ManualButton,echo=F,fig.align='center'}
+knitr::include_graphics("www/xMAPr_manual_button.png")
+```
+
 ## Introduction
 
 Measuring the antibody response to multiple antigens in biofluids can be achieved using the xMAP® technology supplied by Luminex®. For the multiplexing assay all antigens are covalently bound to small paramagnetic particles (MagPlex™) of unique fluorescence dye combination making it possible to distinguish between the mixed spheres in the full assay.

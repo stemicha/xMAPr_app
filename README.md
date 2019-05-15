@@ -9,14 +9,12 @@ xMAPr app on shinyapps.io (*25 active hours*):
 <https://michalik.shinyapps.io/xMAPr_app/>
 
 **if 25 active hours are reached the app will be disabled until the next
-month cycle start**
-
-<hr>
+month cycle
+start**
 
 ## Manual
 
-[open xMAPr
-manual](http://htmlpreview.github.io/?https://github.com/stemicha/xMAPr_app/tree/master/www/xMAPr_manual/_book/index.html)
+<img src="www/xMAPr_manual_button.png" style="display: block; margin: auto;" />
 
 ## Introduction
 

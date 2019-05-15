@@ -11,6 +11,13 @@ xMAPr app on shinyapps.io (*25 active hours*):
 **if 25 active hours are reached the app will be disabled until the next
 month cycle start**
 
+<hr>
+
+## Manual
+
+[open xMAPr
+manual](http://htmlpreview.github.io/?https://github.com/stemicha/xMAPr_app/tree/master/www/xMAPr_manual/_book/index.html)
+
 ## Introduction
 
 Measuring the antibody response to multiple antigens in biofluids can be

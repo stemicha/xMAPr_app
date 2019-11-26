@@ -16,8 +16,12 @@ month cycle start**
 Meyer, T., Schmidt, F., Steinke, J., Bröker, B., Völker, U., Michalik,
 S. (2019). Technical report: xMAPr – High-dynamic-range (HDR)
 quantification of antigen-specific antibody binding. Journal of
-Proteomics
-<https://dx.doi.org/10.1016/j.jprot.2019.103577>
+Proteomics <https://dx.doi.org/10.1016/j.jprot.2019.103577>
+
+## protocol for serological assay workflow
+
+[xMAPr - dilution based serological assay workflow
+protocol](www/xMAPr_serological_assay_protocol.pdf)
 
 ## Manual
 

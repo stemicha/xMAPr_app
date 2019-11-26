@@ -9,8 +9,15 @@ functional version of xMAPr app on shinyapps.io (*25 active hours*):
 <https://michalik.shinyapps.io/xMAPr_app/>
 
 **if 25 active hours are reached the app will be disabled until the next
-month cycle
-start**
+month cycle start**
+
+## Citation of xMAPr
+
+Meyer, T., Schmidt, F., Steinke, J., Bröker, B., Völker, U., Michalik,
+S. (2019). Technical report: xMAPr – High-dynamic-range (HDR)
+quantification of antigen-specific antibody binding. Journal of
+Proteomics
+<https://dx.doi.org/10.1016/j.jprot.2019.103577>
 
 ## Manual
 

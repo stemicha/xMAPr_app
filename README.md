@@ -20,8 +20,9 @@ Proteomics <https://dx.doi.org/10.1016/j.jprot.2019.103577>
 
 ## protocol for serological assay workflow
 
-[xMAPr - dilution based serological assay workflow
-protocol](www/xMAPr_serological_assay_protocol.pdf)
+[xMAPr - dilution based serological assay workflow protocol (see
+supplementals in
+paper)](https://www.sciencedirect.com/science/article/pii/S1874391919303495)
 
 ## Manual
 

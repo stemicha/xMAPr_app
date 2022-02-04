@@ -108,9 +108,7 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
       menuItem("Data processing pipeline",tabName = "pipe", icon = icon("cogs")),
       #Result visualization selection button sidebar -----
       menuItem("Result visualization selection",tabName = "resvis",icon = icon("area-chart"),
-              #action button for run data processing
-              actionButton("inputButton_data_visu", "RUN data visualization...",width = "90%",icon=icon("youtube-play"),style="color: #000000; background-color: #B84B18; border-color: #722E00"),
-              #File assay data input
+                 #File assay data input
               fileInput("processed_data_file", "processed data",accept=c(".RDS")),
               bsPopover(id = "inputButton_data_visu", 
                         title = NULL, 
@@ -118,6 +116,8 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
                         placement = "right", 
                         trigger = "hover",
                         options = NULL),
+              #action button for run data processing
+              actionButton("inputButton_data_visu", "RUN data visualization...",width = "90%",icon=icon("youtube-play"),style="color: #000000; background-color: #B84B18; border-color: #722E00"),
               #select_meta_data_coloring
               uiOutput("meta.selection"), 
               menuSubItem("global result overview",tabName = "resvis_panel", icon = icon("globe")),

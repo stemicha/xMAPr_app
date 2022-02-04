@@ -365,10 +365,10 @@ shinyServer(function(input,output, session){
               animation = TRUE
             )
             #write data frames
-            write_delim(x=convertedRAWdata()$MFIassay,path = paste(input$RawProcessedName,"_assayMFI.txt",sep=""),delim = "\t",col_names = T)
-            write_delim(x=convertedRAWdata()$COUNTassay,path = paste(input$RawProcessedName,"_assayCOUNT.txt",sep=""),delim = "\t",col_names = T)
-            write_delim(x=convertedRAWdata()$MFIcontrol,path = paste(input$RawProcessedName,"_controlMFI.txt",sep=""),delim = "\t",col_names = T)
-            write_delim(x=convertedRAWdata()$COUNTcontrol,path = paste(input$RawProcessedName,"_controlCOUNT.txt",sep=""),delim = "\t",col_names = T)
+            write_delim(x=convertedRAWdata()$MFIassay,file = paste(input$RawProcessedName,"_assayMFI.txt",sep=""),delim = "\t",col_names = T)
+            write_delim(x=convertedRAWdata()$COUNTassay,file = paste(input$RawProcessedName,"_assayCOUNT.txt",sep=""),delim = "\t",col_names = T)
+            write_delim(x=convertedRAWdata()$MFIcontrol,file = paste(input$RawProcessedName,"_controlMFI.txt",sep=""),delim = "\t",col_names = T)
+            write_delim(x=convertedRAWdata()$COUNTcontrol,file = paste(input$RawProcessedName,"_controlCOUNT.txt",sep=""),delim = "\t",col_names = T)
             
             fs <- c(paste(input$RawProcessedName,"_assayMFI.txt",sep=""),
                     paste(input$RawProcessedName,"_assayCOUNT.txt",sep=""),
@@ -1626,10 +1626,10 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                         saveRDS(object = response.calculation(), file = paste(input$project_name,".RDS",sep=""))
                           
                           updateProgressBar(session = session,id = "report_download_progress",value = 2, total = 6,title = "response df file")
-                        write_delim(x = response.calculation()$response, path = paste(input$project_name,"_calculated_response_data_frame_tidy",".txt",sep=""),delim = "\t")
+                        write_delim(x = response.calculation()$response, file = paste(input$project_name,"_calculated_response_data_frame_tidy",".txt",sep=""),delim = "\t")
                           
                           updateProgressBar(session = session,id = "report_download_progress",value = 3, total = 6,title = "response df wide format file")
-                        write_delim(x = response.calculation()$response_wide, path = paste(input$project_name,"_calculated_response_data_frame_wideFormat",".txt",sep=""),delim = "\t")
+                        write_delim(x = response.calculation()$response_wide, file = paste(input$project_name,"_calculated_response_data_frame_wideFormat",".txt",sep=""),delim = "\t")
                         
                         updateProgressBar(session = session,id = "report_download_progress",value = 4, total = 6,title = "generate project overview plots")
 
@@ -1776,10 +1776,10 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                           saveRDS(object = response.calculation(), file = paste(input$project_name,".RDS",sep=""))
                           
                           updateProgressBar(session = session,id = "report_download_progress",value = 2, total = 7,title = "response df file")
-                          write_delim(x = response.calculation()$response, path = paste(input$project_name,"_calculated_response_data_frame_tidy",".txt",sep=""),delim = "\t")
+                          write_delim(x = response.calculation()$response, file = paste(input$project_name,"_calculated_response_data_frame_tidy",".txt",sep=""),delim = "\t")
                           
                           updateProgressBar(session = session,id = "report_download_progress",value = 3, total = 7,title = "response df wide format file")
-                          write_delim(x = response.calculation()$response_wide, path = paste(input$project_name,"_calculated_response_data_frame_wideFormat",".txt",sep=""),delim = "\t")
+                          write_delim(x = response.calculation()$response_wide, file = paste(input$project_name,"_calculated_response_data_frame_wideFormat",".txt",sep=""),delim = "\t")
                           
                           updateProgressBar(session = session,id = "report_download_progress",value = 4, total = 7,title = "generate project overview plots")
                           
@@ -2224,7 +2224,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                     if(is.null(input$processed_data_file)){
                       withProgress(message = 'loading file...',
                                    detail = 'This may take a while...',min = 1,max = 1,
-                      proc.datacontainer<-readRDS(file = file.path("data/pool-measurements/16_04_2018__xMAPr_Analysis_output__Pool_data_processing/Pool_data_processing.RDS"))
+                      proc.datacontainer <- readRDS(file = file.path("data/pool-measurements/16_04_2018__xMAPr_Analysis_output__Pool_data_processing/Pool_data_processing.RDS"))
                       )
                       #NULL #have to be modified for example dataset or error message         
                       } else {
@@ -2624,7 +2624,8 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                                  legend.position='none' #removes legend from ggplot
                                            )+
                                            labs(title="no fit failed/rejected",x="",y="count"),
-                                         tooltip="text",height = 550,width = 300, autosize=TRUE) %>% layout(margin = list(l = 100))
+                                         tooltip="text",height = 550,width = 300, autosize=TRUE) %>% 
+                 layout(margin = list(l = 100))
              }else{
                gg.filtered.fit<-ggplotly(ggplot(qual.count.response.single,
                                                 aes(x = fit.type,
@@ -2642,7 +2643,8 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                                  legend.position='none' #removes legend from ggplot
                                            )+
                                            labs(title="fit failed or rejected",x="",y="count"),
-                                         tooltip="text",height = 550,width = 300, autosize=TRUE) %>% layout(margin = list(l = 100))
+                                         tooltip="text",height = 550,width = 300, autosize=TRUE) %>% 
+                 layout(margin = list(l = 100))
              }
             
              
@@ -2675,7 +2677,8 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                                legend.position='none' #removes legend from ggplot
                                          )+
                                          labs(title="signal drop filtering",x="xfold dilution",y="count"),
-                                       tooltip="text",height = 560,width = 500, autosize=TRUE) %>% layout(margin = list(l = 100))
+                                       tooltip="text",height = 560,width = 500, autosize=TRUE) %>% 
+               layout(margin = list(l = 100))
              
              
           
@@ -3824,7 +3827,7 @@ general.overview.response.pca<-reactive({
                                             unique(unlist(statistics.over.Meta.Sample()$response.stats$meta.category)),".txt",sep="")},
                             content = function(fname) {
                                 
-                              write_delim(x = statistics.over.Meta.Sample()$response.stats,path = fname,delim = "\t",col_names = T)
+                              write_delim(x = statistics.over.Meta.Sample()$response.stats,file = fname,delim = "\t",col_names = T)
                               
                         })
                           

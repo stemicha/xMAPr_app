@@ -306,44 +306,6 @@ inSSl5 <- function(fx, b, c, d, e, f){
 }
 
 
-#modified SSmicmen self start with minFactor=1/10000 instead of minFactor=1/1024 (default)
-SSmicmen_modified <- # selfStart(~ Vm * input/(K + input),
-  selfStart(
-    function(input, Vm, K)
-    {
-      .expr1 <- Vm * input
-      .expr2 <- K + input
-      .value <- .expr1/.expr2
-      .actualArgs <- as.list(match.call()[c("Vm", "K")])
-      if(all(unlist(lapply(.actualArgs, is.name))))
-      {
-        .grad <- array(0, c(length(.value), 2L), list(NULL, c("Vm", "K")))
-        .grad[, "Vm"] <- input/.expr2
-        .grad[, "K"] <-  - (.expr1/.expr2^2)
-        dimnames(.grad) <- list(NULL, .actualArgs)
-        attr(.value, "gradient") <- .grad
-      }
-      .value
-    },
-    function(mCall, data, LHS)
-    {
-      xy <- data.frame(sortedXyData(mCall[["input"]], LHS, data))
-      if (nrow(xy) < 3) {
-        stop("too few distinct input values to fit a Michaelis-Menten model")
-      }
-      ## take the inverse transformation
-      pars <- as.vector(coef(lm(1/y ~ I(1/x), data = xy)))
-      ## use the partially linear form to converge quickly
-      pars <- as.vector(coef(nls(y ~ x/(K + x),
-                                 data = xy,
-                                 start = list(K = abs(pars[2L]/pars[1L])),
-                                 algorithm = "plinear",
-                                 control=list(minFactor=1/10000))))
-      value <- c(pars[2L], pars[1L])
-      names(value) <- mCall[c("Vm", "K")]
-      value
-    }, parameters = c("Vm", "K"))
-
 
 
 

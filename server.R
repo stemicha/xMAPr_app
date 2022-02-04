@@ -517,18 +517,12 @@ shinyServer(function(input,output, session){
   #_________________________________________ ===================
   #load data for pipeline data processing ------
         
+            
                 
-            #Baltimore test ------- test data loading 
-                #example.coupling.data<-fread(file.path("data/BALTIMORE_coupling_control.txt"),sep = "\t",header=T,data.table = F)
-                #example.assay.data<-fread(file.path("data/BALITMORE_assay_data_artificial.txt"),sep = "\t",header=T,data.table = F)
-                #example.count.data<-fread(file.path("data/BALITMORE_assay_data_bead_count_artificial.txt"),sep = "\t",header=T,data.table = F)
-                #example.count.control.data<-fread(file.path("data/BALTIMORE_coupling_control beadcount artificial.txt"),sep = "\t",header=T,data.table = F)
-                #example.meta.data<-fread(file.path("data/BALITMORE_meta_data_artificial.txt"),sep = "\t",header=T,data.table = F)
-        
                 example.coupling.data<-NULL
+                example.count.control.data<-NULL
                 example.assay.data<-NULL
                 example.count.data<-NULL
-                example.count.control.data<-NULL
                 example.meta.data<-NULL
                 
                         
@@ -641,6 +635,8 @@ shinyServer(function(input,output, session){
         #pipeline: validate inputs=====
         validate.inputs<-eventReactive(input$inputButton_data_processing, {
 
+        
+          
                   am <- as_tibble(assay_data())        # assay file df input
                   am.count <- as_tibble(assay_count_data())  # assaycount file df input
                   ccm <- as_tibble(control_coupling_data())    # coupling control file df input
@@ -803,6 +799,33 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
   #setup  progress bar shinyWidget
    updateProgressBar(session = session,id = "main",value = 1, total = 7,title = paste("Step 1/7: prepare/write parameters..."))
    
+  
+  
+  # load example demo data for bugfixing
+   ## example.coupling.data<-read.table(file.path("demo_data/demo_data__xMAPr/data_processing_pipeline_demo_data/Demo_COUPLING_CONTROL_MFI.txt"),sep = "\t",header=T)
+   ## example.count.control.data<-read.table(file.path("demo_data/demo_data__xMAPr/data_processing_pipeline_demo_data/Demo_COUPLING_CONTROL_bead_count.txt"),sep = "\t",header=T)
+   ## example.assay.data<-read.table(file.path("demo_data/demo_data__xMAPr/data_processing_pipeline_demo_data/Demo_ASSAY_data_MFI.txt"),sep = "\t",header=T)
+   ## example.count.data<-read.table(file.path("demo_data/demo_data__xMAPr/data_processing_pipeline_demo_data/Demo_ASSAY_data_bead_count.txt"),sep = "\t",header=T)
+   ## example.meta.data<-read.table(file.path("demo_data/demo_data__xMAPr/data_processing_pipeline_demo_data/Demo_META_data.txt"),sep = "\t",header=T)
+   ## am <- assay_data <- function() {example.assay.data}      # assay file df input
+   ## am.count <- assay_count_data <- function() {example.count.data}       # assaycount file df input
+   ## ccm <- control_coupling_data <- function() {example.coupling.data}    # coupling control file df input
+   ## ccm.count <- control_count_data <- function() {example.count.control.data}    # coupling control file df input
+   ## meta <- sample_meta_data <- function() {example.meta.data}  # meta file df input
+  
+  # example input debugging
+  ##  input <- list(dilution_naming = "Dilution",
+  ##                replicate_naming = "Replicate",
+  ##                sample_naming = "Sample",
+  ##                Blank_naming = "Blank",
+  ##                antiTag_naming = "His_AB",
+  ##                controlBlank_naming = "Blank",
+  ##                cv_var_cutoff = 0.5,
+  ##                blank_corr_method = "none",
+  ##                min_lin_r2_cutoff =0.9
+  ##  )
+  ## 
+  
             # pipeline: setup parameters ==================================
             am.dilution.column <- input$dilution_naming  #dilution column
             am.replicate.column <- input$replicate_naming #replicate column
@@ -813,7 +836,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
             linear.r.squared.min <- input$min_lin_r2_cutoff    #r-squared cut-off for accepting linear fit
             cv.var <- input$cv_var_cutoff          # CV cut off
             n.fitted.points <- 20  #number of fitted points
-      
+            blank.correction.method <- input$blank_corr_method # input of blank correction method
             
             
             
@@ -854,6 +877,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                 anti_tag.entry = anti_tag.entry,
                 blank.entry = blank.entry,
                 control.blank.entry = control.blank.entry,
+                blank.correction.method = blank.correction.method,
                 cv.cut_off = cv.var,
                 use.CV.cutoff = use.CV.cutoff,
                 min.r.squared.for.linearFit=linear.r.squared.min,
@@ -898,28 +922,138 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
  updateProgressBar(session = session,id = "main",value = 3, total = 7,title = paste("Step 3/7: blank substraction per antigen..."))
  
                 # pipeline: do BLANK substraction LOD ==========
-                  #generating mean blank substraction per antigen in // assay data file
-                    mean_sd_blank <-  am.tidy%>%
-                                      filter(UQ(as.name(sample.column))==blank.entry)%>%
-                                      group_by(antigen)%>%
-                                      summarise(mean_blank=mean(MFI,na.rm=T),sd_blank=sd(MFI,na.rm=T))%>%
-                                      ungroup()
-                    mean_sd_blank$sd_blank_3fold<-3*mean_sd_blank$sd_blank #3 fold SD
-                    
-                  #join blank and blank sd values to tidy df // assay data file
-                    am.tidy<-left_join(am.tidy,mean_sd_blank,by="antigen")
-                  
-                  #do cutoff filtering of MFI with 3*SD of Blank + Blank as cutoff // assay data file
-                      am.tidy$Blank_cutoff<-am.tidy$mean_blank+am.tidy$sd_blank_3fold
-                      am.tidy$MFI_3foldSD_blank_filtered<-am.tidy$MFI
-                      am.tidy$MFI_3foldSD_blank_filtered_logical<-FALSE
-                          if(length(which(am.tidy$MFI_3foldSD_blank_filtered<am.tidy$Blank_cutoff))>0){
-                            am.tidy$MFI_3foldSD_blank_filtered_logical[which(am.tidy$MFI_3foldSD_blank_filtered<am.tidy$Blank_cutoff)]<-TRUE
-                            am.tidy$MFI_3foldSD_blank_filtered[which(am.tidy$MFI_3foldSD_blank_filtered<am.tidy$Blank_cutoff)]<-NA
-                          }
-                      am.tidy$MFI_3foldSD_blank_filtered_blank_substract<-am.tidy$MFI_3foldSD_blank_filtered-am.tidy$mean_blank
-                
-      
+
+# BLANK substraction LOD : mean + 3SD -------------------------------------
+ if(blank.correction.method == "mean+3SD"){
+   #generating mean blank substraction per antigen in // assay data file
+   mean_sd_blank <-  am.tidy%>%
+     filter(UQ(as.name(sample.column))==blank.entry)%>%
+     group_by(antigen)%>%
+     summarise(mean_blank=mean(MFI,na.rm=T),sd_blank=sd(MFI,na.rm=T))%>%
+     ungroup()
+   mean_sd_blank$sd_blank_3fold<-3*mean_sd_blank$sd_blank #3 fold SD
+   
+   #join blank and blank sd values to tidy df // assay data file
+   am.tidy<-left_join(am.tidy,mean_sd_blank,by="antigen")
+   
+   #do cutoff filtering of MFI with 3*SD of Blank + Blank as cutoff // assay data file
+   am.tidy$Blank_cutoff<-am.tidy$mean_blank+am.tidy$sd_blank_3fold
+   
+   am.tidy$blank_filtered<-am.tidy$MFI
+   am.tidy$blank_filtered_logical<-FALSE
+   if(length(which(am.tidy$blank_filtered<am.tidy$Blank_cutoff))>0){
+     am.tidy$blank_filtered_logical[which(am.tidy$blank_filtered<am.tidy$Blank_cutoff)]<-TRUE
+     am.tidy$blank_filtered[which(am.tidy$blank_filtered<am.tidy$Blank_cutoff)]<-NA
+   }
+   
+   am.tidy$blank_filtered_blank_substract<-am.tidy$blank_filtered-am.tidy$Blank_cutoff
+ }
+ 
+# BLANK substraction LOD : median + IQR -------------------------------------
+ if(blank.correction.method == "median+IQR"){
+   #generating mean blank substraction per antigen in // assay data file
+   median_IQR_blank <-  am.tidy%>%
+     filter(UQ(as.name(sample.column))==blank.entry)%>%
+     group_by(antigen)%>%
+     summarise(median_blank=median(MFI,na.rm=T),IQR_blank=IQR(MFI,na.rm=T))%>%
+     ungroup()
+
+   #join blank and blank sd values to tidy df // assay data file
+   am.tidy<-left_join(am.tidy,median_IQR_blank,by="antigen")
+   
+   #do cutoff filtering of MFI 
+   am.tidy$Blank_cutoff<-am.tidy$median_blank+am.tidy$IQR_blank
+   
+   am.tidy$blank_filtered<-am.tidy$MFI
+   am.tidy$blank_filtered_logical<-FALSE
+   if(length(which(am.tidy$blank_filtered<am.tidy$Blank_cutoff))>0){
+     am.tidy$blank_filtered_logical[which(am.tidy$blank_filtered<am.tidy$Blank_cutoff)]<-TRUE
+     am.tidy$blank_filtered[which(am.tidy$blank_filtered<am.tidy$Blank_cutoff)]<-NA
+   }
+   
+   am.tidy$blank_filtered_blank_substract<-am.tidy$blank_filtered-am.tidy$Blank_cutoff
+ }     
+   
+ # BLANK substraction LOD : mean -------------------------------------
+ if(blank.correction.method == "mean"){
+   #generating mean blank substraction per antigen in // assay data file
+   mean_blank <-  am.tidy%>%
+     filter(UQ(as.name(sample.column))==blank.entry)%>%
+     group_by(antigen)%>%
+     summarise(mean_blank=mean(MFI,na.rm=T))%>%
+     ungroup()
+
+   #join blank and blank sd values to tidy df // assay data file
+   am.tidy<-left_join(am.tidy,mean_blank,by="antigen")
+   
+   #do cutoff filtering of MFI mean of Blank
+   am.tidy$Blank_cutoff<-am.tidy$mean_blank
+   
+   am.tidy$blank_filtered<-am.tidy$MFI
+   am.tidy$blank_filtered_logical<-FALSE
+   if(length(which(am.tidy$blank_filtered<am.tidy$Blank_cutoff))>0){
+     am.tidy$blank_filtered_logical[which(am.tidy$blank_filtered<am.tidy$Blank_cutoff)]<-TRUE
+     am.tidy$blank_filtered[which(am.tidy$blank_filtered<am.tidy$Blank_cutoff)]<-NA
+   }
+   
+   am.tidy$blank_filtered_blank_substract<-am.tidy$blank_filtered-am.tidy$Blank_cutoff
+ }
+     
+ 
+ 
+ # BLANK substraction LOD : median -------------------------------------
+ if(blank.correction.method == "median"){
+   #generating mean blank substraction per antigen in // assay data file
+   median_blank <-  am.tidy%>%
+     filter(UQ(as.name(sample.column))==blank.entry)%>%
+     group_by(antigen)%>%
+     summarise(median_blank=median(MFI,na.rm=T))%>%
+     ungroup()
+   
+   #join blank and blank sd values to tidy df // assay data file
+   am.tidy<-left_join(am.tidy,median_blank,by="antigen")
+   
+   #do cutoff filtering of MFI 
+   am.tidy$Blank_cutoff<-am.tidy$median_blank
+   
+   am.tidy$blank_filtered<-am.tidy$MFI
+   am.tidy$blank_filtered_logical<-FALSE
+   if(length(which(am.tidy$blank_filtered<am.tidy$Blank_cutoff))>0){
+     am.tidy$blank_filtered_logical[which(am.tidy$blank_filtered<am.tidy$Blank_cutoff)]<-TRUE
+     am.tidy$blank_filtered[which(am.tidy$blank_filtered<am.tidy$Blank_cutoff)]<-NA
+   }
+   
+   am.tidy$blank_filtered_blank_substract<-am.tidy$blank_filtered-am.tidy$Blank_cutoff
+ }                
+  
+ # add blank correction method
+ am.tidy$blank_correction_method <-  blank.correction.method
+   
+ # BLANK substraction LOD : none -------------------------------------
+ if(blank.correction.method == "none"){
+   #generating mean blank substraction per antigen in // assay data file
+   mean_sd_blank <-  am.tidy%>%
+     filter(UQ(as.name(sample.column))==blank.entry)%>%
+     group_by(antigen)%>%
+     summarise(mean_blank=mean(MFI,na.rm=T),sd_blank=sd(MFI,na.rm=T))%>%
+     ungroup()
+   mean_sd_blank$sd_blank_3fold<-3*mean_sd_blank$sd_blank #3 fold SD
+   
+   #join blank and blank sd values to tidy df // assay data file
+   am.tidy<-left_join(am.tidy,mean_sd_blank,by="antigen")
+   
+   #do cutoff filtering of MFI with 3*SD of Blank + Blank as cutoff // assay data file
+   am.tidy$Blank_cutoff<-0
+   
+   am.tidy$blank_filtered<-am.tidy$MFI
+   am.tidy$blank_filtered_logical<-FALSE
+   if(length(which(am.tidy$blank_filtered<am.tidy$Blank_cutoff))>0){
+     am.tidy$blank_filtered_logical[which(am.tidy$blank_filtered<am.tidy$Blank_cutoff)]<-TRUE
+     am.tidy$blank_filtered[which(am.tidy$blank_filtered<am.tidy$Blank_cutoff)]<-NA
+   }
+   
+   am.tidy$blank_filtered_blank_substract<-am.tidy$blank_filtered-am.tidy$Blank_cutoff
+ }
  
  updateProgressBar(session = session,id = "main",value = 4, total = 7,title = paste("Step 4/7: coupling control correction..."))
  
@@ -941,7 +1075,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
               am.tidy<-left_join(am.tidy,ccm.tidy.mean,by="antigen")
             
             #normalize to coupling control data
-              am.tidy$MFI_normalized<-am.tidy$MFI_3foldSD_blank_filtered_blank_substract/am.tidy$coupling_control_MFI_blank_substracted*100
+              am.tidy$MFI_normalized<-am.tidy$blank_filtered_blank_substract/am.tidy$coupling_control_MFI_blank_substracted*100
   
             #remove blank entry from am.tidy
               am.tidy<-am.tidy%>%filter(UQ(as.name(sample.column))!=blank.entry)
@@ -967,11 +1101,14 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
       }
     
       #generate inverse xfold dilution
-      am.tidy.aggregated$dilution.inverse<-1/unlist(am.tidy.aggregated[,input$dilution_naming])
+      am.tidy.aggregated$dilution.inverse <- 1/unlist(am.tidy.aggregated[,input$dilution_naming])
       
       #signal drop estimation
-      am.tidy.aggregated<-am.tidy.aggregated%>%group_by(UQ(as.name(sample.column)),antigen)%>%
-        mutate(signal_drop=suppressWarnings(signaldrop(mfi = MFI_normalized_mean,absolute.dilution = dilution.inverse)$logical))%>%ungroup()
+      am.tidy.aggregated<-am.tidy.aggregated %>%
+        group_by(UQ(as.name(sample.column)),antigen) %>%
+        mutate(signal_drop=suppressWarnings(signaldrop(mfi = MFI_normalized_mean,
+                                                       absolute.dilution = dilution.inverse)$logical)) %>%
+        ungroup()
 
       
  updateProgressBar(session = session,id = "main",value = 6, total = 7,title = paste("Step 6/7: do regression over antigens and samples..."))
@@ -1082,8 +1219,9 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                         #pipeline: non-linear regression fitting including all data points  =======
                                         fit.mfi<-c()
                                         fit.mfi.dil.50<-NA;fit.mfi.MFImax.50<-NA;fit.mfi.resp<-NA
+                                        #tmp <- as.data.frame(tmp)
                                         if(sum(tmp$signal_drop,na.rm=T)==0 & !is.na(tmp$MFI_normalized_mean[which(tmp$dilution.inverse==max(tmp$dilution.inverse))])){
-                                        fit.mfi <- try(nls(MFI_normalized_mean ~ SSmicmen_modified(dilution.inverse,MFImax, dil.50),data=tmp),silent = T)
+                                        fit.mfi <- try(nls(MFI_normalized_mean ~ SSmicmen(dilution.inverse,MFImax, dil.50),data=tmp),silent = T)
                                         }
                                         
 
@@ -1102,7 +1240,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                         fit.mfi.excl<-c()
                                         fit.mfi.excl.dil.50<-NA;fit.mfi.excl.MFImax.50<-NA;fit.mfi.excl.resp<-NA
                                         if(sum(tmp$signal_drop,na.rm=T)!=0 | is.na(tmp$MFI_normalized_mean[which(tmp$dilution.inverse==max(tmp$dilution.inverse))])){
-                                          fit.mfi.excl <- try(nls(MFI_normalized_mean ~ SSmicmen_modified(dilution.inverse,MFImax, dil.50),data=tmp[signaldrop.exclusion,]),silent = T)
+                                          fit.mfi.excl <- try(nls(MFI_normalized_mean ~ SSmicmen(dilution.inverse,MFImax, dil.50),data=tmp[signaldrop.exclusion,]),silent = T)
                                         }else{
                                           fit.mfi.excl="Error"
                                         }
@@ -1318,23 +1456,23 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                         }
                                         
                                         if(fit.type=="nls_with_exclusion"){
-                                          fitted.values<-c(coef(fit.mfi.excl)[1] * tmp$dilution.inverse / (coef(fit.mfi.excl)[2] + tmp$dilution.inverse))
-                                          residual.values<-fitted.values-tmp$MFI_normalized_mean
-                                          used.dilutions<-tmp$used.dilutions
+                                          fitted.values <- c(coef(fit.mfi.excl)[1] * tmp$dilution.inverse / (coef(fit.mfi.excl)[2] + tmp$dilution.inverse))
+                                          residual.values <- fitted.values-tmp$MFI_normalized_mean
+                                          used.dilutions <- tmp$used.dilutions
                                           used.dilutions[which(max(tmp$dilution.inverse)==tmp$dilution.inverse)]<-FALSE
-                                          fit.summary<-summary(fit.mfi.excl)
-                                          qc.value<-fit.summary$sigma
+                                          fit.summary <- summary(fit.mfi.excl)
+                                          qc.value <- fit.summary$sigma
                                           out.response.df[which(out.response.df[,sample.column]==samples[i] & out.response.df$antigen==antigens[g] & out.response.df$fit.type==fit.type),"response"]<-(1/fit.mfi.excl.dil.50)*fit.mfi.excl.MFImax.50
                                           out.selected.prediction.df[which(out.selected.prediction.df[,sample.column]==samples[i] & out.selected.prediction.df$antigen==antigens[g]),"MFI.predicted"]<-pred.nls.exc$MFI.predicted
                                           out.selected.prediction.df[which(out.selected.prediction.df[,sample.column]==samples[i] & out.selected.prediction.df$antigen==antigens[g]),"fit.type"]<-rep(fit.type,n.fitted.points)
                                         }
                                         
                                         if(fit.type=="linear_fit"){
-                                          fitted.values<-c(coef(fit.lin.mfi)[2]* tmp$dilution.inverse + coef(fit.lin.mfi)[1])
-                                          residual.values<-fitted.values-tmp$MFI_normalized_mean
-                                          used.dilutions<-tmp$used.dilutions
-                                          fit.summary<-summary(fit.lin.mfi)
-                                          qc.value<-fit.summary$sigma
+                                          fitted.values <- c(coef(fit.lin.mfi)[2]* tmp$dilution.inverse + coef(fit.lin.mfi)[1])
+                                          residual.values <- fitted.values-tmp$MFI_normalized_mean
+                                          used.dilutions <- tmp$used.dilutions
+                                          fit.summary <- summary(fit.lin.mfi)
+                                          qc.value <- fit.summary$sigma
                                           out.response.df[which(out.response.df[,sample.column]==samples[i] & out.response.df$antigen==antigens[g] & out.response.df$fit.type==fit.type),"response"]<-(1/fit.lin.dil.50)*fit.lin.MFImax
                                           out.selected.prediction.df[which(out.selected.prediction.df[,sample.column]==samples[i] & out.selected.prediction.df$antigen==antigens[g]),"MFI.predicted"]<-pred.lin$MFI.predicted
                                           out.selected.prediction.df[which(out.selected.prediction.df[,sample.column]==samples[i] & out.selected.prediction.df$antigen==antigens[g]),"fit.type"]<-rep(fit.type,n.fitted.points)
@@ -1349,32 +1487,32 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                           
                                           if(fit.type=="nls" |
                                              fit.type=="nls_with_exclusion"){
-                                            tmp.summary<-as.data.frame(fit.summary$parameters)
+                                            tmp.summary <- as.data.frame(fit.summary$parameters)
                                             tmp.summary$coefficients<-c("MFImax","dil.50")
                                             tmp.summary[,sample.column]<-rep(samples[i],2)
                                             tmp.summary$antigen<-rep(antigens[g],2)
                                             tmp.summary$fit.type<-rep(fit.type,2)
                                             if(fit.type=="nls"){
-                                              tmp.qc<-c(qc.value,fit.mfi.dil.50,fit.mfi.MFImax.50,(1/fit.mfi.dil.50)*fit.mfi.MFImax.50,fit.type,samples[i],antigens[g])
+                                              tmp.qc <- c(qc.value,fit.mfi.dil.50,fit.mfi.MFImax.50,(1/fit.mfi.dil.50)*fit.mfi.MFImax.50,fit.type,samples[i],antigens[g])
                                             }
                                             if(fit.type=="nls_with_exclusion"){
-                                              tmp.qc<-c(qc.value,fit.mfi.excl.dil.50,fit.mfi.excl.MFImax.50,(1/fit.mfi.excl.dil.50)*fit.mfi.excl.MFImax.50,fit.type,samples[i],antigens[g])
+                                              tmp.qc <- c(qc.value,fit.mfi.excl.dil.50,fit.mfi.excl.MFImax.50,(1/fit.mfi.excl.dil.50)*fit.mfi.excl.MFImax.50,fit.type,samples[i],antigens[g])
                                             }
                                           }
                                           
                                           if(fit.type=="linear_fit"){
-                                            tmp.summary<-as.data.frame(fit.summary$coefficients)
+                                            tmp.summary <- as.data.frame(fit.summary$coefficients)
                                             tmp.summary$coefficients<-c("interception","slope")
-                                            tmp.summary[,sample.column]<-rep(samples[i],2)
-                                            tmp.summary$antigen<-rep(antigens[g],2)
-                                            tmp.summary$fit.type<-rep(fit.type,2)
-                                            tmp.qc<-c(qc.value,fit.lin.dil.50,fit.lin.MFImax,(1/fit.lin.dil.50)*fit.lin.MFImax,fit.type,samples[i],antigens[g])
+                                            tmp.summary[,sample.column] <-rep(samples[i],2)
+                                            tmp.summary$antigen <- rep(antigens[g],2)
+                                            tmp.summary$fit.type <- rep(fit.type,2)
+                                            tmp.qc <- c(qc.value,fit.lin.dil.50,fit.lin.MFImax,(1/fit.lin.dil.50)*fit.lin.MFImax,fit.type,samples[i],antigens[g])
                                           }
-                                          out.fit.summary.df<-rbind(out.fit.summary.df,tmp.summary)
-                                          out.qc<-rbind(out.qc,tmp.qc)
+                                          out.fit.summary.df <- rbind(out.fit.summary.df,tmp.summary)
+                                          out.qc <- rbind(out.qc,tmp.qc)
                                           
                                           #single fit data frame
-                                          tmp.fit.model<-tmp
+                                          tmp.fit.model <- tmp
                                           tmp.fit.model$fitted_values<-as.numeric(fitted.values)
                                           tmp.fit.model$residuals<-residual.values
                                           tmp.fit.model$fit_type<-rep(fit.type,nrow(tmp.fit.model))
@@ -1467,7 +1605,9 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                           calculated.variables.comp = calc.comp.out.final,
                                           residual.comp = res.comp.fit.out.final,
                                           response = response.df,
-                                          response_wide = response.df%>%select(response,antigen,UQ(as.name(input$sample_naming)))%>%spread(UQ(as.name(input$sample_naming)),response),
+                                          response_wide = response.df %>%
+                                            select(response,antigen,UQ(as.name(input$sample_naming))) %>%
+                                            spread(UQ(as.name(input$sample_naming)),response),
                                           resp.comp = resp.comp.df,
                                           summary = summary.df,
                                           am.tidy = am.tidy,
@@ -1488,6 +1628,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
               replicate.column.name = am.replicate.column,
               anti_tag.entry = anti_tag.entry,
               blank.entry = blank.entry,
+              blank.correction.method = blank.correction.method,
               control.blank.entry = control.blank.entry,
               cv.cut_off = cv.var,
               min.r.squared.for.linearFit=linear.r.squared.min,
@@ -1904,7 +2045,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                               tmp.am.tidy <- c()
                               tmp.am.tidy <- filter(response.calculation()$am.tidy, antigen == antigens[i] &
                                                       UQ(as.name(sample.column.name.param)) == samples[g])
-                              tmp.am.tidy$MFI_3foldSD_blank_filtered_logical <- factor(tmp.am.tidy$MFI_3foldSD_blank_filtered_logical, levels = c(FALSE, TRUE))
+                              tmp.am.tidy$blank_filtered_logical <- factor(tmp.am.tidy$blank_filtered_logical, levels = c(FALSE, TRUE))
                               tmp.am.tidy$assayMFI_BeadCount_filtered_logical <- factor(tmp.am.tidy$assayMFI_BeadCount_filtered_logical, levels = c(FALSE, TRUE))
 
                               tmp.am.tidy.agg<-c(); tmp.am.tidy.agg <- filter(response.calculation()$am.tidy.aggregated,antigen==antigens[i] &
@@ -1964,7 +2105,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
 
                               #raw plot data plot  
                               if(sum(!is.na(tmp.am.tidy$MFI_raw))==0){
-                                raw.plot<-ggplot(tmp.am.tidy,aes(x = 1/UQ(as.name(dil.column.name.param)),y = MFI_raw,color=MFI_3foldSD_blank_filtered_logical,shape=assayMFI_BeadCount_filtered_logical))+
+                                raw.plot<-ggplot(tmp.am.tidy,aes(x = 1/UQ(as.name(dil.column.name.param)),y = MFI_raw,color=blank_filtered_logical,shape=assayMFI_BeadCount_filtered_logical))+
                                   geom_blank()+
                                   theme_bw(base_size = 12)+
                                   theme(legend.position='bottom',legend.text=element_text(size=8))+
@@ -1979,7 +2120,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                               }else{
                                 raw.plot<-ggplot(tmp.am.tidy,aes(x = 1/UQ(as.name(dil.column.name.param)),
                                                                  y = MFI_raw,
-                                                                 color=MFI_3foldSD_blank_filtered_logical,
+                                                                 color=blank_filtered_logical,
                                                                  shape=assayMFI_BeadCount_filtered_logical)
                                 )+
                                   geom_point(alpha=0.5,size=3)+
@@ -2561,7 +2702,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
              #filtered values on single antigen level
              qual.count.single<-table.in.am%>%group_by(antigen)%>%summarise(coupling_beadCount_low=sum(coupling_control_bead_count_to_low),
                                                                             assay_beadCount_low=sum(assayMFI_BeadCount_filtered_logical),
-                                                                            LOD_filtering=sum(MFI_3foldSD_blank_filtered_logical))%>%
+                                                                            LOD_filtering=sum(blank_filtered_logical))%>%
                                                                         gather("coupling_beadCount_low","assay_beadCount_low","LOD_filtering",
                                                                                key="filter.stage",value = "number_filtered")
              
@@ -3244,7 +3385,7 @@ general.overview.response.pca<-reactive({
                                   
                           #filter data
                           tmp.am.tidy<-filter(processed_data()$am.tidy,antigen==input$antigen & UQ(as.name(sample.column.name.param))==input$sample)
-                                    tmp.am.tidy$MFI_3foldSD_blank_filtered_logical<-factor(tmp.am.tidy$MFI_3foldSD_blank_filtered_logical,levels=c(FALSE,TRUE))
+                                    tmp.am.tidy$blank_filtered_logical<-factor(tmp.am.tidy$blank_filtered_logical,levels=c(FALSE,TRUE))
                                     tmp.am.tidy$assayMFI_BeadCount_filtered_logical<-factor(tmp.am.tidy$assayMFI_BeadCount_filtered_logical,levels=c(FALSE,TRUE))
                                     
                                     
@@ -3312,7 +3453,7 @@ general.overview.response.pca<-reactive({
                           
                           #raw plot data plot  
                           if(sum(!is.na(tmp.am.tidy$MFI_raw))==0){
-                            raw.plot<-ggplot(tmp.am.tidy,aes(x = 1/UQ(as.name(dil.column.name.param)),y = MFI_raw,color=MFI_3foldSD_blank_filtered_logical,shape=assayMFI_BeadCount_filtered_logical))+
+                            raw.plot<-ggplot(tmp.am.tidy,aes(x = 1/UQ(as.name(dil.column.name.param)),y = MFI_raw,color=blank_filtered_logical,shape=assayMFI_BeadCount_filtered_logical))+
                               geom_blank()+
                               theme_bw(base_size = 12)+
                               theme(legend.position='bottom',legend.text=element_text(size=8))+
@@ -3327,7 +3468,7 @@ general.overview.response.pca<-reactive({
                           }else{
                             raw.plot<-ggplot(tmp.am.tidy,aes(x = 1/UQ(as.name(dil.column.name.param)),
                                                              y = MFI_raw,
-                                                             color=MFI_3foldSD_blank_filtered_logical,
+                                                             color=blank_filtered_logical,
                                                              shape=assayMFI_BeadCount_filtered_logical)
                                              )+
                               geom_point(alpha=0.5,size=3)+
@@ -3619,7 +3760,7 @@ general.overview.response.pca<-reactive({
                                    value = tags$p(plots.out.gg.AntigenSample()$used.fit.type, style = "font-size: 50%;"),
                                    subtitle = tags$p("fit type", style = "font-size: 200%;"),
     
-                                   icon=icon("line-chart")
+                                   icon=icon("chart-line")
                           )
                         })
                         

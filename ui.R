@@ -107,7 +107,7 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
       #Data processing pipeline button sidebar -----
       menuItem("Data processing pipeline",tabName = "pipe", icon = icon("cogs")),
       #Result visualization selection button sidebar -----
-      menuItem("Result visualization selection",tabName = "resvis",icon = icon("area-chart"),
+      menuItem("Result visualization selection",tabName = "resvis",icon = icon("chart-area"),
                  #File assay data input
               fileInput("processed_data_file", "processed data",accept=c(".RDS")),
               bsPopover(id = "inputButton_data_visu", 
@@ -117,7 +117,7 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
                         trigger = "hover",
                         options = NULL),
               #action button for run data processing
-              actionButton("inputButton_data_visu", "RUN data visualization...",width = "90%",icon=icon("youtube-play"),style="color: #000000; background-color: #B84B18; border-color: #722E00"),
+              actionButton("inputButton_data_visu", "RUN data visualization...",width = "90%",icon=icon("youtube"),style="color: #000000; background-color: #B84B18; border-color: #722E00"),
               #select_meta_data_coloring
               uiOutput("meta.selection"), 
               menuSubItem("global result overview",tabName = "resvis_panel", icon = icon("globe")),
@@ -129,7 +129,7 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
       menuItem("about",tabName = "about", icon = icon("question-circle")),
       br(),
       downloadButton("downloadDemoData", label = "Download demo data",style="margin-left: 30px;"),
-      h5("version 1.0",align="center"), # version ------
+      h5("version 1.1",align="center"), # version ------
       h6("author: S. Michalik",align="center"),
       br(),
       h6("for optimal performance please",align="center",style="color: #FF6600;"),
@@ -140,7 +140,7 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
   #page setup  -----
   dashboardBody(
     useShinyjs(), # # Include shinyjs
-    useShinyalert(),# Set up shinyalert
+    #useShinyalert(),# Set up shinyalert
     
     #hide error messsages in shiny  -----
      tags$style(type="text/css",
@@ -474,14 +474,14 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
                             fluidRow(
                               #action button for run data processing ------
                               column(width=12,
-                                     actionButton(inputId = "inputButton_data_processing", label = "RUN data processing...",width = "100%",icon=icon("youtube-play"),style="color:#fff; background-color: #000000; border-color: #212121")
+                                     actionButton(inputId = "inputButton_data_processing", label = "RUN data processing...",width = "100%",icon=icon("youtube"),style="color:#fff; background-color: #000000; border-color: #212121")
                               )
                             )
                             ),
                             #additional parameter input , naming .... ------
                             
                             box(
-                              title = "parameters", width = 9,height = "290px", solidHeader = TRUE, status = "info",
+                              title = "parameters", width = 9,height = "340px", solidHeader = TRUE, status = "info",
                               column(width=3,
                                      h4("select and type in parameters."),
                                      h4("They will be checked before the analysis is starting !"),
@@ -532,6 +532,17 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
                                       bsPopover(id = "Blank_naming", 
                                                title = NULL, 
                                                content ="type in the sample entry used in the assay data for the Blank reaction (pay attention to upper and lower case)", 
+                                               placement = "bottom", 
+                                               trigger = "hover",
+                                               options = NULL),
+                                     selectInput(inputId = "blank_corr_method",
+                                                 label = "Blank correction method for assay data:",
+                                                 choices = c("mean+3SD","median+IQR","mean","median","none"),
+                                                 selected = "mean+3SD",
+                                                 multiple = F),
+                                     bsPopover(id = "blank_corr_method", 
+                                               title = NULL, 
+                                               content ="selection of different blank correction methods (default: mean + 3SD)", 
                                                placement = "bottom", 
                                                trigger = "hover",
                                                options = NULL)

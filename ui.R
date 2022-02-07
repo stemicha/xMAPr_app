@@ -437,7 +437,11 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
                                      actionButton(inputId="assay_bead_count_example_popup", label="example",icon = icon("question-circle"),style = "margin-top: 25px;",width = "100%")
                               ),
                               column(6,offset = 0, 
-                                     actionButton(inputId = "AssayDataBeadCountFileRESET", label = "reset", icon = icon("retweet"),style = "margin-top: 25px;",width = "100%")
+                                     actionButton(inputId = "AssayDataBeadCountFileRESET", 
+                                                  label = "reset",
+                                                  icon = icon("retweet"),
+                                                  style = "margin-top: 25px;",
+                                                  width = "100%")
                               )
                               ) 
                             )
@@ -450,7 +454,7 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
                                    
                                    
                             box(
-                              title = "5. meta data file", width = NULL,height = "220px", solidHeader = TRUE, status = "warning",
+                              title = "5. meta data file", width = NULL,height = "240px", solidHeader = TRUE, status = "warning",
                               #File meta data input ------
                               fluidRow(column(12,offset = 0, 
                                               
@@ -474,7 +478,11 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
                             fluidRow(
                               #action button for run data processing ------
                               column(width=12,
-                                     actionButton(inputId = "inputButton_data_processing", label = "RUN data processing...",width = "100%",icon=icon("youtube"),style="color:#fff; background-color: #000000; border-color: #212121")
+                                     actionButton(inputId = "inputButton_data_processing",
+                                                  label = "RUN data processing...",
+                                                  width = "100%",
+                                                  icon=icon("youtube"),
+                                                  style="color:#fff; background-color: #000000; border-color: #212121; font-size: 24px; height: 80px")
                               )
                             )
                             ),
@@ -484,7 +492,18 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
                               title = "parameters", width = 9,height = "340px", solidHeader = TRUE, status = "info",
                               column(width=3,
                                      h4("select and type in parameters."),
-                                     h4("They will be checked before the analysis is starting !"),
+                                     #h4("They will be checked before the analysis is starting !"),
+                                     selectInput(inputId = "blank_corr_method",
+                                                 label = "Blank correction method for assay data:",
+                                                 choices = c("mean+3SD","median+IQR","mean","median","none"),
+                                                 selected = "mean+3SD",
+                                                 multiple = F),
+                                     bsPopover(id = "blank_corr_method", 
+                                               title = NULL, 
+                                               content ="selection of different blank correction methods (default: mean + 3SD)", 
+                                               placement = "bottom", 
+                                               trigger = "hover",
+                                               options = NULL),
                                      hr(),
                                      awesomeRadio("sep", "separator for input files ?",c(Tab="\t",Comma=",",Semicolon=";"),selected='\t') #input file separator
  
@@ -534,21 +553,8 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
                                                content ="type in the sample entry used in the assay data for the Blank reaction (pay attention to upper and lower case)", 
                                                placement = "bottom", 
                                                trigger = "hover",
-                                               options = NULL),
-                                     selectInput(inputId = "blank_corr_method",
-                                                 label = "Blank correction method for assay data:",
-                                                 choices = c("mean+3SD","median+IQR","mean","median","none"),
-                                                 selected = "mean+3SD",
-                                                 multiple = F),
-                                     bsPopover(id = "blank_corr_method", 
-                                               title = NULL, 
-                                               content ="selection of different blank correction methods (default: mean + 3SD)", 
-                                               placement = "bottom", 
-                                               trigger = "hover",
                                                options = NULL)
-                                      
-                                      
-                              ),
+                                     ),
                               column(width=3,
                                      numericInput(inputId = "min_lin_r2_cutoff",label = "min. R-squared for lin. regression",value = 0.98),
                                      bsPopover(id = "min_lin_r2_cutoff", 

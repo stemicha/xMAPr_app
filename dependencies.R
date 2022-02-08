@@ -57,6 +57,7 @@ dependencies <- read.csv(textConnection("
                                         scales,       1.0.0,            CRAN,
                                         shinyBS,      0.61,             CRAN,
                                         shinyalert,   1.0,              CRAN,
+                                        readxl,       1.3.1,            CRAN,
                                         DT,           0.4,              CRAN,
                                         utils,        3.5.0,            CRAN
                                         "), stringsAsFactors = FALSE, strip.white = TRUE)

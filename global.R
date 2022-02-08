@@ -39,9 +39,128 @@ if(Sys.info()[['sysname']]=="Windows"){
 #---------------------------------------------------------------------------------------------------------------------#
 
 
+# Bioplex data extract function -------------------------------------------
+
+#file_path = "demo_data/bioplex_data/210906_Coupling control_10 plex.xlsx"
+#file_path = "demo_data/bioplex_data/210812_COVID patients_Plate_1.xlsx"
+
+bioplex_raw_data_extraction <- function(file_path = file_path,
+                                        coupling_control = F,
+                                        sample_naming_sep = "_"){
+  
+  data_MFI <- read_excel(path = file_path,skip = 7,sheet = "FI")
+  data_count <- read_excel(path = file_path,skip = 7,sheet = "Bead Count")
+  data_dilution <- read_excel(path = file_path,skip = 7,sheet = "Dilution")
+  
+  
+  
+  # MFI data --
+  
+  #add colnames
+  colnames(data_MFI)[1:3] <- data_MFI[1,1:3]
+  # remove row
+  data_MFI <- data_MFI[-1,]
+  #extract MFI
+  mfi_raw <- data_MFI[(which(is.na(data_MFI$Type))[3]+3):which(is.na(data_MFI$Type))[4]-1,]
+  #replace comma
+  mfi_raw[,-c(1:3)] <- apply(mfi_raw[,-c(1:3)],2,function(x){str_replace_all(string = x,pattern = ",",replacement = ".")})
+  #numeric values
+  mfi_raw[,-c(1:3)] <- apply(mfi_raw[,-c(1:3)],2,function(x){as.numeric(x)})
+  
+  # count data --
+  
+  #add colnames
+  colnames(data_count)[1:3] <- data_count[1,1:3]
+  # remove row
+  data_count <- data_count[-1,]
+  #extract count
+  count_raw <- data_count[(which(is.na(data_count$Type))[3]+3):which(is.na(data_count$Type))[4]-1,]
+  #replace comma
+  count_raw[,-c(1:3)] <- apply(count_raw[,-c(1:3)],2,function(x){str_replace_all(string = x,pattern = ",",replacement = ".")})
+  #numeric values
+  count_raw[,-c(1:3)] <- apply(count_raw[,-c(1:3)],2,function(x){as.numeric(x)})
+  
+  
+  # diluton data --
+  #add colnames
+  colnames(data_dilution)[1:3] <- data_dilution[1,1:3]
+  # remove row
+  data_dilution <- data_dilution[-1,]
+  #extract MFI
+  dilution_raw <- data_dilution[(which(is.na(data_dilution$Type))[3]+3):which(is.na(data_dilution$Type))[4]-1,]
+  #replace comma
+  dilution_raw[,-c(1:3)] <- apply(dilution_raw[,-c(1:3)],2,function(x){str_replace_all(string = x,pattern = ",",replacement = ".")})
+  #numeric values
+  dilution_raw[,-c(1:3)] <- apply(dilution_raw[,-c(1:3)],2,function(x){as.numeric(x)})
+  
+  if(coupling_control==T){ #for coupling control data
+    #polishing
+    count_raw <- count_raw %>% rename(Sample = Description)
+    mfi_raw <- mfi_raw %>% rename(Sample = Description)
+    
+    count_raw <- count_raw[,-c(1,2)]
+    mfi_raw <- mfi_raw[,-c(1,2)]
+    
+    count_raw$Sample <- unlist(sapply(count_raw$Sample,function(x) unlist(strsplit(x = x,split = sample_naming_sep))[1]))
+    mfi_raw$Sample <- unlist(sapply(mfi_raw$Sample,function(x) unlist(strsplit(x = x,split = sample_naming_sep))[1]))
+    
+  }
+  if(coupling_control==F){ #for assay data
+    #polishing
+    #add Blank naming
+    mfi_raw <- mfi_raw %>% 
+      rename(Sample = Description) %>% 
+      mutate(Sample = if_else(condition = Type=="B" & is.na(Sample),
+                              true = "Blank",false = Sample))
+    count_raw <- count_raw  %>% 
+      rename(Sample = Description) %>% 
+      mutate(Sample = if_else(condition = Type=="B" & is.na(Sample),
+                              true = "Blank",false = Sample))
+    
+    dilution_raw <- dilution_raw %>% 
+      rename(Sample = Description) %>% 
+      mutate(Sample = if_else(condition = Type=="B" & is.na(Sample),
+                              true = "Blank",false = Sample))
+    
+    dilution_raw <- dilution_raw[,1:4]
+    colnames(dilution_raw)[4] <- "Dilution"
+  
+    mfi_raw <- left_join(mfi_raw,dilution_raw, by = c("Type","Well","Sample"))
+    count_raw <- left_join(count_raw,dilution_raw, by = c("Type","Well","Sample"))
+    
+    #add Replicate column
+    mfi_raw<- mfi_raw %>% 
+      group_by(Sample,Dilution) %>% 
+      mutate(Replicate = 1:length(Sample)) %>% 
+      ungroup()
+    
+    count_raw<- count_raw %>% 
+      group_by(Sample,Dilution) %>% 
+      mutate(Replicate = 1:length(Sample)) %>% 
+      ungroup()
+    
+    
+    #order columns
+    mfi_raw <- mfi_raw %>% 
+      select(-Type,-Well) %>% 
+      select(Sample,Replicate,Dilution,everything())
+    
+    count_raw <- count_raw %>% 
+      select(-Type,-Well) %>% 
+      select(Sample,Replicate,Dilution,everything())
+      
+
+    }
+ 
+  
+  return(list(mfi_raw = mfi_raw,
+              count_raw = count_raw))
+  
+}
 
 
-## function for signal drop dection over dilutions
+
+# function for signal drop dection over dilutions -------------------------
 
 signaldrop<-function(mfi,absolute.dilution){
   # signal drop == TRUE

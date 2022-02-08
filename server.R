@@ -99,7 +99,7 @@ shinyServer(function(input,output, session){
                 if(is.null(input$csvRAWassay)){
                   shinyalert(
                     title = "no assay raw data selected !",
-                    text = "need assay raw data input csv",
+                    text = "need assay raw data input file",
                     closeOnEsc = TRUE,
                     closeOnClickOutside = FALSE,
                     html = FALSE,
@@ -118,7 +118,7 @@ shinyServer(function(input,output, session){
                 if(is.null(input$csvRAWcontrol)){
                 shinyalert(
                   title = "no control coupling raw data selected !",
-                  text = "need control coupling raw data input csv",
+                  text = "need control coupling raw data input file",
                   closeOnEsc = TRUE,
                   closeOnClickOutside = FALSE,
                   html = FALSE,
@@ -137,7 +137,7 @@ shinyServer(function(input,output, session){
                 if(is.null(input$csvRAWcontrol) & is.null(input$csvRAWassay)){
                   shinyalert(
                     title = "no control coupling or assay raw data selected !",
-                    text = "need control coupling and assay raw data input csv",
+                    text = "need control coupling and assay raw data input file",
                     closeOnEsc = TRUE,
                     closeOnClickOutside = FALSE,
                     html = FALSE,
@@ -174,72 +174,91 @@ shinyServer(function(input,output, session){
         imageHeight = 200,
         animation = TRUE
       ) 
-      
-      for(i in 1:dim(input$csvRAWassay)[1]){
-        t<-c();t<-read_lines(input$csvRAWassay$datapath[i])
-
+      if(input$RawProcessedType=="xPonent"){
+        for(i in 1:dim(input$csvRAWassay)[1]){
+          t<-c();t<-read_lines(input$csvRAWassay$datapath[i])
           
-        MFI.line<-c();MFI.line<-which(t=="\"DataType:\",\"Median\"") #line for MFI
-        count.line<-c();count.line<-which(t=="\"DataType:\",\"Count\"")  #line for count
-        space.line<-c();space.line<-which(t=="")                         #empty lines
-        
-        #setup endlines for count and MFI
-        MFI.line.end<-c();MFI.line.end<-space.line[which(c(space.line-MFI.line)>0)[1]]
-        count.line.end<-c();count.line.end<-space.line[which(c(space.line-count.line)>0)[1]]
-        
-        
-        #MFI  
-        #split lines into chunkes for MFI
-        MFI.in<-c();MFI.in<-t[c(MFI.line+1):c(MFI.line.end-1)]
-        
-        #generate MFI out
-        MFI.out<-c();MFI.out<-data.frame(Reduce(rbind, 
-                                                lapply(MFI.in[-1],function(x){
-                                                  tmp<-gsub('\"', "", x, fixed = TRUE)
-                                                  unlist(strsplit(tmp,split = ","))
-                                                })),
-                                         row.names = NULL)
-        #generate colnames for MFI out
-        MFI.colnames<-gsub('\"', "", MFI.in[1], fixed = TRUE)
-        MFI.colnames<-unlist(strsplit(MFI.colnames,split = ","))
-        
-        MFI.out<-MFI.out[,-c(1:2)] #remove location columns from dataframe
-        colnames(MFI.out)<-MFI.colnames[-1] #remove location column name from vector and add column names
-        MFI.out<-MFI.out[,-ncol(MFI.out)] #remove total events
-        
-        MFI.out<-separate(data = MFI.out,col = colnames(MFI.out)[1],sep = input$sepRAW,into = c("Sample","Replicate","Dilution"))
-        
-        #count
-        #split lines into chunkes for count
-        count.in<-c();count.in<-t[c(count.line+1):c(count.line.end-1)]
-        
-        #generate MFI out
-        count.out<-c();count.out<-data.frame(Reduce(rbind, 
-                                                    lapply(count.in[-1],function(x){
-                                                      tmp<-gsub('\"', "", x, fixed = TRUE)
-                                                      unlist(strsplit(tmp,split = ","))
-                                                    })),
-                                             row.names = NULL)
-        #generate colnames for MFI out
-        count.colnames<-gsub('\"', "", count.in[1], fixed = TRUE)
-        count.colnames<-unlist(strsplit(count.colnames,split = ","))
-        
-        count.out<-count.out[,-c(1:2)] #remove location columns from dataframe
-        colnames(count.out)<-count.colnames[-1] #remove location column name from vector and add column names
-        count.out<-count.out[,-ncol(count.out)] #remove total events
-        count.out<-separate(data = count.out,col = colnames(count.out)[1],sep = input$sepRAW,into = c("Sample","Replicate","Dilution"))
-        
-        #if multiple files are selected bind them together
-        MFI.out.final<-rbind(MFI.out.final,MFI.out)
-        count.out.final<-rbind(count.out.final,count.out)
+          MFI.line<-c();MFI.line<-which(t=="\"DataType:\",\"Median\"") #line for MFI
+          count.line<-c();count.line<-which(t=="\"DataType:\",\"Count\"")  #line for count
+          space.line<-c();space.line<-which(t=="")                         #empty lines
+          
+          #setup endlines for count and MFI
+          MFI.line.end<-c();MFI.line.end<-space.line[which(c(space.line-MFI.line)>0)[1]]
+          count.line.end<-c();count.line.end<-space.line[which(c(space.line-count.line)>0)[1]]
+          
+          
+          #MFI  
+          #split lines into chunkes for MFI
+          MFI.in<-c();MFI.in<-t[c(MFI.line+1):c(MFI.line.end-1)]
+          
+          #generate MFI out
+          MFI.out<-c();MFI.out<-data.frame(Reduce(rbind, 
+                                                  lapply(MFI.in[-1],function(x){
+                                                    tmp<-gsub('\"', "", x, fixed = TRUE)
+                                                    unlist(strsplit(tmp,split = ","))
+                                                  })),
+                                           row.names = NULL)
+          #generate colnames for MFI out
+          MFI.colnames<-gsub('\"', "", MFI.in[1], fixed = TRUE)
+          MFI.colnames<-unlist(strsplit(MFI.colnames,split = ","))
+          
+          MFI.out<-MFI.out[,-c(1:2)] #remove location columns from dataframe
+          colnames(MFI.out)<-MFI.colnames[-1] #remove location column name from vector and add column names
+          MFI.out<-MFI.out[,-ncol(MFI.out)] #remove total events
+          
+          MFI.out<-separate(data = MFI.out,col = colnames(MFI.out)[1],sep = input$sepRAW,into = c("Sample","Replicate","Dilution"))
+          
+          #count
+          #split lines into chunkes for count
+          count.in<-c();count.in<-t[c(count.line+1):c(count.line.end-1)]
+          
+          #generate MFI out
+          count.out<-c();count.out<-data.frame(Reduce(rbind, 
+                                                      lapply(count.in[-1],function(x){
+                                                        tmp<-gsub('\"', "", x, fixed = TRUE)
+                                                        unlist(strsplit(tmp,split = ","))
+                                                      })),
+                                               row.names = NULL)
+          #generate colnames for MFI out
+          count.colnames<-gsub('\"', "", count.in[1], fixed = TRUE)
+          count.colnames<-unlist(strsplit(count.colnames,split = ","))
+          
+          count.out<-count.out[,-c(1:2)] #remove location columns from dataframe
+          colnames(count.out)<-count.colnames[-1] #remove location column name from vector and add column names
+          count.out<-count.out[,-ncol(count.out)] #remove total events
+          count.out<-separate(data = count.out,col = colnames(count.out)[1],sep = input$sepRAW,into = c("Sample","Replicate","Dilution"))
+          
+          #if multiple files are selected bind them together
+          MFI.out.final<-rbind(MFI.out.final,MFI.out)
+          count.out.final<-rbind(count.out.final,count.out)
+          
+          
+        }
         
         
       }
       
-         
+      if(input$RawProcessedType=="BioPlex"){
+        for(i in 1:dim(input$csvRAWassay)[1]){
+          
+           bioioplex_assay_tmp<- bioplex_raw_data_extraction(file_path = input$csvRAWassay$datapath[i],
+                                                 coupling_control = F,
+                                                 sample_naming_sep = input$sepRAW)
+          
+          
+          MFI.out <-bioioplex_assay_tmp$mfi_raw
+          count.out <- bioioplex_assay_tmp$count_raw
+          #if multiple files are selected bind them together
+          MFI.out.final<-rbind(MFI.out.final,MFI.out)
+          count.out.final<-rbind(count.out.final,count.out)
+        }
+ 
+      }
     }
     
     if(!is.null(input$csvRAWcontrol) & !is.null(input$csvRAWassay)){
+      
+     if(input$RawProcessedType=="xPonent"){
       for(i in 1:dim(input$csvRAWcontrol)[1]){
         t<-c();t<-read_lines(input$csvRAWcontrol$datapath[i])
         
@@ -255,51 +274,70 @@ shinyServer(function(input,output, session){
         
         #MFI  
         #split lines into chunkes for MFI
-        MFI.in<-c();MFI.in<-t[c(MFI.line+1):c(MFI.line.end-1)]
+        cMFI.in<-c();cMFI.in<-t[c(MFI.line+1):c(MFI.line.end-1)]
         
         #generate MFI out
-        MFI.out<-c();MFI.out<-data.frame(Reduce(rbind, 
-                                                lapply(MFI.in[-1],function(x){
+        cMFI.out<-c();cMFI.out<-data.frame(Reduce(rbind, 
+                                                lapply(cMFI.in[-1],function(x){
                                                   tmp<-gsub('\"', "", x, fixed = TRUE)
                                                   unlist(strsplit(tmp,split = ","))
                                                 })),
                                          row.names = NULL)
         #generate colnames for MFI out
-        MFI.colnames<-gsub('\"', "", MFI.in[1], fixed = TRUE)
+        MFI.colnames<-gsub('\"', "", cMFI.in[1], fixed = TRUE)
         MFI.colnames<-unlist(strsplit(MFI.colnames,split = ","))
         
-        MFI.out<-MFI.out[,-c(1:2)] #remove location columns from dataframe
-        colnames(MFI.out)<-MFI.colnames[-1] #remove location column name from vector and add column names
-        MFI.out<-MFI.out[,-ncol(MFI.out)] #remove total events
+        cMFI.out<-cMFI.out[,-c(1:2)] #remove location columns from dataframe
+        colnames(cMFI.out)<-MFI.colnames[-1] #remove location column name from vector and add column names
+        cMFI.out<-cMFI.out[,-ncol(cMFI.out)] #remove total events
         
 
         #count
         #split lines into chunkes for count
-        count.in<-c();count.in<-t[c(count.line+1):c(count.line.end-1)]
+        ccount.in<-c();ccount.in<-t[c(count.line+1):c(count.line.end-1)]
         
         #generate MFI out
-        count.out<-c();count.out<-data.frame(Reduce(rbind, 
-                                                    lapply(count.in[-1],function(x){
+        ccount.out<-c();ccount.out<-data.frame(Reduce(rbind, 
+                                                    lapply(ccount.in[-1],function(x){
                                                       tmp<-gsub('\"', "", x, fixed = TRUE)
                                                       unlist(strsplit(tmp,split = ","))
                                                     })),
                                              row.names = NULL)
         #generate colnames for MFI out
-        count.colnames<-gsub('\"', "", count.in[1], fixed = TRUE)
+        count.colnames<-gsub('\"', "", ccount.in[1], fixed = TRUE)
         count.colnames<-unlist(strsplit(count.colnames,split = ","))
         
-        count.out<-count.out[,-c(1:2)] #remove location columns from dataframe
-        colnames(count.out)<-count.colnames[-1] #remove location column name from vector and add column names
-        count.out<-count.out[,-ncol(count.out)] #remove total events
-        colnames(count.out)[1]<-"Sample"
+        ccount.out<-ccount.out[,-c(1:2)] #remove location columns from dataframe
+        colnames(ccount.out)<-count.colnames[-1] #remove location column name from vector and add column names
+        ccount.out<-ccount.out[,-ncol(ccount.out)] #remove total events
+        colnames(ccount.out)[1]<-"Sample"
         
         #if multiple files are selected bind them together
-        control.MFI.out.final<-rbind(control.MFI.out.final,MFI.out)
-        control.count.out.final<-rbind(control.count.out.final,count.out)
+        control.MFI.out.final<-rbind(control.MFI.out.final,cMFI.out)
+        control.count.out.final<-rbind(control.count.out.final,ccount.out)
         
         
       }
       
+      
+     }
+      if(input$RawProcessedType=="BioPlex"){
+        for(i in 1:dim(input$csvRAWcontrol)[1]){
+          
+          bioioplex_assay_tmp<- bioplex_raw_data_extraction(file_path = input$csvRAWcontrol$datapath[i],
+                                                            coupling_control = T,
+                                                            sample_naming_sep = input$sepRAW)
+          
+          
+          cMFI.out <-bioioplex_assay_tmp$mfi_raw
+          ccount.out <- bioioplex_assay_tmp$count_raw
+          
+          #if multiple files are selected bind them together
+          control.MFI.out.final<-rbind(control.MFI.out.final,cMFI.out)
+          control.count.out.final<-rbind(control.count.out.final,ccount.out)
+        }
+ 
+      }
       
     }
     

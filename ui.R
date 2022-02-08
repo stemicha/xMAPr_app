@@ -289,8 +289,8 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
       ),
       
       
-      ## xPONENT raw file processing -------
-      tabItem(tabName = "rawProcess",
+      ## raw file processing -------
+        tabItem(tabName = "rawProcess",
               box(
                 title = "xPonent raw file input", width = 3, solidHeader = TRUE, status = "info",
                 uiOutput("downloadProcessedRaw.UI"),
@@ -302,14 +302,28 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
                           trigger = "hover",
                           options = NULL),
                 hr(),
-                awesomeRadio("sepRAW", "Sample column separator for assay RAW xPonent csv input files ?",c(pipe="|",underscore="_",dash="-"),selected="_"),
+                awesomeRadio(inputId = "RawProcessedType",
+                             label = "Input type data:",
+                             choices = c("xPonent", "BioPlex"),
+                             selected = c("xPonent"),inline = T),
+                bsPopover(id = "RawProcessedType", 
+                          title = NULL, 
+                          content ="xPonent: *.csv files; BioPlex: *.xlsx files", 
+                          placement = "bottom", 
+                          trigger = "hover",
+                          options = NULL),
+                awesomeRadio("sepRAW",
+                             "Sample column separator for assay RAW xPonent input files ?",
+                             c(pipe="|",underscore="_",dash="-"),
+                             selected="_", 
+                             inline = T),
                 helpText("example: Sample1_1_10000 = Sample > Replicate > Xfold Dilution (Separator = _)"),
                 hr(),
                 h3("assay data"),
                 fluidRow(
                   column(12,offset = 0,
                          fileInput("csvRAWassay",
-                                   label="Upload assay raw CSVs here",
+                                   label="Upload assay raw data here",
                                    multiple = TRUE),
                          
                          actionButton(inputId = "csvRAWassayRESET", label = "reset", icon = icon("retweet"),style = "margin-top: 0px;",width = "90px")
@@ -323,7 +337,7 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
                 fluidRow(
                   column(12,offset = 0,
                 fileInput("csvRAWcontrol",
-                          label="Upload coupling control raw CSVs here",
+                          label="Upload coupling control raw data here",
                           multiple = FALSE),
                        actionButton(inputId = "csvRAWcontrolRESET", label = "reset", icon = icon("retweet"),style = "margin-top: 0px;",width = "90px")
                 )

@@ -27,6 +27,7 @@
 #
 
 ## load libraries -----
+# deploy without dependencies fro shinyapps IO
 source("dependencies.R")
 
 #if WINDOWS is the OP RTools must be installed the default RTools path will be put into PATH environment to call zip

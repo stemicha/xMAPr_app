@@ -2396,7 +2396,6 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
 # START of VISUALISATION  ------------              
 #                        
 
-       
           #load processed data for visualisation =============
                 #processed data
                 processed_data <-  eventReactive(input$inputButton_data_visu,{
@@ -2568,6 +2567,9 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
              table.in <- processed_data()$response
              colnames(table.in)[3]<-"sample"
              
+             
+             
+             
              #log2 transformed data
              table.in$response.log10<-log10(table.in$response)
              #ad ranked order
@@ -2591,6 +2593,15 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
              table.in.am.noise$antigen<-factor(table.in.am.noise$antigen,levels = table.in.am.noise$antigen[order(table.in.am.noise$Blank_cutoff)])
              table.in.ccm<-table.in.am%>%distinct(antigen,coupling_control_MFI_blank_substracted)
              table.in.ccm$antigen<-factor(table.in.ccm$antigen,levels=table.in.ccm$antigen[order(table.in.ccm$coupling_control_MFI_blank_substracted)],ordered=F)
+             
+             
+             #visualization: workaround for older RDS data regarding blank substraction methods -----
+             if(length(grep(x = colnames(table.in.am),pattern = "MFI_3foldSD_" ))!=0){
+               colnames(table.in.am) <- str_replace_all(string = colnames(table.in.am),
+                                                        pattern = "MFI_3foldSD_",
+                                                        replacement = "")
+             }
+             
              
              progress$inc(1/5, detail = paste("noise plot"))
              
@@ -2738,9 +2749,11 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
              
              #barplot of filtered values
              #filtered values on single antigen level
-             qual.count.single<-table.in.am%>%group_by(antigen)%>%summarise(coupling_beadCount_low=sum(coupling_control_bead_count_to_low),
+             qual.count.single<-table.in.am %>%
+               group_by(antigen) %>%
+               summarise(coupling_beadCount_low=sum(coupling_control_bead_count_to_low),
                                                                             assay_beadCount_low=sum(assayMFI_BeadCount_filtered_logical),
-                                                                            LOD_filtering=sum(blank_filtered_logical))%>%
+                                                                            LOD_filtering = sum(blank_filtered_logical))%>%
                                                                         gather("coupling_beadCount_low","assay_beadCount_low","LOD_filtering",
                                                                                key="filter.stage",value = "number_filtered")
              
@@ -3423,8 +3436,16 @@ general.overview.response.pca<-reactive({
                                   
                           #filter data
                           tmp.am.tidy<-filter(processed_data()$am.tidy,antigen==input$antigen & UQ(as.name(sample.column.name.param))==input$sample)
-                                    tmp.am.tidy$blank_filtered_logical<-factor(tmp.am.tidy$blank_filtered_logical,levels=c(FALSE,TRUE))
-                                    tmp.am.tidy$assayMFI_BeadCount_filtered_logical<-factor(tmp.am.tidy$assayMFI_BeadCount_filtered_logical,levels=c(FALSE,TRUE))
+                          
+                          #visualization: workaround for older RDS data regarding blank substraction methods -----
+                          if(length(grep(x = colnames(tmp.am.tidy),pattern = "MFI_3foldSD_" ))!=0){
+                            colnames(tmp.am.tidy) <- str_replace_all(string = colnames(tmp.am.tidy),
+                                                                     pattern = "MFI_3foldSD_",
+                                                                     replacement = "")
+                          }
+                          
+                          tmp.am.tidy$blank_filtered_logical<-factor(tmp.am.tidy$blank_filtered_logical,levels=c(FALSE,TRUE))
+                          tmp.am.tidy$assayMFI_BeadCount_filtered_logical<-factor(tmp.am.tidy$assayMFI_BeadCount_filtered_logical,levels=c(FALSE,TRUE))
                                     
                                     
                                     
@@ -3649,7 +3670,8 @@ general.overview.response.pca<-reactive({
                               #guides(col = guide_legend(nrow = 3))
                            
                           }else{
-                            res.plot<-tmp.residual.comp%>%filter(fit.type==unlist(tmp.qc.sigma$fit.type))%>%
+                            res.plot<-tmp.residual.comp %>% 
+                                      filter(fit.type==unlist(tmp.qc.sigma$fit.type))%>%
                                       ggplot(aes(dilution.inverse,residual.values,color=fit.type))+
                                       geom_vline(xintercept = 1/min(tmp.am.tidy.agg[,dil.column.name.param],na.rm=T),color="hotpink",linetype="dashed",alpha=0.5)+
                                       geom_vline(xintercept = 1/max(tmp.am.tidy.agg[,dil.column.name.param],na.rm=T),color="hotpink",linetype="dashed",alpha=0.5)+        
@@ -3659,7 +3681,7 @@ general.overview.response.pca<-reactive({
                                       theme_bw(base_size = 12)+
                                       theme(legend.position='bottom')+
                                       labs(x="dilution",color="fit type",title="residual plot of used fit",subtitle=paste(tmp.qc.sigma$fit.type,"used"))+
-                                      guides(color=FALSE)
+                                      guides(color="none")
                                       #+
                                       #guides(col = guide_legend(nrow = 1))
                        

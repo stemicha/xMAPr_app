@@ -1230,6 +1230,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                         tmp<-c()
                                         tmp<-subset(am.tidy.aggregated,am.tidy.aggregated$antigen==antigens[g] & am.tidy.aggregated[,sample.column]==samples[i])
                                         
+                                        tmp_dilution <- tmp[,am.dilution.column]
                                         tmp$dilution.inverse<-1/unlist(tmp[,am.dilution.column])
                                         tmp$dilution.inverse.log10<-log10(tmp$dilution.inverse)
                                         tmp<-dplyr::arrange(tmp,desc(dilution.inverse)) #sort >> 1st dil. at top
@@ -1241,7 +1242,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                         tmp$used.dilutions[is.na(tmp$MFI_normalized_mean)]<-FALSE
                                         
                                         #pipeline: prepare new data for fitted curve  =======
-                                        new.data<-2^seq(log2(min(1/dilu)),log2(max(1/dilu)),length.out = n.fitted.points)
+                                        new.data<-2^seq(log2(min(1/tmp_dilution)),log2(max(1/tmp_dilution)),length.out = n.fitted.points)
                                         new.log.data<-log10(new.data)
                                         pred.nls.noe<-c()
                                         pred.nls.exc<-c()
@@ -1302,7 +1303,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                           fit.lin.mfi<-lm(MFI_normalized_mean ~ dilution.inverse,data = tmp)
                                           fit.lin.mfi.r.squared<-summary(fit.lin.mfi)$r.squared
                                           if(!is.na(summary(fit.lin.mfi)$r.squared)){
-                                            fit.lin.dil.50<-1/dilu[which(max(tmp$dilution.inverse)==tmp$dilution.inverse)]
+                                            fit.lin.dil.50<-1/tmp$dilution.inverse[which(max(tmp$dilution.inverse)==tmp$dilution.inverse)]
                                             fit.lin.MFImax<-fitted(fit.lin.mfi)[which(max(tmp$dilution.inverse)==tmp$dilution.inverse)]
                                             fit.lin.resp<-(1/fit.lin.dil.50)*fit.lin.MFImax
                                             out.res.comp[which(out.res.comp[,sample.column]==samples[i] & out.res.comp$antigen==antigens[g]),"linear_fit"]<-fit.lin.resp

@@ -1303,7 +1303,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                           fit.lin.mfi<-lm(MFI_normalized_mean ~ dilution.inverse,data = tmp)
                                           fit.lin.mfi.r.squared<-summary(fit.lin.mfi)$r.squared
                                           if(!is.na(summary(fit.lin.mfi)$r.squared)){
-                                            fit.lin.dil.50<-1/tmp$dilution.inverse[which(max(tmp$dilution.inverse)==tmp$dilution.inverse)]
+                                            fit.lin.dil.50<-tmp$dilution.inverse[which(max(tmp$dilution.inverse)==tmp$dilution.inverse)]
                                             fit.lin.MFImax<-fitted(fit.lin.mfi)[which(max(tmp$dilution.inverse)==tmp$dilution.inverse)]
                                             fit.lin.resp<-(1/fit.lin.dil.50)*fit.lin.MFImax
                                             out.res.comp[which(out.res.comp[,sample.column]==samples[i] & out.res.comp$antigen==antigens[g]),"linear_fit"]<-fit.lin.resp
@@ -1511,7 +1511,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                           residual.values <- fitted.values-tmp$MFI_normalized_mean
                                           used.dilutions <- tmp$used.dilutions
                                           fit.summary <- summary(fit.lin.mfi)
-                                          qc.value <- fit.summary$sigma
+                                          qc.value <- fit.summary$r.squared
                                           out.response.df[which(out.response.df[,sample.column]==samples[i] & out.response.df$antigen==antigens[g] & out.response.df$fit.type==fit.type),"response"]<-(1/fit.lin.dil.50)*fit.lin.MFImax
                                           out.selected.prediction.df[which(out.selected.prediction.df[,sample.column]==samples[i] & out.selected.prediction.df$antigen==antigens[g]),"MFI.predicted"]<-pred.lin$MFI.predicted
                                           out.selected.prediction.df[which(out.selected.prediction.df[,sample.column]==samples[i] & out.selected.prediction.df$antigen==antigens[g]),"fit.type"]<-rep(fit.type,n.fitted.points)
@@ -2605,7 +2605,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
              
              
              progress$inc(1/5, detail = paste("noise plot"))
-             
+             # noise plot  ====
              gg.noise.plot<-ggplotly(ggplot(table.in.am.noise,aes(
                                                                    text = paste('antigen: ', antigen,'<br>Blank+3xSD: ', Blank_cutoff,'<br>Blank: ', mean_blank)))+
                                              geom_point(aes(x = antigen,
@@ -2622,7 +2622,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
              
              
              progress$inc(1/5, detail = paste("coupling control plot"))
-             #coupling control plot
+             #coupling control plot  ====
              gg.coupling.control<-ggplotly(ggplot(table.in.ccm,aes(x = antigen,
                                      y = coupling_control_MFI_blank_substracted,
                                      color = coupling_control_MFI_blank_substracted,
@@ -2644,12 +2644,12 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
             
              
              
-             #bead count
+             #bead count  ====
              tmp.fit.type.table<-as.data.frame(table(processed_data()$response$fit.type))
                 colnames(tmp.fit.type.table)<-c("fit.type","count")
                 tmp.fit.type.table$fit.type<-factor(tmp.fit.type.table$fit.type,levels=c("nls","nls_with_exclusion","linear_fit","rejected","fit_failed"))
                 
-            #histogram fitting distribution over all samples
+            #histogram fitting distribution over all samples  ====
              progress$inc(1/5, detail = paste("generate distribution plot"))
              gg.fitdist<- ggplotly(
                                   ggplot(data = tmp.fit.type.table,aes(x=fit.type,y=count,fill=fit.type,
@@ -2661,7 +2661,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                    theme(axis.text.x = element_text(angle = 90,hjust = 1,vjust = 0.5),
                                          plot.margin=margin(t = 0, r = 0, b = 13, l = 10, unit = "pt")),
                                    tooltip = "text", width = 480, height = 380)
-             #dynamic range plot
+             #dynamic range plot  ====
              progress$inc(1/5, detail = paste("generate dynamic range plot"))
              gg.dyn.range.tmp<-ggplot(data = table.in,aes(x=order.log10,y = response.log10,color=response.log10,
                                                         text = paste("rank:",order.log10,"<br>fit type:",fit.type,"<br>sample:",sample,"<br>antigen:",antigen,"<br>response:",response,"<br>log10_reponse:",response.log10)))+
@@ -2683,7 +2683,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                   
       
       
-             #dynamic range plot histogram count fit.types
+             #dynamic range plot histogram count fit.types ====
              progress$inc(1/5, detail = paste("generate fit distribution plot"))
              gg.dyn.range.hist<- ggplotly(
                                       ggplot(filter(table.in,fit.type!="rejected" & fit.type!="fit_failed"),
@@ -2748,7 +2748,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                     subtitle=paste(sum(table.in.am$BeadCount<35,na.rm=T), "from", length(table.in.am$BeadCount),"values removed"),
                     caption=paste("red dashes line = bead count cutoff of 35"))  
              
-             #barplot of filtered values
+             #barplot of filtered values  ====
              #filtered values on single antigen level
              qual.count.single<-table.in.am %>%
                group_by(antigen) %>%
@@ -2851,7 +2851,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
              total.dil.count<-unique(total.dil.count$sum)
              
              
-
+             # signal dropout plot  ====
              gg.filtered.signal.dropout<-ggplotly(ggplot(qual.count.signaldrop.antigen,
                                               aes(x = dilution,
                                                   y = count,
@@ -2875,7 +2875,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
              
              
           
-             #bead count plot
+             #bead count plot  ====
              gg.mfi.bead<-ggplot(table.in.am,aes(BeadCount))+
                geom_histogram(binwidth=1)+
                theme_bw(base_size = 18)+
@@ -3433,7 +3433,7 @@ general.overview.response.pca<-reactive({
                           
                           #get reponse comparison data
                           tmp.resp.comp<-filter(processed_data()$resp.comp[,1:5],antigen==input$antigen & UQ(as.name(sample.column.name.param))==input$sample)%>%gather(colnames(processed_data()$resp.comp)[3:5],key = "fit.type",value = "response")
-                                  tmp.resp.comp$fit.type<-factor(tmp.resp.comp$fit.type,levels = c("nls","nls_with_exclusion","linear_fit"))
+                          tmp.resp.comp$fit.type<-factor(tmp.resp.comp$fit.type,levels = c("nls","nls_with_exclusion","linear_fit"))
                                   
                           #filter data
                           tmp.am.tidy<-filter(processed_data()$am.tidy,antigen==input$antigen & UQ(as.name(sample.column.name.param))==input$sample)

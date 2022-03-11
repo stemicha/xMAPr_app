@@ -27,35 +27,35 @@
 #
 
 #### activate for shinyapps IO deployment
- ## load libraries
-  # library(ggsignif)
-  # library(colourpicker)
-  # library(factoextra)
-  # library(FactoMineR)
-  # library(plotly)
-  # library(RColorBrewer)
-  # library(gridExtra)
-  # library(grid)
-  # library(ggrepel)
-  # library(ggpubr)
-  # library(heatmaply)
-  # library(rlang)
-  # library(data.table)
-  # library(minpack.lm)
-  # library(shinyFiles)
-  # library(shinyWidgets)
-  # library(tidyverse)
-  # library(shiny)
-  # library(shinyjs)
-  # library(magrittr)
-  # library(shinydashboard)
-  # library(shinycssloaders)
-  # library(scales)
-  # library(shinyBS)
-  # library(shinyalert)
-  # library(DT)
-  # library(utils)
-  # library(readxl)
+ # # load libraries
+   # library(ggsignif)
+   # library(colourpicker)
+   # library(factoextra)
+   # library(FactoMineR)
+   # library(plotly)
+   # library(RColorBrewer)
+   # library(gridExtra)
+   # library(grid)
+   # library(ggrepel)
+   # library(ggpubr)
+   # library(heatmaply)
+   # library(rlang)
+   # library(data.table)
+   # library(minpack.lm)
+   # library(shinyFiles)
+   # library(shinyWidgets)
+   # library(tidyverse)
+   # library(shiny)
+   # library(shinyjs)
+   # library(magrittr)
+   # library(shinydashboard)
+   # library(shinycssloaders)
+   # library(scales)
+   # library(shinyBS)
+   # library(shinyalert)
+   # library(DT)
+   # library(utils)
+   # library(readxl)
 #
 # 
 ## start dashboard page ----
@@ -130,7 +130,7 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
       menuItem("about",tabName = "about", icon = icon("question-circle")),
       br(),
       downloadButton("downloadDemoData", label = "Download demo data",style="margin-left: 30px;"),
-      h5("version 1.1",align="center"), # version ------
+      h5("version 1.1.2",align="center"), # version ------
       h6("author: S. Michalik",align="center"),
       br(),
       h6("for optimal performance please",align="center",style="color: #FF6600;"),

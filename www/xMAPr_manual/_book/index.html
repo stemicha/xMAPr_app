@@ -1,18 +1,16 @@
 <!DOCTYPE html>
-<html >
-
+<html lang="" xml:lang="">
 <head>
 
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>xMAPr - manual</title>
-  <meta name="description" content="xMAPr manual explains the usage of the xMAPr app to analyse dilution based serological assays with the xMAP® technology">
-  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+  <meta name="description" content="xMAPr manual explains the usage of the xMAPr app to analyse dilution based serological assays with the xMAP® technology" />
+  <meta name="generator" content="bookdown 0.33 and GitBook 2.6.7" />
 
   <meta property="og:title" content="xMAPr - manual" />
   <meta property="og:type" content="book" />
-  
-  <meta property="og:image" content="figures/logo.png" />
+  <meta property="og:image" content="/figures/logo.png" />
   <meta property="og:description" content="xMAPr manual explains the usage of the xMAPr app to analyse dilution based serological assays with the xMAP® technology" />
   
 
@@ -20,27 +18,29 @@
   <meta name="twitter:title" content="xMAPr - manual" />
   
   <meta name="twitter:description" content="xMAPr manual explains the usage of the xMAPr app to analyse dilution based serological assays with the xMAP® technology" />
-  <meta name="twitter:image" content="figures/logo.png" />
+  <meta name="twitter:image" content="/figures/logo.png" />
 
-<meta name="author" content="Stephan Michalik">
+<meta name="author" content="Stephan Michalik" />
 
 
-<meta name="date" content="2019-05-07">
+<meta name="date" content="2023-04-04" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
-  <link rel="shortcut icon" href="figures/Favicons/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="figures/Favicons/favicon.ico" type="image/x-icon" />
 
-<link rel="next" href="introduction.html">
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link rel="next" href="introduction.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
 
 
 
@@ -49,7 +49,34 @@
 
 
 
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
+
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -66,14 +93,18 @@
 <ul class="summary">
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Preamble</a></li>
 <li class="chapter" data-level="2" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>2</b> Introduction</a></li>
-<li class="chapter" data-level="3" data-path="installation.html"><a href="installation.html"><i class="fa fa-check"></i><b>3</b> Installation</a><ul>
-<li class="chapter" data-level="3.1" data-path="installation.html"><a href="installation.html#download-xmapr-from-github-and-run-locally"><i class="fa fa-check"></i><b>3.1</b> Download xMAPr from GitHub and run locally</a><ul>
+<li class="chapter" data-level="3" data-path="installation.html"><a href="installation.html"><i class="fa fa-check"></i><b>3</b> Installation</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="installation.html"><a href="installation.html#download-xmapr-from-github-and-run-locally"><i class="fa fa-check"></i><b>3.1</b> Download xMAPr from GitHub and run locally</a>
+<ul>
 <li class="chapter" data-level="3.1.1" data-path="installation.html"><a href="installation.html#requirements"><i class="fa fa-check"></i><b>3.1.1</b> Requirements</a></li>
 <li class="chapter" data-level="3.1.2" data-path="installation.html"><a href="installation.html#running-the-app-locally"><i class="fa fa-check"></i><b>3.1.2</b> Running the app locally</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="xmapr.html"><a href="xmapr.html"><i class="fa fa-check"></i><b>4</b> xMAPr</a><ul>
-<li class="chapter" data-level="4.1" data-path="xmapr.html"><a href="xmapr.html#xmapr-analysis"><i class="fa fa-check"></i><b>4.1</b> xMAPr Analysis</a><ul>
+<li class="chapter" data-level="4" data-path="xmapr.html"><a href="xmapr.html"><i class="fa fa-check"></i><b>4</b> xMAPr</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="xmapr.html"><a href="xmapr.html#xmapr-analysis"><i class="fa fa-check"></i><b>4.1</b> xMAPr Analysis</a>
+<ul>
 <li class="chapter" data-level="4.1.1" data-path="xmapr.html"><a href="xmapr.html#xponent-raw-data-processing"><i class="fa fa-check"></i><b>4.1.1</b> xPONENT® raw data processing</a></li>
 <li class="chapter" data-level="4.1.2" data-path="xmapr.html"><a href="xmapr.html#xmapr-analysis-pipeline"><i class="fa fa-check"></i><b>4.1.2</b> xMAPr analysis pipeline</a></li>
 <li class="chapter" data-level="4.1.3" data-path="xmapr.html"><a href="xmapr.html#xmapr-data-inspection"><i class="fa fa-check"></i><b>4.1.3</b> xMAPr data inspection</a></li>
@@ -100,12 +131,12 @@
 <div id="header">
 <h1 class="title">xMAPr - manual</h1>
 <p class="author"><em>Stephan Michalik</em></p>
-<p class="date"><em>2019-05-07</em></p>
+<p class="date"><em>2023-04-04</em></p>
 </div>
-<div id="preamble" class="section level1">
-<h1><span class="header-section-number">1</span> Preamble</h1>
+<div id="preamble" class="section level1 hasAnchor" number="1">
+<h1><span class="header-section-number">1</span> Preamble<a href="index.html#preamble" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <div style="float:right;position: relative;">
-<p><img src="figures/xMAPr_logo_mod_hexbin.png" /><!-- --></p>
+<p><img src="figures/xMAPr_logo_mod_hexbin.png" width="254" /></p>
 </div>
 <p>Every human being has a highly specific mixture of antibody specificities in the blood, which reflecting the individual history of interactions with body-foreign substances like virulence factors of pathogens.</p>
 <p>The determination of antigen-specific antibody content is a central quantitative measure for diagnostics and vaccine development. The <strong>xMAPr app</strong> was designed to analyze xMAP® technology derived serological assay data measured in serial dilutions (hyper-dynamic-range [HDR] data).</p>
@@ -156,12 +187,13 @@
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
 <script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
 <script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
@@ -169,12 +201,12 @@ gitbook.start({
 "github": false,
 "facebook": true,
 "twitter": true,
-"google": false,
 "linkedin": false,
 "weibo": false,
 "instapaper": false,
 "vk": false,
-"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
 "theme": "paper",
@@ -190,15 +222,22 @@ gitbook.start({
 "link": null,
 "text": null
 },
+"view": {
+"link": null,
+"text": null
+},
 "download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection",
 "scroll_highlight": true
 },
 "toolbar": {
 "position": "fixed"
-},
-"search": true
+}
 });
 });
 </script>

@@ -1,45 +1,46 @@
 <!DOCTYPE html>
-<html >
-
+<html lang="" xml:lang="">
 <head>
 
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>xMAPr - manual</title>
-  <meta name="description" content="xMAPr manual explains the usage of the xMAPr app to analyse dilution based serological assays with the xMAP® technology">
-  <meta name="generator" content="bookdown 0.7.12 and GitBook 2.6.7">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>4 xMAPr | xMAPr - manual</title>
+  <meta name="description" content="xMAPr manual explains the usage of the xMAPr app to analyse dilution based serological assays with the xMAP® technology" />
+  <meta name="generator" content="bookdown 0.33 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="xMAPr - manual" />
+  <meta property="og:title" content="4 xMAPr | xMAPr - manual" />
   <meta property="og:type" content="book" />
-  
-  <meta property="og:image" content="figures/logo.png" />
+  <meta property="og:image" content="/figures/logo.png" />
   <meta property="og:description" content="xMAPr manual explains the usage of the xMAPr app to analyse dilution based serological assays with the xMAP® technology" />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="xMAPr - manual" />
+  <meta name="twitter:title" content="4 xMAPr | xMAPr - manual" />
   
   <meta name="twitter:description" content="xMAPr manual explains the usage of the xMAPr app to analyse dilution based serological assays with the xMAP® technology" />
-  <meta name="twitter:image" content="figures/logo.png" />
+  <meta name="twitter:image" content="/figures/logo.png" />
 
-<meta name="author" content="Stephan Michalik">
+<meta name="author" content="Stephan Michalik" />
 
 
-<meta name="date" content="2018-12-13">
+<meta name="date" content="2023-04-04" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
-  <link rel="shortcut icon" href="figures/Favicons/favicon.ico" type="image/x-icon">
-<link rel="prev" href="installation.html">
-<link rel="next" href="used-r-packages-for-xmapr.html">
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+  <link rel="shortcut icon" href="figures/Favicons/favicon.ico" type="image/x-icon" />
+<link rel="prev" href="installation.html"/>
+<link rel="next" href="used-r-packages-for-xmapr.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
 
 
 
@@ -48,7 +49,34 @@
 
 
 
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
+
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -65,14 +93,18 @@
 <ul class="summary">
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Preamble</a></li>
 <li class="chapter" data-level="2" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>2</b> Introduction</a></li>
-<li class="chapter" data-level="3" data-path="installation.html"><a href="installation.html"><i class="fa fa-check"></i><b>3</b> Installation</a><ul>
-<li class="chapter" data-level="3.1" data-path="installation.html"><a href="installation.html#download-xmapr-from-github-and-run-locally"><i class="fa fa-check"></i><b>3.1</b> Download xMAPr from GitHub and run locally</a><ul>
+<li class="chapter" data-level="3" data-path="installation.html"><a href="installation.html"><i class="fa fa-check"></i><b>3</b> Installation</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="installation.html"><a href="installation.html#download-xmapr-from-github-and-run-locally"><i class="fa fa-check"></i><b>3.1</b> Download xMAPr from GitHub and run locally</a>
+<ul>
 <li class="chapter" data-level="3.1.1" data-path="installation.html"><a href="installation.html#requirements"><i class="fa fa-check"></i><b>3.1.1</b> Requirements</a></li>
 <li class="chapter" data-level="3.1.2" data-path="installation.html"><a href="installation.html#running-the-app-locally"><i class="fa fa-check"></i><b>3.1.2</b> Running the app locally</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="xmapr.html"><a href="xmapr.html"><i class="fa fa-check"></i><b>4</b> xMAPr</a><ul>
-<li class="chapter" data-level="4.1" data-path="xmapr.html"><a href="xmapr.html#xmapr-analysis"><i class="fa fa-check"></i><b>4.1</b> xMAPr Analysis</a><ul>
+<li class="chapter" data-level="4" data-path="xmapr.html"><a href="xmapr.html"><i class="fa fa-check"></i><b>4</b> xMAPr</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="xmapr.html"><a href="xmapr.html#xmapr-analysis"><i class="fa fa-check"></i><b>4.1</b> xMAPr Analysis</a>
+<ul>
 <li class="chapter" data-level="4.1.1" data-path="xmapr.html"><a href="xmapr.html#xponent-raw-data-processing"><i class="fa fa-check"></i><b>4.1.1</b> xPONENT® raw data processing</a></li>
 <li class="chapter" data-level="4.1.2" data-path="xmapr.html"><a href="xmapr.html#xmapr-analysis-pipeline"><i class="fa fa-check"></i><b>4.1.2</b> xMAPr analysis pipeline</a></li>
 <li class="chapter" data-level="4.1.3" data-path="xmapr.html"><a href="xmapr.html#xmapr-data-inspection"><i class="fa fa-check"></i><b>4.1.3</b> xMAPr data inspection</a></li>
@@ -96,22 +128,22 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="xmapr" class="section level1">
-<h1><span class="header-section-number">4</span> xMAPr</h1>
+<div id="xmapr" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">4</span> xMAPr<a href="xmapr.html#xmapr" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>xMAPr was developed to analyze and visualize data from bead-based experiments performed with the xMAP® technology. The whole basis of the the analysis is the utilization of serial dilutions per sample to avoid saturation effects. Figure <a href="xmapr.html#fig:xMAPrWorkflow">4.1</a> illustrates the mode of operation of xMAPr.</p>
-<div class="figure" style="text-align: center"><span id="fig:xMAPrWorkflow"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:xMAPrWorkflow"></span>
 <img src="figures/xMAPr_analysis_workflow.png" alt="xMAPr workflow depicted as flow chart" width="1772" />
 <p class="caption">
 Figure 4.1: xMAPr workflow depicted as flow chart
 </p>
 </div>
 <p>[inspect xMA</p>
-<div id="xmapr-analysis" class="section level2">
-<h2><span class="header-section-number">4.1</span> xMAPr Analysis</h2>
-<div id="xponent-raw-data-processing" class="section level3">
-<h3><span class="header-section-number">4.1.1</span> xPONENT® raw data processing</h3>
+<div id="xmapr-analysis" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> xMAPr Analysis<a href="xmapr.html#xmapr-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="xponent-raw-data-processing" class="section level3 hasAnchor" number="4.1.1">
+<h3><span class="header-section-number">4.1.1</span> xPONENT® raw data processing<a href="xmapr.html#xponent-raw-data-processing" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>For the analysis several files are mandatory. After you performed the serological assay including a coupling control the resulting csv-files can be exported using the xPONENT® software from Luminex® (Figure <a href="xmapr.html#fig:xPonentCSVexport">4.2</a>). The resulting files can be imported into xMAPr, which will automatically genrate the correct input files for the analysis.</p>
-<div class="figure" style="text-align: center"><span id="fig:xPonentCSVexport"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:xPonentCSVexport"></span>
 <img src="figures/xPonent_export.png" alt="xPonent csv-file export" width="641" />
 <p class="caption">
 Figure 4.2: xPonent csv-file export
@@ -120,7 +152,7 @@ Figure 4.2: xPonent csv-file export
 <p><a href="figures/xMAPr_analysis_workflow.png" target="_blank">inspect xPonent csv-file export</a></p>
 <p>The gerated raw input files can be inspected and manipulated after prepartion since they are stored as easily accessible txt-files in case of naming errors or removale of specific samples for the later analysis (e.g. included standard wells to monitor the inter-plate reproduceability).</p>
 <p>If multiple csv-files should be used for the generation of the xMAPr input files, make sure to store them all in one folder for the upload selection. When all necessary files are selected start processing the data by clicking on the “Run data processing”-button. When processing is done you can download the raw txt-files as a zip-folder by clicking on the green download button.</p>
-<div class="figure" style="text-align: center"><span id="fig:xMAPrxPONENT"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:xMAPrxPONENT"></span>
 <img src="figures/xPONENT_raw_file_processing.png" alt="xMAPr xPONENT® raw file  processing screenshot" width="1821" />
 <p class="caption">
 Figure 4.3: xMAPr xPONENT® raw file processing screenshot
@@ -128,8 +160,8 @@ Figure 4.3: xMAPr xPONENT® raw file processing screenshot
 </div>
 <p><a href="figures/xPONENT_raw_file_processing.png" target="_blank">inspect xMAPr xPONENT® raw file processing screenshot</a></p>
 </div>
-<div id="xmapr-analysis-pipeline" class="section level3">
-<h3><span class="header-section-number">4.1.2</span> xMAPr analysis pipeline</h3>
+<div id="xmapr-analysis-pipeline" class="section level3 hasAnchor" number="4.1.2">
+<h3><span class="header-section-number">4.1.2</span> xMAPr analysis pipeline<a href="xmapr.html#xmapr-analysis-pipeline" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>the resulting files from the raw file processing step are mandatory for the analysis with xMAPr:</p>
 <ol style="list-style-type: decimal">
 <li>assay MFI file</li>
@@ -139,7 +171,7 @@ Figure 4.3: xMAPr xPONENT® raw file processing screenshot
 <li>sample meta data (additional file, which provides all the sample meta data !)</li>
 </ol>
 <p>In addition to the above mentioned files several parameters can be set (figure <a href="xmapr.html#fig:xMAPrPipeline">4.4</a>).</p>
-<div class="figure" style="text-align: center"><span id="fig:xMAPrPipeline"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:xMAPrPipeline"></span>
 <img src="figures/pipeline.png" alt="xMAPr anaylsis pipeline screenshot" width="1833" />
 <p class="caption">
 Figure 4.4: xMAPr anaylsis pipeline screenshot
@@ -167,7 +199,7 @@ Figure 4.4: xMAPr anaylsis pipeline screenshot
 <li>do control coupling bead count data and control coupling data share the same number of antigens or antigens and do they hove the same order</li>
 <li>is the used number of dilutions below 5 (min. 5 different dilutions required !)</li>
 </ul>
-<div class="figure" style="text-align: center"><span id="fig:pipelineError"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:pipelineError"></span>
 <img src="figures/pipeline_error.png" alt="xMAPr anaylsis pipeline error pop-up (used antiTag name was wrong) " width="573" />
 <p class="caption">
 Figure 4.5: xMAPr anaylsis pipeline error pop-up (used antiTag name was wrong)
@@ -175,10 +207,10 @@ Figure 4.5: xMAPr anaylsis pipeline error pop-up (used antiTag name was wrong)
 </div>
 <p>In the first instance of the pipeline, the data are corrected for their measurement background, bead count and normalized to their respective coupling efficiency. This is followed by the process of sequential multiple regression. Here, a saturation curve regression model is first assumed and calculated by means of “non-least squared”. If such a calculation is not possible, a linear regression is assumed. If this calculation is successful, even a 50-fold dilution of the patient sample is still in the linear range and the respective antigen thus shows a very low immune response. In order to obtain individual quantitative values per patient and antigen, the different individual regression curves had to be converted into a meaningful value, whereby the antibody titer, which is represented over the individual dilution stages, represents the most important quantitative quantity. Here, in the saturation curve model, the half-maximal intensity was multiplied by the reciprocal dilution at the half-maximal intensity <code>(e.g., half maximal norm. MFI intensity = 50  &amp; dilution at half maximalnorm. MFI intensity  = 0.001 --&gt; 50 * (1 / 0.001) = immune response of 50,000)</code>. Linear regression multiplies the first serial dilution step by the intensity at that step. This results in a very small quantitative value.</p>
 <p>xMAPr will perform multiple regression modeling on the data of each sample/antigen combination and subsequently decide which fit type is most characteristic for the sample/antigen specific data (decision tree figure <a href="xmapr.html#fig:xMAPrDecTree">4.6</a>)</p>
-<div id="decision-tree" class="section level4">
-<h4><span class="header-section-number">4.1.2.1</span> Decision tree</h4>
+<div id="decision-tree" class="section level4 hasAnchor" number="4.1.2.1">
+<h4><span class="header-section-number">4.1.2.1</span> Decision tree<a href="xmapr.html#decision-tree" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 The decision tree was build to elucidate the best fit for the data.
-<div class="figure"><span id="fig:xMAPrDecTree"></span>
+<div class="figure"><span style="display:block;" id="fig:xMAPrDecTree"></span>
 <img src="figures/fit_decision_tree_small.png" alt="xMAPr decision tree" width="1209" />
 <p class="caption">
 Figure 4.6: xMAPr decision tree
@@ -187,12 +219,12 @@ Figure 4.6: xMAPr decision tree
 <p><a href="figures/fit_decision_tree_small.png" target="_blank">inspect xMAPr decision tree</a></p>
 </div>
 </div>
-<div id="xmapr-data-inspection" class="section level3">
-<h3><span class="header-section-number">4.1.3</span> xMAPr data inspection</h3>
+<div id="xmapr-data-inspection" class="section level3 hasAnchor" number="4.1.3">
+<h3><span class="header-section-number">4.1.3</span> xMAPr data inspection<a href="xmapr.html#xmapr-data-inspection" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>In addition to the data analysis pipeline xMAPr possess a interactive data inspection modul, which allows the user to easily check the fits and the resulting response values.</p>
-<div id="global-analysis-inspection-screenshots" class="section level4">
-<h4><span class="header-section-number">4.1.3.1</span> global analysis inspection (Screenshots)</h4>
-<div class="figure" style="text-align: center"><span id="fig:globalResultOverview"></span>
+<div id="global-analysis-inspection-screenshots" class="section level4 hasAnchor" number="4.1.3.1">
+<h4><span class="header-section-number">4.1.3.1</span> global analysis inspection (Screenshots)<a href="xmapr.html#global-analysis-inspection-screenshots" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:globalResultOverview"></span>
 <img src="figures/global_result_overview.png" alt="xMAPr anaylsis output data inspection &gt;&gt; global overview" width="1818" />
 <p class="caption">
 Figure 4.7: xMAPr anaylsis output data inspection &gt;&gt; global overview
@@ -203,7 +235,7 @@ Figure 4.7: xMAPr anaylsis output data inspection &gt;&gt; global overview
 <p>A <em>nls_with_exclusion</em> fit - is a nls fit that appears to posses a signal drop in the first sample dilutions in the measured curve. This happens if the secondary antibody <strong>did not saturate the bound sample antibodies on the bead</strong>. Therefore the automatic detection of a signal drops in the dilution response curve will flagged and not use the responsible data points for the fit (<em>nls_wih_exclusion</em>).</p>
 <p>If linear fits were used for the majority of curve fittings the used serial dilution range did not end up in a saturation making a saturation curve fit impossible. The resulting response data should be used carefully ! In that case a one dilution data analysis is more reasonable.</p>
 The dynamic range of responses plot (figure <a href="xmapr.html#fig:globalResultOverview">4.7</a> <strong>center plot</strong>) depicts the dynamic range which is covered by the data over all sample and antigen combinations used.
-<div class="figure" style="text-align: center"><span id="fig:globalResultOverview1"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:globalResultOverview1"></span>
 <img src="figures/global_result_overview1.png" alt="xMAPr anaylsis output data inspection &gt;&gt; global overview (interactive hover feature)" width="524" />
 <p class="caption">
 Figure 4.8: xMAPr anaylsis output data inspection &gt;&gt; global overview (interactive hover feature)
@@ -212,7 +244,7 @@ Figure 4.8: xMAPr anaylsis output data inspection &gt;&gt; global overview (inte
 <p><a href="figures/global_result_overview1.png" target="_blank">inspect xMAPr anaylsis output data inspection &gt;&gt; global overview (interactive hover feature)</a></p>
 <p>The fit type histogram ((figure <a href="xmapr.html#fig:globalResultOverview">4.7</a> <strong>right plot</strong>) displays the used fit histogram in correlation to the calculated response. In the example screenshot it apparent that the <em>nls_with_exclusion</em> is primarily being used in the high response range. This makes sense since a high sample antibody titer against one antigen is resulting in a very high load of the sample antibodies on the individual bead. Thus a signal drop in the very first dilutions (low sample dilution) are more likely to happen.</p>
 <p>The <code>dilution wise dynamic range plots</code> (figure <a href="xmapr.html#fig:dynamicRangeDilutionWise">4.9</a>) tab depicts intensity ranked order of sample/antigen combinations (x-axis) versus log. MFI (median fluorescence intensity) (y-axis). The plot is being used for visually estimating the saturation effect (upper and lower LOD) in each dilution used.</p>
-<div class="figure" style="text-align: center"><span id="fig:dynamicRangeDilutionWise"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:dynamicRangeDilutionWise"></span>
 <img src="figures/global_result_overview_dyn_range_dilution_wise.png" alt="xMAPr anaylsis output data inspection &gt;&gt; dynamic range dilution wise" width="1818" />
 <p class="caption">
 Figure 4.9: xMAPr anaylsis output data inspection &gt;&gt; dynamic range dilution wise
@@ -220,19 +252,22 @@ Figure 4.9: xMAPr anaylsis output data inspection &gt;&gt; dynamic range dilutio
 </div>
 <p><a href="figures/global_result_overview_dyn_range_dilution_wise.png" target="_blank">inspect xMAPr anaylsis output data inspection &gt;&gt; dynamic range dilution wise</a></p>
 </div>
-<div id="global-analysis-inspection-quality-check-of-data-screenshots" class="section level4">
-<h4><span class="header-section-number">4.1.3.2</span> global analysis inspection: quality check of data (Screenshots)</h4>
-<p>It is important to evaluate the data quality (figure <a href="xmapr.html#fig:beadCountCVhist">4.10</a>; <code>quality measures &gt; general overview</code>). Therefore basic measures like the bead count or coefficient of variation between technical replicates are very informative in terms of quality. A bead count below <strong>35 beads</strong> results by default (factory suggestion) in a missing value since the MFI (Median fluorescence intensity) is unsure using only 35 beads or below. The CV cut-off can be set in the pipeline settings (figure <a href="xmapr.html#fig:xMAPrPipeline">4.4</a>)</p>
-<div class="figure"><span id="fig:beadCountCVhist"></span>
+<div id="global-analysis-inspection-quality-check-of-data-screenshots" class="section level4 hasAnchor" number="4.1.3.2">
+<h4><span class="header-section-number">4.1.3.2</span> global analysis inspection: quality check of data (Screenshots)<a href="xmapr.html#global-analysis-inspection-quality-check-of-data-screenshots" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>It is important to evaluate the data quality (figure <a href="xmapr.html#fig:beadCountCVhist">4.10</a>; <code>quality measures &gt; general overview</code>). Therefore basic measures like the bead count or coefficient of variation between technical replicates are very informative in terms of quality.
+A bead count below <strong>35 beads</strong> results by default (factory suggestion) in a missing value since the MFI (Median fluorescence intensity) is unsure using only 35 beads or below.
+The CV cut-off can be set in the pipeline settings (figure <a href="xmapr.html#fig:xMAPrPipeline">4.4</a>)</p>
+<div class="figure"><span style="display:block;" id="fig:beadCountCVhist"></span>
 <img src="figures/quality_measures__general_overview.png" alt="xMAPr quality measures: bead count and CV histograms" width="1817" />
 <p class="caption">
 Figure 4.10: xMAPr quality measures: bead count and CV histograms
 </p>
 </div>
 <p><a href="figures/quality_measures__general_overview.png" target="_blank">inspect xMAPr quality measures: bead count and CV histograms</a></p>
-<p>Since a EDC-NHS coupling of the carboxylated beads with the desired antigens is being used the coupling efficiency might be varying due to the differences in amino acid composition and length of the antigens. The coupling control plot (figure <a href="xmapr.html#fig:MFIcouplingControl">4.11</a>) displays in a ranked fasion the coupling efficiency measured with a detection antibody directed against the recombinant tag the antigens. The interactive hover feature returns the absolute value measured for each antigen.</p>
+<p>Since a EDC-NHS coupling of the carboxylated beads with the desired antigens is being used the coupling efficiency might be varying due to the differences in amino acid composition and length of the antigens.
+The coupling control plot (figure <a href="xmapr.html#fig:MFIcouplingControl">4.11</a>) displays in a ranked fasion the coupling efficiency measured with a detection antibody directed against the recombinant tag the antigens. The interactive hover feature returns the absolute value measured for each antigen.</p>
 <p>The MFI of the coupling control (<code>quality measures &gt; coupling control</code>) represents the loading of the beads with the individual antigens, which can be different but should not be very low to keep a certain dynamic range for the detection of the antibody titer.</p>
-<div class="figure"><span id="fig:MFIcouplingControl"></span>
+<div class="figure"><span style="display:block;" id="fig:MFIcouplingControl"></span>
 <img src="figures/quality_measures__coupling_control_MFI.png" alt="xMAPr quality measures: MFI of coupling control" width="1817" />
 <p class="caption">
 Figure 4.11: xMAPr quality measures: MFI of coupling control
@@ -240,7 +275,7 @@ Figure 4.11: xMAPr quality measures: MFI of coupling control
 </div>
 <p><a href="figures/quality_measures__coupling_control_MFI.png" target="_blank">inspect xMAPr quality measures: MFI of coupling control</a></p>
 <p>The noise MFI (figure <a href="xmapr.html#fig:LOD">4.12</a>) (<code>quality measures &gt; noise MFI</code>) depicts the ranked ordered mean BLANK values + 3 x SD of the BLANK values, which is being used to estimate the LOD (limit of detection) for each antigen. Again the interactive hover feature show details for each entigen.</p>
-<div class="figure"><span id="fig:LOD"></span>
+<div class="figure"><span style="display:block;" id="fig:LOD"></span>
 <img src="figures/quality_measures__LOD.png" alt="xMAPr quality measures: LOD...limit of detection" width="1819" />
 <p class="caption">
 Figure 4.12: xMAPr quality measures: LOD…limit of detection
@@ -248,21 +283,21 @@ Figure 4.12: xMAPr quality measures: LOD…limit of detection
 </div>
 <p><a href="figures/quality_measures__LOD.png" target="_blank">inspect xMAPr quality measures: LOD…limit of detection</a></p>
 <p>The stacked barplots (figure <a href="xmapr.html#fig:BarplotsValueFiltering">4.13</a>) (<code>quality measures &gt; bead-count and LOD filtering</code>) are displaying the filtering for low bead count, for CV filtering with the used cut-off and showing how many fits failed or get rejected.</p>
-<div class="figure"><span id="fig:BarplotsValueFiltering"></span>
+<div class="figure"><span style="display:block;" id="fig:BarplotsValueFiltering"></span>
 <img src="figures/quality_measures__value_filtering.png" alt="xMAPr quality measures: stacked barplots of value filtering" width="1817" />
 <p class="caption">
 Figure 4.13: xMAPr quality measures: stacked barplots of value filtering
 </p>
 </div>
 <p><a href="figures/quality_measures__value_filtering.png" target="_blank">inspect xMAPr quality measures: stacked barplots of value filtering</a></p>
-<div class="figure"><span id="fig:BarplotsValueFiltering1"></span>
+<div class="figure"><span style="display:block;" id="fig:BarplotsValueFiltering1"></span>
 <img src="figures/quality_measures__value_filtering1.png" alt="xMAPr quality measures: stacked barplots of value filtering (interactive hover)" width="1817" />
 <p class="caption">
 Figure 4.14: xMAPr quality measures: stacked barplots of value filtering (interactive hover)
 </p>
 </div>
 <p>The implemented signal drop detection alg. uses the maximum value of the measured data points and inspect the data points with a lower dilution begining from the maximal MFI data point (<code>quality measures &gt; dilution-wise signal drop filtering</code>). For example signal drops in the first dilution step of the serial dilution range is normal. But also having a huge amount of signal drops in later dilutions is the result of using a low concentration of the detection antibody or the dilution steps were not well choosen.</p>
-<div class="figure"><span id="fig:BarplotsValueFiltering2"></span>
+<div class="figure"><span style="display:block;" id="fig:BarplotsValueFiltering2"></span>
 <img src="figures/quality_measures__value_filtering_signal_drop.png" alt="xMAPr quality measures: stacked barplots of dilution-wise signal drop detection (interactive hover)" width="1818" />
 <p class="caption">
 Figure 4.15: xMAPr quality measures: stacked barplots of dilution-wise signal drop detection (interactive hover)
@@ -270,7 +305,7 @@ Figure 4.15: xMAPr quality measures: stacked barplots of dilution-wise signal dr
 </div>
 <p><a href="figures/quality_measures__value_filtering_signal_drop.png" target="_blank">“xMAPr quality measures: stacked barplots of dilution-wise signal drop detection</a></p>
 <p>The interative hover feature (figure <a href="xmapr.html#fig:BarplotsValueFiltering1">4.14</a>) displays information like which antigen, the count of filtered values and what is the percentage of filtered values form the data matrix. Making it easy to identify problematic antigen or sample candidates.</p>
-<div class="figure"><span id="fig:heatmapNA"></span>
+<div class="figure"><span style="display:block;" id="fig:heatmapNA"></span>
 <img src="figures/quality_measures__NA_value_heatmap.png" alt="xMAPr quality measures: NA (missing) value heatmap" width="1817" />
 <p class="caption">
 Figure 4.16: xMAPr quality measures: NA (missing) value heatmap
@@ -278,7 +313,7 @@ Figure 4.16: xMAPr quality measures: NA (missing) value heatmap
 </div>
 <p><a href="figures/quality_measures__NA_value_heatmap.png" target="_blank">inspect xMAPr quality measures: NA (missing) value heatmap</a></p>
 <p>The missing value heatmap (figure <a href="xmapr.html#fig:heatmapNA">4.16</a>) (<code>quality measures &gt; heatmap of NA values</code>) depicts in a compact format where and how many values are missing the the dataset after the response calculation was performed.</p>
-<div class="figure"><span id="fig:heatmapBeadCount"></span>
+<div class="figure"><span style="display:block;" id="fig:heatmapBeadCount"></span>
 <img src="figures/quality_measures__bead_count_heatmap.png" alt="xMAPr quality measures: bead count heatmap" width="1818" />
 <p class="caption">
 Figure 4.17: xMAPr quality measures: bead count heatmap
@@ -287,10 +322,10 @@ Figure 4.17: xMAPr quality measures: bead count heatmap
 <p><a href="figures/quality_measures__bead_count_heatmap.png" target="_blank">inspect xMAPr quality measures: bead count heatmap</a></p>
 <p>The bead count heatmap (figure <a href="xmapr.html#fig:heatmapBeadCount">4.17</a>) (<code>quality measures &gt; bead count heatmap</code>) is designed for quickly identifying problematic antigens or patient samples over the dilution series, which also often resulting in a low bead count.</p>
 </div>
-<div id="global-data-analysis-pca-heatmap" class="section level4">
-<h4><span class="header-section-number">4.1.3.3</span> global data analysis: PCA &amp; heatmap</h4>
+<div id="global-data-analysis-pca-heatmap" class="section level4 hasAnchor" number="4.1.3.3">
+<h4><span class="header-section-number">4.1.3.3</span> global data analysis: PCA &amp; heatmap<a href="xmapr.html#global-data-analysis-pca-heatmap" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>A first look at the data can be performed in the xMAPr app. A PCA (principle component analysis) is automatically generated plotted and colored based on the selected meta data.</p>
-<div class="figure" style="text-align: center"><span id="fig:PCA2D"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:PCA2D"></span>
 <img src="figures/global_result_overview_PCA.png" alt="xMAPr anaylsis output data inspection &gt;&gt; 2D-PCA of data colored by selected meta data" width="1525" />
 <p class="caption">
 Figure 4.18: xMAPr anaylsis output data inspection &gt;&gt; 2D-PCA of data colored by selected meta data
@@ -299,7 +334,7 @@ Figure 4.18: xMAPr anaylsis output data inspection &gt;&gt; 2D-PCA of data color
 <p><a href="figures/global_result_overview_PCA.png" target="_blank">inspect xMAPr anaylsis output data inspection &gt;&gt; 2D-PCA of data colored by selected meta data</a></p>
 <p>The principle component analysis is performed using the factomineR package with missing values removed. The data centering was done by subtracting the column means (omitting NAs) of the data from their corresponding columns. To unify variances scaling of data was done by dividing the (centered) columns of the data by their standard deviations. The 2D PCA (figure <a href="xmapr.html#fig:PCA2D">4.18</a>) (<code>2D PCA</code>) displays the resulting PCA plot. 1D density plots supporting the interpretaion of the PCA results.</p>
 <p>The PCA dimension for the plot can be be selected using the <em>knobs</em>. Furthermore advanced plot adjustment like group ellipsis can be set as well using the <em>“wrench” button</em>.</p>
-<div class="figure"><span id="fig:PCA3D"></span>
+<div class="figure"><span style="display:block;" id="fig:PCA3D"></span>
 <img src="figures/global_result_overview_PCA3D.png" alt="xMAPr anaylsis output data inspection &gt;&gt; interactive 3D-PCA colored by selected meta data" width="1818" />
 <p class="caption">
 Figure 4.19: xMAPr anaylsis output data inspection &gt;&gt; interactive 3D-PCA colored by selected meta data
@@ -307,7 +342,7 @@ Figure 4.19: xMAPr anaylsis output data inspection &gt;&gt; interactive 3D-PCA c
 </div>
 <p><a href="figures/global_result_overview_PCA3D.png" target="_blank">inspect xMAPr anaylsis output data inspection &gt;&gt; interactive 3D-PCA colored by selected meta data</a></p>
 <p>The 3D PCA (figure <a href="xmapr.html#fig:PCA3D">4.19</a>) (<code>3D PCA</code>) displays the resulting PCA plot in the first 3 dimensions.</p>
-<div class="figure"><span id="fig:PCAscreeplot"></span>
+<div class="figure"><span style="display:block;" id="fig:PCAscreeplot"></span>
 <img src="figures/global_result_overview_PCA_scree.png" alt="xMAPr anaylsis output data inspection &gt;&gt; screeplot of PCA analysis" width="1818" />
 <p class="caption">
 Figure 4.20: xMAPr anaylsis output data inspection &gt;&gt; screeplot of PCA analysis
@@ -315,7 +350,7 @@ Figure 4.20: xMAPr anaylsis output data inspection &gt;&gt; screeplot of PCA ana
 </div>
 <p><a href="figures/global_result_overview_PCA_scree.png" target="_blank">inspect xMAPr anaylsis output data inspection &gt;&gt; screeplot of PCA analysis</a></p>
 <p>The Screeplot visualize the variances of dimensions of the PCA (figure <a href="xmapr.html#fig:PCAscreeplot">4.20</a>) (<code>Scree plot of PCA</code>).</p>
-<div class="figure"><span id="fig:responseHeatmap"></span>
+<div class="figure"><span style="display:block;" id="fig:responseHeatmap"></span>
 <img src="figures/response_heatmap.png" alt="xMAPr anaylsis output data inspection &gt;&gt; response heatmap" width="1817" />
 <p class="caption">
 Figure 4.21: xMAPr anaylsis output data inspection &gt;&gt; response heatmap
@@ -324,9 +359,9 @@ Figure 4.21: xMAPr anaylsis output data inspection &gt;&gt; response heatmap
 <p><a href="figures/response_heatmap.png" target="_blank">inspect xMAPr anaylsis output data inspection &gt;&gt; response heatmap</a></p>
 <p>The heatamp (figure <a href="xmapr.html#fig:responseHeatmap">4.21</a>) (<code>heatmap (response data)</code>) displays the clustered heatmap of the calculated response data. If a sample or a antigen possess only NA values it is excluded from the heatmap, which is indicated in the grey text below the <em>“download heatmap”</em> button. The heatmap is fully interactive with hover information feature, zoom and screenshot feature. Furthermore the heatmap can be download in its interative form as html using the <em>“download heatmap”</em> button. Several parameters can be set like number of clusters of rows and columns or cluster methods to name a few.</p>
 </div>
-<div id="single-antigensample-inspection-screenshots" class="section level4">
-<h4><span class="header-section-number">4.1.3.4</span> single antigen/sample inspection (Screenshots)</h4>
-<div class="figure"><span id="fig:SingleResults"></span>
+<div id="single-antigensample-inspection-screenshots" class="section level4 hasAnchor" number="4.1.3.4">
+<h4><span class="header-section-number">4.1.3.4</span> single antigen/sample inspection (Screenshots)<a href="xmapr.html#single-antigensample-inspection-screenshots" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="figure"><span style="display:block;" id="fig:SingleResults"></span>
 <img src="figures/inspect_single_results.png" alt="xMAPr anaylsis output data inspection &gt;&gt; single antigen/sample combination fit inspection" width="1818" />
 <p class="caption">
 Figure 4.22: xMAPr anaylsis output data inspection &gt;&gt; single antigen/sample combination fit inspection
@@ -337,14 +372,14 @@ Figure 4.22: xMAPr anaylsis output data inspection &gt;&gt; single antigen/sampl
 <p>The <strong>left plot</strong> displays the raw data and the dashed red line indicate the LOD. In addition detected signal drops were marked with a blue cross.</p>
 <p>The <strong>center plot</strong> displays the calulated curve and the curve point, which is being used for the response calculation. The dashed violett vertical line inidcating the lower and upper end of the used dilution steps.</p>
 <p>The <strong>right plot</strong> displays the residuals from the used fit.</p>
-<div class="figure"><span id="fig:SingleResults1"></span>
+<div class="figure"><span style="display:block;" id="fig:SingleResults1"></span>
 <img src="figures/inspect_single_results1.png" alt="xMAPr anaylsis output data inspection &gt;&gt; single antigen/sample combination fit inspection (antigen selection)" width="1963" />
 <p class="caption">
 Figure 4.23: xMAPr anaylsis output data inspection &gt;&gt; single antigen/sample combination fit inspection (antigen selection)
 </p>
 </div>
 <p><a href="figures/inspect_single_results1.png" target="_blank">inspect xMAPr anaylsis output data inspection &gt;&gt; single antigen/sample combination fit inspection (antigen selection)</a></p>
-<div class="figure"><span id="fig:SingleResults2"></span>
+<div class="figure"><span style="display:block;" id="fig:SingleResults2"></span>
 <img src="figures/inspect_single_results2.png" alt="xMAPr anaylsis output data inspection &gt;&gt; single antigen/sample combination fit inspection (log. scale)" width="1979" />
 <p class="caption">
 Figure 4.24: xMAPr anaylsis output data inspection &gt;&gt; single antigen/sample combination fit inspection (log. scale)
@@ -353,8 +388,9 @@ Figure 4.24: xMAPr anaylsis output data inspection &gt;&gt; single antigen/sampl
 <p><a href="figures/inspect_single_results2.png" target="_blank">inspect xMAPr anaylsis output data inspection &gt;&gt; single antigen/sample combination fit inspection (log. scale)</a></p>
 <p>When hitting the e.g. log. scale buttons the plots were generated using a log. scale on the selected axis (figure <a href="xmapr.html#fig:SingleResults2">4.24</a>).</p>
 <p>One method to choose the antigen and sample which should plotted are the drop down selection list (figure <a href="xmapr.html#fig:SingleResults1">4.23</a>). In the elements the desired selection can also being typed in.</p>
-<p>Another method to choose the antigen and sample which should plotted is to use the interactive data table in the lower panel of the inspect analysis/reponse (figure <a href="xmapr.html#fig:SingleResults3">4.25</a>. The desired antigen/sample combination can be directly selected inside the table and when looking for a antigen or sample the search field is very helpful.</p>
-<div class="figure"><span id="fig:SingleResults3"></span>
+<p>Another method to choose the antigen and sample which should plotted is to use the interactive data table in the lower panel of the inspect analysis/reponse (figure <a href="xmapr.html#fig:SingleResults3">4.25</a>.
+The desired antigen/sample combination can be directly selected inside the table and when looking for a antigen or sample the search field is very helpful.</p>
+<div class="figure"><span style="display:block;" id="fig:SingleResults3"></span>
 <img src="figures/inspect_single_results3.png" alt="xMAPr anaylsis output data inspection &gt;&gt; single antigen/sample combination fit inspection (interactive data table)" width="1971" />
 <p class="caption">
 Figure 4.25: xMAPr anaylsis output data inspection &gt;&gt; single antigen/sample combination fit inspection (interactive data table)
@@ -362,14 +398,14 @@ Figure 4.25: xMAPr anaylsis output data inspection &gt;&gt; single antigen/sampl
 </div>
 <p><a href="figures/inspect_single_results3.png" target="_blank">inspect xMAPr anaylsis output data inspection &gt;&gt; single antigen/sample combination fit inspection (interactive data table)</a></p>
 <p>In addition if the <code>highlight select antigen/sample combination in global plots?</code> is being switch on the selected antigen/sample combination is being marked in the global plots (figure <a href="xmapr.html#fig:SingleResultsMarked1">4.26</a> &amp; <a href="xmapr.html#fig:SingleResultsMarked2">4.27</a>).</p>
-<div class="figure"><span id="fig:SingleResultsMarked1"></span>
+<div class="figure"><span style="display:block;" id="fig:SingleResultsMarked1"></span>
 <img src="figures/inspect_single_results2_dyn_range.png" alt="xMAPr anaylsis output data inspection &gt;&gt; single antigen/sample combination marked in global dynamic range plots over dilutions" width="486" />
 <p class="caption">
 Figure 4.26: xMAPr anaylsis output data inspection &gt;&gt; single antigen/sample combination marked in global dynamic range plots over dilutions
 </p>
 </div>
 <p><a href="figures/inspect_single_results2_dyn_range.png" target="_blank">xMAPr anaylsis output data inspection &gt;&gt; single antigen/sample combination marked in global dynamic range plots over dilutions</a></p>
-<div class="figure"><span id="fig:SingleResultsMarked2"></span>
+<div class="figure"><span style="display:block;" id="fig:SingleResultsMarked2"></span>
 <img src="figures/inspect_single_results2_dilution_wise_range.png" alt="xMAPr anaylsis output data inspection &gt;&gt; single antigen/sample combination marked in global dynamic range plots" width="1038" />
 <p class="caption">
 Figure 4.27: xMAPr anaylsis output data inspection &gt;&gt; single antigen/sample combination marked in global dynamic range plots
@@ -377,17 +413,19 @@ Figure 4.27: xMAPr anaylsis output data inspection &gt;&gt; single antigen/sampl
 </div>
 <p><a href="figures/inspect_single_results2_dilution_wise_range.png" target="_blank">xMAPr anaylsis output data inspection &gt;&gt; single antigen/sample combination marked in global dynamic range plots</a></p>
 </div>
-<div id="statistical-analysis-of-calculated-response-data-screenshots" class="section level4">
-<h4><span class="header-section-number">4.1.3.5</span> statistical analysis of calculated response data (Screenshots)</h4>
-<p>The statistical data analysis is based on samples groups defined by the selected meta data. A wilcox rank sum test is performed using multiple test correction if the number of groups are more than two. The test statistics with p-value, adjusted p-value and confidence intervals etc. can be interactively inspected and the data is plotted using a violin plot with a bars indicating significant changes.</p>
-<div class="figure"><span id="fig:ResponseStats"></span>
+<div id="statistical-analysis-of-calculated-response-data-screenshots" class="section level4 hasAnchor" number="4.1.3.5">
+<h4><span class="header-section-number">4.1.3.5</span> statistical analysis of calculated response data (Screenshots)<a href="xmapr.html#statistical-analysis-of-calculated-response-data-screenshots" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>The statistical data analysis is based on samples groups defined by the selected meta data.
+A wilcox rank sum test is performed using multiple test correction if the number of groups are more than two.
+The test statistics with p-value, adjusted p-value and confidence intervals etc. can be interactively inspected and the data is plotted using a violin plot with a bars indicating significant changes.</p>
+<div class="figure"><span style="display:block;" id="fig:ResponseStats"></span>
 <img src="figures/statistical_analysis.png" alt="xMAPr anaylsis output data inspection &gt;&gt; statistical anaylsis using a wilcox ranked sum test on sample reponse data and the the selcted meta data for grouping" width="1767" />
 <p class="caption">
 Figure 4.28: xMAPr anaylsis output data inspection &gt;&gt; statistical anaylsis using a wilcox ranked sum test on sample reponse data and the the selcted meta data for grouping
 </p>
 </div>
 <p><a href="figures/statistical_analysis.png" target="_blank">inspect xMAPr anaylsis output data inspection &gt;&gt; statistical anaylsis using a wilcox ranked sum test on sample reponse data and the the selcted meta data for grouping</a></p>
-<div class="figure"><span id="fig:ResponseStats1"></span>
+<div class="figure"><span style="display:block;" id="fig:ResponseStats1"></span>
 <img src="figures/statistical_analysis1.png" alt="xMAPr anaylsis output data inspection &gt;&gt; statistical anaylsis using a wilcox ranked sum test on sample reponse data and the the selcted meta data for grouping (meta data selection)" width="1765" />
 <p class="caption">
 Figure 4.29: xMAPr anaylsis output data inspection &gt;&gt; statistical anaylsis using a wilcox ranked sum test on sample reponse data and the the selcted meta data for grouping (meta data selection)
@@ -409,12 +447,13 @@ Figure 4.29: xMAPr anaylsis output data inspection &gt;&gt; statistical anaylsis
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
 <script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
 <script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
@@ -422,12 +461,12 @@ gitbook.start({
 "github": false,
 "facebook": true,
 "twitter": true,
-"google": false,
 "linkedin": false,
 "weibo": false,
-"instapper": false,
+"instapaper": false,
 "vk": false,
-"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
 "theme": "paper",
@@ -439,15 +478,26 @@ gitbook.start({
 }
 },
 "edit": null,
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
 "download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection",
 "scroll_highlight": true
 },
 "toolbar": {
 "position": "fixed"
-},
-"search": true
+}
 });
 });
 </script>

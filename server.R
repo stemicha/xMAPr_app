@@ -569,13 +569,14 @@ shinyServer(function(input,output, session){
                   if(is.null(input$controlCouplingDataFile)){
                     dataframe <- example.coupling.data         
                   } else {
-                  dataframe <- fread(
+                  dataframe <- read_delim(
                     input$controlCouplingDataFile$datapath, 
-                    sep=input$sep,
-                    header = T,data.table = F,check.names = F)
+                    delim=input$sep)
+                  dataframe <- dataframe %>% 
+                    mutate(across(all_of(input$sample_naming), as.character)) #convert first row to character, workaround if only numbers are provided as sampleID
+                  
                   }
-                  dataframe[,1]<-as.character(dataframe[,1]) #convert first row to character, workaround if only numbers are provided as sampleID
-                  return(dataframe)
+                return(dataframe)
                   
                 }) 
                 
@@ -586,11 +587,11 @@ shinyServer(function(input,output, session){
                   if(is.null(input$AssayDataFile)){
                     dataframe <- example.assay.data         
                   } else {
-                    dataframe <- fread(
+                    dataframe <- read_delim(
                       input$AssayDataFile$datapath, 
-                      sep=input$sep,
-                      header = T,data.table = F,check.names = F)
-                    dataframe[,1]<-as.character(dataframe[,1]) #convert first row to character, workaround if only numbers are provided as sampleID
+                      delim=input$sep)
+                    dataframe <- dataframe %>% 
+                      mutate(across(all_of(input$sample_naming), as.character)) #convert first row to character, workaround if only numbers are provided as sampleID
                     
                     
                   }
@@ -602,11 +603,11 @@ shinyServer(function(input,output, session){
                   if(is.null(input$AssayDataBeadCountFile)){
                     dataframe <- example.count.data       
                   } else {
-                  dataframe <- fread(
+                  dataframe <- read_delim(
                     input$AssayDataBeadCountFile$datapath, 
-                    sep=input$sep,
-                    header = T,data.table = F,check.names = F)
-                  dataframe[,1]<-as.character(dataframe[,1]) #convert first row to character, workaround if only numbers are provided as sampleID
+                    delim=input$sep)
+                  dataframe <- dataframe %>% 
+                    mutate(across(all_of(input$sample_naming), as.character)) #convert first row to character, workaround if only numbers are provided as sampleID
                   
                   }
                   return(dataframe)
@@ -618,11 +619,11 @@ shinyServer(function(input,output, session){
                   if(is.null(input$controlCouplingDataBeadCountFile)){
                     dataframe <- example.count.control.data       
                   } else {
-                    dataframe <- fread(
+                    dataframe <- read_delim(
                       input$controlCouplingDataBeadCountFile$datapath, 
-                      sep=input$sep,
-                      header = T,data.table = F,check.names = F)
-                    dataframe[,1]<-as.character(dataframe[,1]) #convert first row to character, workaround if only numbers are provided as sampleID
+                      delim=input$sep)
+                    dataframe <- dataframe %>% 
+                      mutate(across(all_of(input$sample_naming), as.character)) #convert first row to character, workaround if only numbers are provided as sampleID
                     
                   }
                   return(dataframe)
@@ -634,11 +635,11 @@ shinyServer(function(input,output, session){
                   if(is.null(input$SampleMetaDataFile)){
                     dataframe <- example.meta.data        
                   } else {
-                    dataframe <- fread(
+                    dataframe <- read_delim(
                       input$SampleMetaDataFile$datapath, 
-                      sep=input$sep,
-                      header = T,data.table = F,check.names = F)
-                    dataframe[,1]<-as.character(dataframe[,1]) #convert first row to character, workaround if only numbers are provided as sampleID
+                      delim=input$sep)
+                    dataframe <- dataframe %>% 
+                      mutate(across(all_of(input$sample_naming), as.character)) #convert first row to character, workaround if only numbers are provided as sampleID
                     
                   }
                     return(dataframe)
@@ -763,9 +764,14 @@ shinyServer(function(input,output, session){
                     error.out$error.messages<-c(error.out$error.messages,"number of dilutions to low! (min. 5 different dilutions required !)")
                     error.out$error.global.logical=TRUE
                   }
+                  #sample names duplicated meta data file
+                  if(dim(meta %>% 
+                         filter(duplicated(UQ(as.name(input$sample_naming)))))[1] !=0){
+                    error.out$error.messages<-c(error.out$error.messages,"Sample names are not unique in meta data file (duplicates found) ! Unique names required")
+                    error.out$error.global.logical=TRUE
+                  }
                  
-                  
-      
+
                   if(error.out$error.global.logical==FALSE){
                     shinyalert(
                       title = "Analyzing data...",
@@ -926,21 +932,49 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
               
             # pipeline: make data tidy =============
               
-              am.tidy <- am %>% gather(colnames(am)[-c(1:3)],key = "antigen", value="MFI")
-                    #am.tidy <- as_tibble(reshape2::melt(am,id.vars=colnames(am)[c(1:3)],variable.name="antigen",value.name = "MFI"))
+              # tidy and merge assay tables
+              if(sum(am[,1]==am.count[,1])==nrow(am)){
+                am.tidy <- am %>% pivot_longer(colnames(am)[-c(1:3)],
+                                               names_to = "antigen",
+                                               values_to="MFI") 
+                am.tidy <- am.tidy %>% mutate(id = seq(1:nrow(am.tidy)))
                 am.tidy$MFI_raw<-am.tidy$MFI #add MFI_raw
-                am.count.tidy <- am.count %>% gather(colnames(am.count)[-c(1:3)],key = "antigen", value="BeadCount")
-                  #am.count.tidy<-as_tibble(reshape2::melt(am.count,id.vars=colnames(am)[c(1:3)],variable.name="antigen",value.name = "BeadCount"))
+                am.count.tidy <- am.count %>% pivot_longer(colnames(am.count)[-c(1:3)],
+                                                           names_to = "antigen", 
+                                                           values_to = "BeadCount") 
+                am.count.tidy <- am.count.tidy %>% mutate(id = seq(1:nrow(am.count.tidy)))
                 
-                am.tidy<-left_join(am.tidy,am.count.tidy,by=c(sample.column,am.replicate.column,am.dilution.column,"antigen"))
+                am.tidy <- left_join(am.tidy,
+                                     am.count.tidy,
+                                     by = c(sample.column,
+                                            am.replicate.column,
+                                            am.dilution.column,
+                                            "id",
+                                            "antigen")) %>% 
+                  select(-id)
+              }else{
+                paste("ERROR assay: MFI and Count table do not have the same ordering")
+              }
+              
+              # tidy and merge couplng control tables
+              if(sum(ccm[,1]==ccm.count[,1])==nrow(ccm)){
                 
-                ccm.tidy<-ccm %>% gather(colnames(ccm)[-c(1)],key = "antigen", value="MFI")
-                ccm.count.tidy<-ccm.count %>% gather(colnames(ccm.count)[-c(1)],key = "antigen", value="BeadCount")
-                #ccm.tidy<-as_tibble(reshape2::melt(ccm,id.vars=colnames(ccm)[c(1)],variable.name="antigen",value.name = "MFI"))
-                #ccm.count.tidy<-as_tibble(reshape2::melt(ccm.count,id.vars=colnames(ccm.count)[c(1)],variable.name="antigen",value.name = "BeadCount"))
-  
-                ccm.tidy<-left_join(ccm.tidy,ccm.count.tidy,by=c(sample.column,"antigen"))
+                ccm.tidy <- ccm %>% pivot_longer(colnames(ccm)[-c(1)],
+                                               names_to = "antigen",
+                                               values_to ="MFI") 
+                ccm.tidy <- ccm.tidy %>%  mutate(id = seq(1:nrow(ccm.tidy)))
                 
+                ccm.count.tidy <- ccm.count %>% pivot_longer(colnames(ccm.count)[-c(1)],
+                                                             names_to = "antigen", 
+                                                             values_to="BeadCount")
+                ccm.count.tidy <- ccm.count.tidy %>% mutate(id = seq(1:nrow(ccm.count.tidy)))
+
+                ccm.tidy <- left_join(ccm.tidy,ccm.count.tidy,by=c(sample.column,"id","antigen")) %>% 
+                  select(-id)
+              }else{
+                paste("ERROR coupling control: MFI and Count table do not have the same ordering")
+                
+              }
                   # pipeline: do bead count filtering ==========
                       # convert MFI to NA which is below 35 beads // for assay data
                       am.tidy$assayMFI_BeadCount_filtered_logical<-FALSE
@@ -1582,7 +1616,6 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
  updateProgressBar(session = session,id = "main",value = 7, total = 7,title = paste("Step 7/7: save output report..."))
  
                     #final formatting of df
- 
                     res.comp.fit.out.final$residual.values<-unlist(res.comp.fit.out.final$fitted.values)-unlist(res.comp.fit.out.final$MFI_normalized_mean) #add residuals
 
                     model.params.df<-out.fit.model.df

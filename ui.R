@@ -130,7 +130,7 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
       menuItem("about",tabName = "about", icon = icon("question-circle")),
       br(),
       downloadButton("downloadDemoData", label = "Download demo data",style="margin-left: 30px;"),
-      h5("version 1.1.2",align="center"), # version ------
+      h5("version 1.1.3",align="center"), # version ------
       h6("author: S. Michalik",align="center"),
       br(),
       h6("for optimal performance please",align="center",style="color: #FF6600;"),

@@ -3216,7 +3216,7 @@ general.overview.response.pca<-reactive({
                           pca.facto <- FactoMineR::PCA(pca.dat.na.omit, graph = FALSE,ncp = 10,scale.unit = T)
                           
                           #parse meta data
-                          meta.dat<-table.in[,-c(1,2,4)]
+                          meta.dat<-as.data.frame(table.in[,-c(1,2,4)])
                           meta.dat<-meta.dat[!duplicated(meta.dat$sample),]
                           meta.dat[is.na(meta.dat)]<-"NA"
                           meta.dat[meta.dat==""]<-"NA"

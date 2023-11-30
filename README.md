@@ -5,11 +5,10 @@ xMAPr app - high-dynamic range xMAP® data analysis pipeline
 
 <hr>
 
-functional version of xMAPr app on shinyapps.io (*25 active hours*):
-<https://michalik.shinyapps.io/xMAPr_app/>
+functional version of xMAPr app on:
+<https://shiny-fungene.biologie.uni-greifswald.de/xMAPr_app/>
 
-**if 25 active hours are reached the app will be disabled until the next
-month cycle start**
+
 
 ## Citation of xMAPr
 

@@ -900,7 +900,8 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
                                          choices = c("x-axis", "y-axis"),
                                          width="200px",
                                          justified = TRUE, status = "primary",
-                                         checkIcon = list(yes = icon("ok-sign", lib = "glyphicon"), no = icon("remove-sign", lib = "glyphicon"))
+                                         checkIcon = list(yes = icon("ok-sign", lib = "glyphicon"),
+                                                          no = icon("remove-sign", lib = "glyphicon"))
                                        ),
                                        hr(),
                                        uiOutput("UIdownloadSinglePlots"),

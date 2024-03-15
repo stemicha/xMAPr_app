@@ -3943,22 +3943,23 @@ general.overview.response.pca<-reactive({
                                                                                           res.plot.out<-plots.out.gg.AntigenSample()$plots.out.res.plot
                                                                                           res.calculated.variables.plot.out<-plots.out.gg.AntigenSample()$plots.calculated.variables.plot
                                                                                         }else{
-                                                                                          if(input$axis.log.scale=="x-axis"){
+                                                                                          if(length(input$axis.log.scale) == 1){
+                                                                                           if(input$axis.log.scale=="x-axis"){
                                                                                             fit.overview.plot.out<-plots.out.gg.AntigenSample()$plots.out.fit.overview.plot+scale_x_log10()
                                                                                             raw.plot.out<-plots.out.gg.AntigenSample()$plots.out.raw.overview.plot+scale_x_log10()
                                                                                             res.plot.out<-plots.out.gg.AntigenSample()$plots.out.res.plot+scale_x_log10()
                                                                                             res.calculated.variables.plot.out<-plots.out.gg.AntigenSample()$plots.calculated.variables.plot+scale_x_log10()
-                                                                                            
-                                                                                          }
+                                                                                            }
                                                                                           if(input$axis.log.scale=="y-axis"){
                                                                                             fit.overview.plot.out<-plots.out.gg.AntigenSample()$plots.out.fit.overview.plot+scale_y_log10()
                                                                                             raw.plot.out<-plots.out.gg.AntigenSample()$plots.out.raw.overview.plot+scale_y_log10()
                                                                                             res.plot.out<-plots.out.gg.AntigenSample()$plots.out.res.plot
                                                                                             res.calculated.variables.plot.out<-plots.out.gg.AntigenSample()$plots.calculated.variables.plot+scale_y_log10()
                                                                                            
+                                                                                            }
                                                                                           }
                                                                                           
-                                                                                          if(sum(input$axis.log.scale ==c("x-axis", "y-axis"))==2){
+                                                                                          if(length(input$axis.log.scale)==2){
                                                                                             fit.overview.plot.out<-plots.out.gg.AntigenSample()$plots.out.fit.overview.plot+scale_x_log10()+scale_y_log10()
                                                                                             raw.plot.out<-plots.out.gg.AntigenSample()$plots.out.raw.overview.plot+scale_x_log10()+scale_y_log10()
                                                                                             res.plot.out<-plots.out.gg.AntigenSample()$plots.out.res.plot+scale_x_log10()

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>4 xMAPr | xMAPr - manual</title>
   <meta name="description" content="xMAPr manual explains the usage of the xMAPr app to analyse dilution based serological assays with the xMAP® technology" />
-  <meta name="generator" content="bookdown 0.33 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.38 and GitBook 2.6.7" />
 
   <meta property="og:title" content="4 xMAPr | xMAPr - manual" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Stephan Michalik" />
 
 
-<meta name="date" content="2023-04-04" />
+<meta name="date" content="2024-03-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -55,6 +55,10 @@
 
 
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 <style type="text/css">
 /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
 div.csl-bib-body { }
@@ -132,12 +136,12 @@ div.csl-indent {
 <h1><span class="header-section-number">4</span> xMAPr<a href="xmapr.html#xmapr" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>xMAPr was developed to analyze and visualize data from bead-based experiments performed with the xMAP® technology. The whole basis of the the analysis is the utilization of serial dilutions per sample to avoid saturation effects. Figure <a href="xmapr.html#fig:xMAPrWorkflow">4.1</a> illustrates the mode of operation of xMAPr.</p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:xMAPrWorkflow"></span>
-<img src="figures/xMAPr_analysis_workflow.png" alt="xMAPr workflow depicted as flow chart" width="1772" />
+<img src="figures/xMAPr_analysis_workflow_version2_updated.png" alt="xMAPr workflow depicted as flow chart" width="1772" />
 <p class="caption">
 Figure 4.1: xMAPr workflow depicted as flow chart
 </p>
 </div>
-<p>[inspect xMA</p>
+<p><a href="figures/xMAPr_analysis_workflow_version2_updated.png" target="_blank">insepct workflow flow chart</a></p>
 <div id="xmapr-analysis" class="section level2 hasAnchor" number="4.1">
 <h2><span class="header-section-number">4.1</span> xMAPr Analysis<a href="xmapr.html#xmapr-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="xponent-raw-data-processing" class="section level3 hasAnchor" number="4.1.1">
@@ -217,6 +221,96 @@ Figure 4.6: xMAPr decision tree
 </p>
 </div>
 <p><a href="figures/fit_decision_tree_small.png" target="_blank">inspect xMAPr decision tree</a></p>
+<div id="unspecifc-binding-issue-ubi-fit" class="section level5 hasAnchor" number="4.1.2.1.1">
+<h5><span class="header-section-number">4.1.2.1.1</span> unspecifc binding issue (ubi) fit<a href="xmapr.html#unspecifc-binding-issue-ubi-fit" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<p>Two new parameters have been introduced since version 2.0.</p>
+<ul>
+<li>method for data processing (selection of fit processing: default is hook binding detection)</li>
+<li>ubi response ratio cutoff (cutoff for leave out saturation curve fit (to min. of 5 dilution stages) response calculation ratio (all data piont fit / leave out fit) for resolving unspecific binding issues)</li>
+</ul>
+<p>The <strong>hook</strong> method is the standard approach (<em>default</em>) where a saturation fit is executed using all data points, both with and without the application of the hook effect detection algorithm.</p>
+<p>The <strong>hook+ubi</strong> method carries out a fit utilizing all data points. If this is successful, it iteratively excludes (from the lowest dilution stage) from one to the entire range of dilutions until only 5 valid data points remain (for each step a saturation curve fit is carried out). If the calculated response from the saturation fit with all data points is similar to the response without dilutions, the fit with all data points is used for categorization in the non-linear least squares (nls) fit decision tree. However, if the response exceeds the <em>ubi response ratio cutoff</em>, the fit excluding the dilution is considered.
+If the fit with all data points did not succeed but the ones without some dilution the first best fit is used for the nls fit.</p>
+<div id="example-for-hookubi" class="section level6 hasAnchor" number="4.1.2.1.1.1">
+<h6><span class="header-section-number">4.1.2.1.1.1</span> Example for <strong>hook+ubi</strong><a href="xmapr.html#example-for-hookubi" class="anchor-section" aria-label="Anchor link to header"></a></h6>
+<div id="example-1" class="section level7" number="4.1.2.1.1.1.1">
+<p class="heading"><span class="header-section-number">4.1.2.1.1.1.1</span> example 1</p>
+<p>Lets say you have measured 8 dilutions from one sample (50fold, 100fold, 500fold, 5000fold, 10000fold, …)</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">fit</th>
+<th align="left">response</th>
+<th align="left">response ratio to predecessors</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">all data points</td>
+<td align="left">1000</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">without 50fold dil.</td>
+<td align="left">10000</td>
+<td align="left">10</td>
+</tr>
+<tr class="odd">
+<td align="left">without 50-100fold dil.</td>
+<td align="left">20000</td>
+<td align="left">2</td>
+</tr>
+<tr class="even">
+<td align="left">without 50-500fold dil.</td>
+<td align="left">22000</td>
+<td align="left">1.1</td>
+</tr>
+</tbody>
+</table>
+<p>In this example only 3 left out fits can be performed until 5 valid data points are left.
+If the <em>ubi response ratio cutoff</em> would be <strong>2</strong> the fit without <strong>50-500fold dil.</strong> would be takes as nls fit.
+If the <em>ubi response ratio cutoff</em> would be <strong>4</strong> (default) the fit without <strong>without 50fold dil.</strong> would be takes as nls fit.</p>
+</div>
+<div id="example-2" class="section level7" number="4.1.2.1.1.1.2">
+<p class="heading"><span class="header-section-number">4.1.2.1.1.1.2</span> example 2</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">fit</th>
+<th align="left">response</th>
+<th align="left">response ratio to predecessors</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">all data points</td>
+<td align="left">12000</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">without 50fold dil.</td>
+<td align="left">14000</td>
+<td align="left">1.166</td>
+</tr>
+<tr class="odd">
+<td align="left">without 50-100fold dil.</td>
+<td align="left">14500</td>
+<td align="left">1.0356</td>
+</tr>
+<tr class="even">
+<td align="left">without 50-500fold dil.</td>
+<td align="left">15000</td>
+<td align="left">1.0344</td>
+</tr>
+</tbody>
+</table>
+<p>In this example; if the <em>ubi response ratio cutoff</em> would be <strong>2</strong> the fit without <strong>all data points</strong> would be takes as nls fit.</p>
+<blockquote>
+<p>Exercise caution when using the method and be aware that variations in pipetting can occur based on the volume and the specific pipette used for the dilution!</p>
+</blockquote>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div id="xmapr-data-inspection" class="section level3 hasAnchor" number="4.1.3">
@@ -486,7 +580,7 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": null,
+"download": ["_main.pdf", "_main.epub"],
 "search": {
 "engine": "fuse",
 "options": null

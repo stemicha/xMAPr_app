@@ -5,9 +5,9 @@ xMAPr was developed to analyze and visualize data from bead-based experiments pe
 
 
 ```{r xMAPrWorkflow,echo=F,fig.cap="xMAPr workflow depicted as flow chart",fig.align='center'}
-knitr::include_graphics("figures/xMAPr_analysis_workflow.png")
+knitr::include_graphics("figures/xMAPr_analysis_workflow_version2_updated.png")
 ```
-[inspect xMA
+[insepct workflow flow chart](figures/xMAPr_analysis_workflow_version2_updated.png){target="_blank"}
 
 ## xMAPr Analysis
 
@@ -92,6 +92,48 @@ knitr::include_graphics("figures/fit_decision_tree_small.png")
 [inspect xMAPr decision tree](figures/fit_decision_tree_small.png){target="_blank"}
 
 
+##### unspecifc binding issue (ubi) fit
+
+Two new parameters have been introduced since version 2.0.
+
+- method for data processing (selection of fit processing: default is hook binding detection)
+- ubi response ratio cutoff (cutoff for leave out saturation curve fit (to min. of 5 dilution stages) response calculation ratio (all data piont fit / leave out fit) for resolving unspecific binding issues)
+
+The **hook** method is the standard approach (*default*) where a saturation fit is executed using all data points, both with and without the application of the hook effect detection algorithm.
+
+The **hook+ubi** method carries out a fit utilizing all data points. If this is successful, it iteratively excludes (from the lowest dilution stage) from one to the entire range of dilutions until only 5 valid data points remain (for each step a saturation curve fit is carried out). If the calculated response from the saturation fit with all data points is similar to the response without dilutions, the fit with all data points is used for categorization in the non-linear least squares (nls) fit decision tree. However, if the response exceeds the *ubi response ratio cutoff*, the fit excluding the dilution is considered.
+If the fit with all data points did not succeed but the ones without some dilution the first best fit is used for the nls fit.
+
+###### Example for **hook+ubi**
+
+####### example 1
+
+Lets say you have measured 8 dilutions from one sample (50fold, 100fold, 500fold, 5000fold, 10000fold, ...)
+
+|fit | response | response ratio to predecessors|
+|:----|:----------|:------------|
+|all data points | 1000 | NA|
+|without 50fold dil. | 10000 | 10|
+|without 50-100fold dil. | 20000 | 2|
+|without 50-500fold dil. | 22000 | 1.1|
+
+
+In this example only 3 left out fits can be performed until 5 valid data points are left.
+If the *ubi response ratio cutoff* would be **2** the fit without **50-500fold dil.** would be takes as nls fit.
+If the *ubi response ratio cutoff* would be **4** (default) the fit without **without 50fold dil.** would be takes as nls fit.
+
+####### example 2
+
+|fit | response | response ratio to predecessors|
+|:----|:----------|:------------|
+|all data points | 12000 | NA|
+|without 50fold dil. | 14000 | 1.166|
+|without 50-100fold dil. | 14500 | 1.0356|
+|without 50-500fold dil. | 15000 | 1.0344|
+
+In this example; if the *ubi response ratio cutoff* would be **2** the fit without **all data points** would be takes as nls fit.
+
+>Exercise caution when using the method and be aware that variations in pipetting can occur based on the volume and the specific pipette used for the dilution!
 
 ### xMAPr data inspection
 

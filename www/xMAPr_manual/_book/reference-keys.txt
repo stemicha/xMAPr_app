@@ -39,6 +39,8 @@ xmapr-analysis
 xponent-raw-data-processing
 xmapr-analysis-pipeline
 decision-tree
+unspecifc-binding-issue-ubi-fit
+example-for-hookubi
 xmapr-data-inspection
 global-analysis-inspection-screenshots
 global-analysis-inspection-quality-check-of-data-screenshots

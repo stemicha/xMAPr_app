@@ -31,7 +31,7 @@
 ## increase upload size -----
 options(shiny.usecairo=TRUE,shiny.maxRequestSize=2000*1024^2) 
 #colors for fit types:
-fit.type.colors<-c(nls="#0D47A1",nls_with_exclusion="#2196F3",`5P_log`="#BF360C",`5P_log_with_exclusion`="#FF5722",linear_fit="#FFD600",rejected="#795548",fit_failed="#607D8B")
+fit.type.colors<-c(nls="#0D47A1",nls_ubi = "hotpink",nls_with_exclusion="#2196F3",`5P_log`="#BF360C",`5P_log_with_exclusion`="#FF5722",linear_fit="#FFD600",rejected="#795548",fit_failed="#607D8B")
 
 
 
@@ -920,6 +920,8 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                 replicate.column.name = am.replicate.column,
                 anti_tag.entry = anti_tag.entry,
                 blank.entry = blank.entry,
+                data_processing_method = input$data_proc_method,
+                data_processing_method_cutoff = if(input$data_proc_method=="hook"){NA}else{input$data_proc_method_cutoff},
                 control.blank.entry = control.blank.entry,
                 blank.correction.method = blank.correction.method,
                 cv.cut_off = cv.var,
@@ -1219,8 +1221,8 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
           out.selected.prediction.df[,sample.column]<-sample.antigen.pred
           out.selected.prediction.df$antigen<-antigen.sample.pred
       
-      out.predicted.df<-as.data.frame(matrix(vector(),n.fitted.points*length(samples)*length(antigens),6))
-          colnames(out.predicted.df)<-c("dilution.input","nls" ,"nls_with_exclusion", "linear_fit",sample.column,"antigen")
+      out.predicted.df<-as.data.frame(matrix(vector(),n.fitted.points*length(samples)*length(antigens),7))
+          colnames(out.predicted.df)<-c("dilution.input","nls" ,"nls_ubi","nls_with_exclusion", "linear_fit",sample.column,"antigen")
           out.predicted.df[,sample.column]<-sample.antigen.pred
           out.predicted.df$antigen<-antigen.sample.pred
       
@@ -1229,8 +1231,8 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
           out.response.df[,sample.column]<-sample.antigen.short
           out.response.df$antigen<-rep(antigens,length(samples))
       
-      out.res.comp<-as.data.frame(matrix(vector(),length(samples)*length(antigens),5))
-          colnames(out.res.comp)<-c(sample.column,"antigen","nls" ,"nls_with_exclusion", "linear_fit" )
+      out.res.comp<-as.data.frame(matrix(vector(),length(samples)*length(antigens),6))
+          colnames(out.res.comp)<-c(sample.column,"antigen","nls","nls_ubi" ,"nls_with_exclusion", "linear_fit" )
           out.res.comp[,sample.column]<-sample.antigen.short
           out.res.comp$antigen<-rep(antigens,length(samples))
       
@@ -1260,6 +1262,9 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                         updateProgressBar(session = session,id = "sample",value = i, total = length(samples),title = paste("Samples:",i,"of",length(samples)))
                                         
                                       
+                                        # e.g. Staphylococcus_aureus_NCTC8325_spa / 2712221
+                                        # g <- 24; i <- 459
+                                        
                                         #pipeline: select data subset for antigen >> g / sample >>i  =======
                                         tmp<-c()
                                         tmp<-subset(am.tidy.aggregated,am.tidy.aggregated$antigen==antigens[g] & am.tidy.aggregated[,sample.column]==samples[i])
@@ -1284,6 +1289,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                         
                                         #reset output value collection
                                         fit.type<-NA
+                                        fit.type_nls_dil_rm <- NA
                                         
                                         #signal drop exclusion
                                         signaldrop.exclusion<-which(tmp$signal_drop!=TRUE)
@@ -1294,26 +1300,124 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                         fit.mfi.dil.50<-NA;fit.mfi.MFImax.50<-NA;fit.mfi.resp<-NA
                                         #tmp <- as.data.frame(tmp)
                                         if(sum(tmp$signal_drop,na.rm=T)==0 & !is.na(tmp$MFI_normalized_mean[which(tmp$dilution.inverse==max(tmp$dilution.inverse))])){
-                                        fit.mfi <- try(nls(MFI_normalized_mean ~ SSmicmen(dilution.inverse,MFImax, dil.50),data=tmp),silent = T)
-                                        }
+                                          
+                                          if(input$data_proc_method=="hook"){ 
+                                            fit.mfi <- try(nls(MFI_normalized_mean ~ SSmicmen(dilution.inverse,MFImax, dil.50),data=tmp),silent = T)
+                                          }#end: nls just hook detection 
+                                          
+                                          #nls hook + unspecifc binding issue detection
+                                          if(input$data_proc_method=="hook+ubi"){ 
+                                            #valid data points without NA
+                                            valid_data <- nrow(tmp[!is.na(tmp$MFI_normalized_mean),])
+                                            
+                                            if(valid_data > 5){
+                                              fit.mfi_tmp <- try(nls(MFI_normalized_mean ~ SSmicmen(dilution.inverse,MFImax, dil.50),data=tmp),silent = T)
+                                              
+                                              if(length(grep("Error",fit.mfi_tmp))==1){
+                                                response_ubi <- tibble(response = NA,
+                                                                       type = "nls_basic", 
+                                                                       dilutions_rm = 0)
+                                                    }else{
+                                                      fit.mfi.dil.50_tmp<-coef(fit.mfi_tmp)[2]
+                                                      fit.mfi.MFImax.50_tmp<-coef(fit.mfi_tmp)[1]/2
+                                                      response_ubi <- tibble(response = (1/fit.mfi.dil.50_tmp)*fit.mfi.MFImax.50_tmp,
+                                                                             type = "nls_basic", 
+                                                                             dilutions_rm = 0)
+                                                    }
+                                              
+                                              for(ubi_index in 1:c(valid_data-5)){
+                                                fit.mfi_tmp <- try(nls(MFI_normalized_mean ~ SSmicmen(dilution.inverse,MFImax, dil.50),
+                                                                       data=tmp[-c(1:ubi_index),]),silent = T)
+                                                if(length(grep("Error",fit.mfi_tmp))==1){
+                                                  response_ubi<- bind_rows(response_ubi,
+                                                                           tibble(response = NA,
+                                                                                  type = "nls_dil_rm",
+                                                                                  dilutions_rm = ubi_index, 
+                                                                                  ratio = NA/
+                                                                                    response_ubi$response[nrow(response_ubi)])
+                                                  )
+                                                }else{
+                                                  fit.mfi.dil.50_tmp<-coef(fit.mfi_tmp)[2]
+                                                  fit.mfi.MFImax.50_tmp<-coef(fit.mfi_tmp)[1]/2
+                                                  response_ubi<- bind_rows(response_ubi,
+                                                                           tibble(response = (1/fit.mfi.dil.50_tmp)*fit.mfi.MFImax.50_tmp,
+                                                                                  type = "nls_dil_rm",
+                                                                                  dilutions_rm = ubi_index, 
+                                                                                  ratio = ((1/fit.mfi.dil.50_tmp)*fit.mfi.MFImax.50_tmp)/
+                                                                                    response_ubi$response[nrow(response_ubi)])
+                                                  )
+                                                }
+                                                
+                                              }
+                                              #if all datapoints fit resulted in NA response --> use rm dilution stages nls fit
+                                              if(is.na(response_ubi[response_ubi$type=="nls_basic","response"])){
+                                                #get dilution stages with ubi cutoff
+                                                dilutions_to_remove_ubi <- unlist(response_ubi %>% 
+                                                                                    dplyr::filter(ratio > input$data_proc_method_cutoff) %>% 
+                                                                                    dplyr::top_n(n = 1,wt = dilutions_rm) %>% 
+                                                                                    dplyr::select(dilutions_rm))
+                                                #workaround to take first working dilution
+                                                if(length(dilutions_to_remove_ubi)==0){
+                                                  dilutions_to_remove_ubi <- unlist(response_ubi %>% 
+                                                                                      dplyr::filter(!is.na(response)) %>% 
+                                                                                      dplyr::top_n(n = 1,wt = desc(dilutions_rm)) %>% 
+                                                                                      dplyr::select(dilutions_rm))
+                                                }
+                                              }else{
+                                                #if all datapoints fit resulted in a valid response
+                                                #get dilution stages with ubi cutoff
+                                                dilutions_to_remove_ubi <- unlist(response_ubi %>% 
+                                                                                    dplyr::filter(ratio > input$data_proc_method_cutoff) %>% 
+                                                                                    dplyr::top_n(n = 1,wt = dilutions_rm) %>% 
+                                                                                    dplyr::select(dilutions_rm))
+                                              }
+                                              
+                                              
+                                              if(length(dilutions_to_remove_ubi)!=0){
+                                                fit.mfi <- try(nls(MFI_normalized_mean ~ SSmicmen(dilution.inverse,MFImax, dil.50),
+                                                                   data=tmp[-c(1:dilutions_to_remove_ubi),]),silent = T)
+                                                fit.type_nls_dil_rm <- "nls_ubi"
+                                              }else{
+                                                fit.mfi <- try(nls(MFI_normalized_mean ~ SSmicmen(dilution.inverse,MFImax, dil.50),data=tmp),silent = T)
+                                              }
+                                            }else{
+                                              #fallback option if only 5 data points are valid
+                                              fit.mfi <- try(nls(MFI_normalized_mean ~ SSmicmen(dilution.inverse,MFImax, dil.50),data=tmp),silent = T)
+                                            }
+                                          }#end: nls hook + unspecifc binding issue detection
+                                          
+                                          #TODO: mark as nls_ubi
+                                          #      a lot of fits are failing regarding response calculation: = NA
+                                                # e.g. Citrobacter_freundii_DSM_24397 / 2712221
+                                          
+                                        }# end: nls fitting
                                         
-
-
-    
-    
+                                        #nls without ubi
                                         if(length(grep("Error",fit.mfi))==0 &
-                                           sum(!is.na(tmp$MFI_normalized_mean))>=4 & !is.null(fit.mfi)){
+                                           sum(!is.na(tmp$MFI_normalized_mean))>=4 & !is.null(fit.mfi) & is.na(fit.type_nls_dil_rm)){
                                           fit.mfi.dil.50<-coef(fit.mfi)[2]
                                           fit.mfi.MFImax.50<-coef(fit.mfi)[1]/2
                                           fit.mfi.resp<-(1/fit.mfi.dil.50)*fit.mfi.MFImax.50
-                                          out.res.comp[which(out.res.comp[,sample.column]==samples[i] & out.res.comp$antigen==antigens[g]),"nls"]<-fit.mfi.resp
+                                          out.res.comp[which(out.res.comp[,sample.column]==samples[i] &
+                                                               out.res.comp$antigen==antigens[g]),"nls"] <- fit.mfi.resp
+                                        }
+                                        #nls with ubi
+                                        if(length(grep("Error",fit.mfi))==0 &
+                                           sum(!is.na(tmp$MFI_normalized_mean))>=4 & !is.null(fit.mfi) & !is.na(fit.type_nls_dil_rm)){
+                                          fit.mfi.dil.50<-coef(fit.mfi)[2]
+                                          fit.mfi.MFImax.50<-coef(fit.mfi)[1]/2
+                                          fit.mfi.resp<-(1/fit.mfi.dil.50)*fit.mfi.MFImax.50
+                                          out.res.comp[which(out.res.comp[,sample.column]==samples[i] &
+                                                               out.res.comp$antigen==antigens[g]),"nls_ubi"] <- fit.mfi.resp
                                         }
                                         
                                         #pipeline: non-linear regression fitting, signal drop dilution exclusion  =======
                                         fit.mfi.excl<-c()
                                         fit.mfi.excl.dil.50<-NA;fit.mfi.excl.MFImax.50<-NA;fit.mfi.excl.resp<-NA
                                         if(sum(tmp$signal_drop,na.rm=T)!=0 | is.na(tmp$MFI_normalized_mean[which(tmp$dilution.inverse==max(tmp$dilution.inverse))])){
-                                          fit.mfi.excl <- try(nls(MFI_normalized_mean ~ SSmicmen(dilution.inverse,MFImax, dil.50),data=tmp[signaldrop.exclusion,]),silent = T)
+                                          fit.mfi.excl <- try(nls(MFI_normalized_mean ~ SSmicmen(dilution.inverse,MFImax, dil.50),
+                                                                  data=tmp[signaldrop.exclusion,]),
+                                                              silent = T)
                                         }else{
                                           fit.mfi.excl="Error"
                                         }
@@ -1323,7 +1427,8 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                           fit.mfi.excl.dil.50<-coef(fit.mfi.excl)[2]
                                           fit.mfi.excl.MFImax.50<-coef(fit.mfi.excl)[1]/2
                                           fit.mfi.excl.resp<-(1/fit.mfi.excl.dil.50)*fit.mfi.excl.MFImax.50
-                                          out.res.comp[which(out.res.comp[,sample.column]==samples[i] & out.res.comp$antigen==antigens[g]),"nls_with_exclusion"]<-fit.mfi.excl.resp
+                                          out.res.comp[which(out.res.comp[,sample.column]==samples[i] &
+                                                               out.res.comp$antigen==antigens[g]),"nls_with_exclusion"] <- fit.mfi.excl.resp
                                         }
                                         
                                         
@@ -1333,14 +1438,17 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                         fit.lin.mfi<-c()
                                         fit.lin.dil.50<-NA;fit.lin.MFImax<-NA;fit.lin.resp<-NA;fit.lin.mfi.r.squared<-NA
                                         
-                                        if(sum(!is.na(tmp$MFI_normalized_mean))>=4 & !is.na(tmp$MFI_normalized_mean[which(tmp$dilution.inverse==max(tmp$dilution.inverse))]) & sum(tmp$signal_drop,na.rm=T)==0){
+                                        if(sum(!is.na(tmp$MFI_normalized_mean))>=4 &
+                                           !is.na(tmp$MFI_normalized_mean[which(tmp$dilution.inverse==max(tmp$dilution.inverse))]) &
+                                           sum(tmp$signal_drop,na.rm=T)==0){
                                           fit.lin.mfi<-lm(MFI_normalized_mean ~ dilution.inverse,data = tmp)
                                           fit.lin.mfi.r.squared<-summary(fit.lin.mfi)$r.squared
                                           if(!is.na(summary(fit.lin.mfi)$r.squared)){
                                             fit.lin.dil.50<-tmp$dilution.inverse[which(max(tmp$dilution.inverse)==tmp$dilution.inverse)]
                                             fit.lin.MFImax<-fitted(fit.lin.mfi)[which(max(tmp$dilution.inverse)==tmp$dilution.inverse)]
                                             fit.lin.resp<-(1/fit.lin.dil.50)*fit.lin.MFImax
-                                            out.res.comp[which(out.res.comp[,sample.column]==samples[i] & out.res.comp$antigen==antigens[g]),"linear_fit"]<-fit.lin.resp
+                                            out.res.comp[which(out.res.comp[,sample.column]==samples[i] &
+                                                                 out.res.comp$antigen==antigens[g]),"linear_fit"] <- fit.lin.resp
                                           }
                                         }
                                         
@@ -1352,6 +1460,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                         pred.nls.noe<-c();pred.nls.exc<-c();pred.fpl<-c();pred.fpl.exc<-c();pred.lin<-c()
                                         pred.mat.nls.noe<-c();pred.mat.nls.exc<-c();pred.mat.fpl<-c();pred.mat.fpl.exc<-c();pred.mat.lin<-c()
                                         corr.nls.noe<-c();corr.nls.exc<-c();corr.fpl<-c();corr.fpl.exc<-c();corr.lin<-c()
+                                        
                                         #pipeline: predictions & correlations / NLS ###########
                                         if(!is.na(fit.mfi.resp)){
                                           pred.nls.noe<-as.data.frame(cbind(dilution.input=new.data,
@@ -1423,7 +1532,8 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                           
                                           
                                           #length of ranked exclusion is equal to length of dilutions // all dilution can be used sec. antibody saturated
-                                          if(sum(tmp$signal_drop,na.rm=T)==0 & !is.na(tmp$MFI_normalized_mean[which(tmp$dilution.inverse==max(tmp$dilution.inverse))])){
+                                          if(sum(tmp$signal_drop,na.rm=T)==0 & 
+                                             !is.na(tmp$MFI_normalized_mean[which(tmp$dilution.inverse==max(tmp$dilution.inverse))])){
                                             
                                             #nls model failed
                                             if(is.na(fit.mfi.resp)){
@@ -1443,14 +1553,20 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                               if(fit.mfi.dil.50<min(tmp$dilution.inverse)){
                                                 fit.type<-"rejected"
                                               }else{
-                                              fit.type<-"nls"
+                                                if(is.na(fit.type_nls_dil_rm)){
+                                                    fit.type<-"nls"
+                                                }
+                                                if(!is.na(fit.type_nls_dil_rm)){
+                                                fit.type<-"nls_ubi"
+                                                }
                                               }
                                             }
                                           
                                           }
                                         
                                         
-                                        out.response.df[which(out.response.df[,sample.column]==samples[i] & out.response.df$antigen==antigens[g]),"fit.type"]<-fit.type
+                                        out.response.df[which(out.response.df[,sample.column]==samples[i] & 
+                                                                out.response.df$antigen==antigens[g]),"fit.type"]<-fit.type
                                         ##pipeline: END:fit decisions ==========
 
                                         
@@ -1459,16 +1575,19 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                         
                                             res.comp.fit.out<-rbind(
                                                         tibble(
-                                                        sample=rep(samples[i],length(tmp$dilution.inverse)),
-                                                        antigen=rep(antigens[g],length(tmp$dilution.inverse)),
-                                                        dilution.inverse=tmp$dilution.inverse,
+                                                        sample = rep(samples[i],length(tmp$dilution.inverse)),
+                                                        antigen = rep(antigens[g],length(tmp$dilution.inverse)),
+                                                        dilution.inverse = tmp$dilution.inverse,
                                                         MFI_normalized_mean=tmp$MFI_normalized_mean,
                                                         fitted.values=if(!is.na(fit.mfi.resp)){
                                                               coef(fit.mfi)[1] * tmp$dilution.inverse / (coef(fit.mfi)[2] + tmp$dilution.inverse)
                                                               }else{
                                                                 rep(NA,length(tmp$dilution.inverse))
                                                               },
-                                                        fit.type=rep("nls",length(tmp$dilution.inverse))
+                                                        fit.type=rep(ifelse(is.na(fit.type_nls_dil_rm),
+                                                                            "nls",
+                                                                            "nls_ubi"),
+                                                                     length(tmp$dilution.inverse))
                                                         ),
                                                         tibble(
                                                         sample=rep(samples[i],length(tmp$dilution.inverse)),
@@ -1482,8 +1601,6 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                                             },
                                                         fit.type=rep("nls_with_exclusion",length(tmp$dilution.inverse))
                                                         ),
-
-                                                      
                                                        tibble(
                                                          sample=rep(samples[i],length(tmp$dilution.inverse)),
                                                          antigen=rep(antigens[g],length(tmp$dilution.inverse)),
@@ -1506,11 +1623,15 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                                                   calculated.dilution = c(fit.mfi.dil.50,fit.mfi.excl.dil.50,fit.lin.dil.50),
                                                                   calculated.MFI = c(fit.mfi.MFImax.50,fit.mfi.excl.MFImax.50,fit.lin.MFImax),
                                                                   response = c(fit.mfi.resp,fit.mfi.excl.resp,fit.lin.resp),
-                                                                  fit.type = c("nls","nls_with_exclusion","linear_fit")
+                                                                  fit.type = c(ifelse(is.na(fit.type_nls_dil_rm),
+                                                                                      "nls",
+                                                                                      "nls_ubi"),
+                                                                               "nls_with_exclusion",
+                                                                               "linear_fit")
                                                           )
                                             
                                             
-                                            calc.comp.out.final<-rbind(calc.comp.out.final,calc.comp.out)
+                                            calc.comp.out.final <- rbind(calc.comp.out.final,calc.comp.out)
                                             
                                             
                                             
@@ -1527,6 +1648,17 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                           out.selected.prediction.df[which(out.selected.prediction.df[,sample.column]==samples[i] & out.selected.prediction.df$antigen==antigens[g]),"MFI.predicted"]<-pred.nls.noe$MFI.predicted
                                           out.selected.prediction.df[which(out.selected.prediction.df[,sample.column]==samples[i] & out.selected.prediction.df$antigen==antigens[g]),"fit.type"]<-rep(fit.type,n.fitted.points)
                                         }
+                                        
+                                        if(fit.type=="nls_ubi"){
+                                              fitted.values<-c(coef(fit.mfi)[1] * tmp$dilution.inverse / (coef(fit.mfi)[2] + tmp$dilution.inverse))
+                                              residual.values<-fitted.values-tmp$MFI_normalized_mean
+                                              used.dilutions<-tmp$used.dilutions
+                                              fit.summary<-summary(fit.mfi)
+                                              qc.value<-fit.summary$sigma
+                                              out.response.df[which(out.response.df[,sample.column]==samples[i] & out.response.df$antigen==antigens[g] & out.response.df$fit.type==fit.type),"response"]<-(1/fit.mfi.dil.50)*fit.mfi.MFImax.50
+                                              out.selected.prediction.df[which(out.selected.prediction.df[,sample.column]==samples[i] & out.selected.prediction.df$antigen==antigens[g]),"MFI.predicted"]<-pred.nls.noe$MFI.predicted
+                                              out.selected.prediction.df[which(out.selected.prediction.df[,sample.column]==samples[i] & out.selected.prediction.df$antigen==antigens[g]),"fit.type"]<-rep(fit.type,n.fitted.points)
+                                          }
                                         
                                         if(fit.type=="nls_with_exclusion"){
                                           fitted.values <- c(coef(fit.mfi.excl)[1] * tmp$dilution.inverse / (coef(fit.mfi.excl)[2] + tmp$dilution.inverse))
@@ -1558,14 +1690,15 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                           
                                           #summary and qc data frame
                                           
-                                          if(fit.type=="nls" |
+                                          if(fit.type=="nls" | 
+                                             fit.type=="nls_ubi" |
                                              fit.type=="nls_with_exclusion"){
                                             tmp.summary <- as.data.frame(fit.summary$parameters)
                                             tmp.summary$coefficients<-c("MFImax","dil.50")
                                             tmp.summary[,sample.column]<-rep(samples[i],2)
                                             tmp.summary$antigen<-rep(antigens[g],2)
                                             tmp.summary$fit.type<-rep(fit.type,2)
-                                            if(fit.type=="nls"){
+                                            if(fit.type=="nls" | fit.type=="nls_ubi"){
                                               tmp.qc <- c(qc.value,fit.mfi.dil.50,fit.mfi.MFImax.50,(1/fit.mfi.dil.50)*fit.mfi.MFImax.50,fit.type,samples[i],antigens[g])
                                             }
                                             if(fit.type=="nls_with_exclusion"){
@@ -1619,25 +1752,28 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                     res.comp.fit.out.final$residual.values<-unlist(res.comp.fit.out.final$fitted.values)-unlist(res.comp.fit.out.final$MFI_normalized_mean) #add residuals
 
                     model.params.df<-out.fit.model.df
-                      model.params.df$fit_type<-factor( model.params.df$fit_type,levels = c("nls","nls_with_exclusion","linear_fit","rejected","fit_failed"))
+                      model.params.df$fit_type<-factor( model.params.df$fit_type,levels = c("nls","nls_ubi","nls_with_exclusion","linear_fit","rejected","fit_failed"))
                     
                     predictions.df<-as_tibble(out.selected.prediction.df)
-                      predictions.df$fit.type<-factor(predictions.df$fit.type,levels = c("nls","nls_with_exclusion","linear_fit","rejected","fit_failed"))
+                      predictions.df$fit.type<-factor(predictions.df$fit.type,
+                                                      levels = c("nls","nls_ubi","nls_with_exclusion","linear_fit","rejected","fit_failed"))
                     
                     pred.comp.df<-as_tibble(out.predicted.df)
                     
                     qc.df<-as_tibble(out.qc[2:nrow(out.qc),])
-                        qc.df$fit.type<-factor(qc.df$fit.type,levels = c("nls","nls_with_exclusion","linear_fit","rejected","fit_failed"))
+                        qc.df$fit.type<-factor(qc.df$fit.type,
+                                               levels = c("nls","nls_ubi","nls_with_exclusion","linear_fit","rejected","fit_failed"))
                         qc.df$sigma<-as.numeric(qc.df$sigma);qc.df$calc.dil<-as.numeric(qc.df$calc.dil);qc.df$calc.MFI<-as.numeric(qc.df$calc.MFI);qc.df$response<-as.numeric(qc.df$response)
                     
                     response.df<-as_tibble(out.response.df)
-                      response.df$fit.type<-factor(response.df$fit.type,levels = c("nls","nls_with_exclusion","linear_fit","rejected","fit_failed"))
+                    response.df$fit.type<-factor(response.df$fit.type,
+                                                 levels = c("nls","nls_ubi","nls_with_exclusion","linear_fit","rejected","fit_failed"))
                     
                     resp.comp.df<-as_tibble(out.res.comp)
                     
                     rownames(out.fit.summary.df)<-seq(0,nrow(out.fit.summary.df)-1)
                     summary.df<-as_tibble(out.fit.summary.df[2:nrow(out.fit.summary.df),])
-                        summary.df$fit.type<-factor(summary.df$fit.type,levels = c("nls","nls_with_exclusion","linear_fit","rejected","fit_failed"))
+                        summary.df$fit.type<-factor(summary.df$fit.type,levels = c("nls","nls_ubi","nls_with_exclusion","linear_fit","rejected","fit_failed"))
                         summary.df$Estimate<-as.numeric(summary.df$Estimate);summary.df$`Std. Error`<-as.numeric(summary.df$`Std. Error`);summary.df$`t value`<-as.numeric(summary.df$`t value`);summary.df$`Pr(>|t|)`<-as.numeric(summary.df$`Pr(>|t|)`)
                         
                     #add meta data to files
@@ -1700,6 +1836,8 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
               replicate.column.name = am.replicate.column,
               anti_tag.entry = anti_tag.entry,
               blank.entry = blank.entry,
+              data_processing_method = input$data_proc_method,
+              data_processing_method_cutoff = input$data_proc_method_cutoff,
               blank.correction.method = blank.correction.method,
               control.blank.entry = control.blank.entry,
               cv.cut_off = cv.var,
@@ -1848,13 +1986,13 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
 
                         #general overview
                               #colors for fit types:
-                              fit.type.colors<-c(nls="#0D47A1",nls_with_exclusion="#2196F3",`5P_log`="#BF360C",`5P_log_with_exclusion`="#FF5722",linear_fit="#FFD600",rejected="#795548",fit_failed="#607D8B")
+                              fit.type.colors<-c(nls="#0D47A1",nls_ubi = "hotpink",nls_with_exclusion="#2196F3",`5P_log`="#BF360C",`5P_log_with_exclusion`="#FF5722",linear_fit="#FFD600",rejected="#795548",fit_failed="#607D8B")
                               
                         #bead count
                         
                         tmp.fit.type.table<-as.data.frame(table(response.calculation()$response$fit.type))
                             colnames(tmp.fit.type.table)<-c("fit.type","count")
-                            tmp.fit.type.table$fit.type<-factor(tmp.fit.type.table$fit.type,levels=c("nls","nls_with_exclusion","linear_fit","rejected","fit_failed"))
+                            tmp.fit.type.table$fit.type<-factor(tmp.fit.type.table$fit.type,levels=c("nls","nls_ubi","nls_with_exclusion","linear_fit","rejected","fit_failed"))
                             #histogram fitting distribution over all samples
                         gg.fitdist<-ggplot(data = tmp.fit.type.table,aes(x=fit.type,y=count,fill=fit.type))+
                           geom_bar(stat = "identity")+
@@ -1998,12 +2136,12 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                           
                           #general overview
                           #colors for fit types:
-                          fit.type.colors<-c(nls="#0D47A1",nls_with_exclusion="#2196F3",linear_fit="#FFD600",rejected="#795548",fit_failed="#607D8B")
+                          fit.type.colors<-c(nls="#0D47A1",nls_ubi = "hotpink",nls_with_exclusion="#2196F3",linear_fit="#FFD600",rejected="#795548",fit_failed="#607D8B")
                           #bead count
                           
                           tmp.fit.type.table<-as.data.frame(table(response.calculation()$response$fit.type))
                           colnames(tmp.fit.type.table)<-c("fit.type","count")
-                          tmp.fit.type.table$fit.type<-factor(tmp.fit.type.table$fit.type,levels=c("nls","nls_with_exclusion","linear_fit","rejected","fit_failed"))
+                          tmp.fit.type.table$fit.type<-factor(tmp.fit.type.table$fit.type,levels=c("nls","nls_ubi","nls_with_exclusion","linear_fit","rejected","fit_failed"))
                           #histogram fitting distribution over all samples
                           gg.fitdist<-ggplot(data = tmp.fit.type.table,aes(x=fit.type,y=count,fill=fit.type))+
                             geom_bar(stat = "identity")+
@@ -2111,7 +2249,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                               tmp.resp.comp<-c();tmp.resp.comp <- filter(response.calculation()$resp.comp[,1:6],antigen==antigens[i] &
                                                                            UQ(as.name(sample.column.name.param))==samples[g]) %>%
                                                                           gather(colnames(response.calculation()$resp.comp)[3:6],key = "fit.type",value = "response")
-                              tmp.resp.comp$fit.type<-factor(tmp.resp.comp$fit.type,levels = c("nls","nls_with_exclusion","linear_fit"))
+                              tmp.resp.comp$fit.type<-factor(tmp.resp.comp$fit.type,levels = c("nls","nls_ubi","nls_with_exclusion","linear_fit"))
                               
                               #filter data
                               tmp.am.tidy <- c()
@@ -2150,7 +2288,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                               tmp.residual.comp<-filter(response.calculation()$residual.comp,antigen==antigens[i] & sample==samples[g])
                               
                               tmp.calculated.variables.comp<-filter(response.calculation()$calculated.variables.comp,antigen==antigens[i] & sample==samples[g])
-                              tmp.calculated.variables.comp$fit.type<-factor(tmp.calculated.variables.comp$fit.type,levels = c("nls","nls_with_exclusion","linear_fit"))
+                              tmp.calculated.variables.comp$fit.type<-factor(tmp.calculated.variables.comp$fit.type,levels = c("nls","nls_ubi","nls_with_exclusion","linear_fit"))
                               
                               tmp.fit.type<-c();tmp.fit.type<-as.character(tmp.qc.sigma$fit.type)
                               tmp.resp.comp <- tmp.resp.comp %>% mutate( used.fit = ifelse( fit.type == tmp.fit.type, TRUE, FALSE ) )
@@ -2252,7 +2390,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
                                   labs(color="fit type",x="dilution",y="norm. MFI",title="curve fitting",subtitle=paste(tmp.qc.sigma$fit.type,"used"))
                               }else{
                                 #nls is used
-                                if(tmp.qc.sigma$fit.type=="nls" | tmp.qc.sigma$fit.type=="nls_with_exclusion"){
+                                if(tmp.qc.sigma$fit.type=="nls" | tmp.qc.sigma$fit.type=="nls_ubi" | tmp.qc.sigma$fit.type=="nls_with_exclusion"){
                                   
                                   if(tmp.qc.sigma$calc.dil>max(tmp.am.tidy.agg$dilution.inverse)){
                                     new.data<-2^seq(log2(min(tmp.am.tidy.agg$dilution.inverse)),log2(tmp.qc.sigma$calc.dil+tmp.qc.sigma$calc.dil*0.1),length.out = 50)
@@ -2680,7 +2818,7 @@ response.calculation <- eventReactive(input$inputButton_data_processing,{
              #bead count  ====
              tmp.fit.type.table<-as.data.frame(table(processed_data()$response$fit.type))
                 colnames(tmp.fit.type.table)<-c("fit.type","count")
-                tmp.fit.type.table$fit.type<-factor(tmp.fit.type.table$fit.type,levels=c("nls","nls_with_exclusion","linear_fit","rejected","fit_failed"))
+                tmp.fit.type.table$fit.type<-factor(tmp.fit.type.table$fit.type,levels=c("nls","nls_ubi","nls_with_exclusion","linear_fit","rejected","fit_failed"))
                 
             #histogram fitting distribution over all samples  ====
              progress$inc(1/5, detail = paste("generate distribution plot"))
@@ -3466,7 +3604,7 @@ general.overview.response.pca<-reactive({
                           
                           #get reponse comparison data
                           tmp.resp.comp<-filter(processed_data()$resp.comp[,1:5],antigen==input$antigen & UQ(as.name(sample.column.name.param))==input$sample)%>%gather(colnames(processed_data()$resp.comp)[3:5],key = "fit.type",value = "response")
-                          tmp.resp.comp$fit.type<-factor(tmp.resp.comp$fit.type,levels = c("nls","nls_with_exclusion","linear_fit"))
+                          tmp.resp.comp$fit.type<-factor(tmp.resp.comp$fit.type,levels = c("nls","nls_ubi","nls_with_exclusion","linear_fit"))
                                   
                           #filter data
                           tmp.am.tidy<-filter(processed_data()$am.tidy,antigen==input$antigen & UQ(as.name(sample.column.name.param))==input$sample)
@@ -3517,7 +3655,7 @@ general.overview.response.pca<-reactive({
                           tmp.fit.type<-unique(as.character(unlist(tmp.qc.sigma$fit.type)))
                           #valid colors for box
                                 #red, yellow, aqua, blue, light-blue, green, navy, teal, olive, lime, orange, fuchsia, purple, maroon, black.
-                          fit.type.box.color<-c(nls="blue",nls_with_exclusion="light-blue",linear_fit="yellow",rejected="maroon",fit_failed="black")
+                          fit.type.box.color<-c(nls="blue",nls_ubi = "fuchsia",nls_with_exclusion="light-blue",linear_fit="yellow",rejected="maroon",fit_failed="black")
                           tmp.fit.type.box.color<-fit.type.box.color[which(tmp.fit.type==names(fit.type.box.color))]
 
                           progress$inc(1/5, detail = paste("generate response plot plot"))
@@ -3622,7 +3760,7 @@ general.overview.response.pca<-reactive({
                               labs(color="fit type",x="dilution",y="norm. MFI",title="curve fitting",subtitle=paste(tmp.qc.sigma$fit.type,"used"))
                           }else{
                             #nls is used
-                            if(tmp.qc.sigma$fit.type=="nls" | tmp.qc.sigma$fit.type=="nls_with_exclusion"){
+                            if(tmp.qc.sigma$fit.type=="nls" | tmp.qc.sigma$fit.type=="nls_ubi" | tmp.qc.sigma$fit.type=="nls_with_exclusion"){
                               
                               if(tmp.qc.sigma$calc.dil>max(tmp.am.tidy.agg$dilution.inverse)){
                                 new.data<-2^seq(log2(min(tmp.am.tidy.agg$dilution.inverse)),log2(tmp.qc.sigma$calc.dil+tmp.qc.sigma$calc.dil*0.1),length.out = 50)

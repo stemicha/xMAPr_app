@@ -5,16 +5,19 @@
 \documentclass[
 ]{book}
 \usepackage{amsmath,amssymb}
-\usepackage{lmodern}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math}
+  \usepackage{unicode-math} % this also loads fontspec
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -68,7 +71,7 @@
 \bibliographystyle{plainnat}
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same} % disable monospaced font for URLs
+\urlstyle{same}
 \hypersetup{
   pdftitle={xMAPr - manual},
   pdfauthor={Stephan Michalik},
@@ -77,7 +80,7 @@
 
 \title{xMAPr - manual}
 \author{Stephan Michalik}
-\date{2023-04-04}
+\date{2024-03-15}
 
 \begin{document}
 \maketitle
@@ -100,15 +103,16 @@ xMAPr was developed under GNU GENERAL PUBLIC LICENSE Version 3.
 \textbf{You may adjust the font size in your browser by using the zoom in and zoom out functionality of your browser.}
 
 \begin{longtable}[]{@{}lcr@{}}
-\toprule()
+\toprule\noalign{}
 operating system & shortcut & function \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 MacOS & Cmd \& + & \emph{zoom in (larger font)} \\
 MacOS & Cmd \& - & \emph{zoom out (smaller font)} \\
 Windows & Strg \& + & \emph{zoom in (larger font)} \\
 Windows & Strg \& - & \emph{zoom out (smaller font)} \\
-\bottomrule()
 \end{longtable}
 
 \hypertarget{introduction}{%
@@ -172,14 +176,14 @@ xMAPr was developed to analyze and visualize data from bead-based experiments pe
 
 \begin{figure}
 
-{\centering \includegraphics[width=49.22in]{figures/xMAPr_analysis_workflow} 
+{\centering \includegraphics[width=49.21in]{figures/xMAPr_analysis_workflow_version2_updated} 
 
 }
 
 \caption{xMAPr workflow depicted as flow chart}\label{fig:xMAPrWorkflow}
 \end{figure}
 
-{[}inspect xMA
+\href{figures/xMAPr_analysis_workflow_version2_updated.png}{insepct workflow flow chart}
 
 \hypertarget{xmapr-analysis}{%
 \section{xMAPr Analysis}\label{xmapr-analysis}}
@@ -313,6 +317,69 @@ The decision tree was build to elucidate the best fit for the data.
 \end{figure}
 
 \href{figures/fit_decision_tree_small.png}{inspect xMAPr decision tree}
+
+\hypertarget{unspecifc-binding-issue-ubi-fit}{%
+\paragraph{unspecifc binding issue (ubi) fit}\label{unspecifc-binding-issue-ubi-fit}}
+
+Two new parameters have been introduced since version 2.0.
+
+\begin{itemize}
+\tightlist
+\item
+  method for data processing (selection of fit processing: default is hook binding detection)
+\item
+  ubi response ratio cutoff (cutoff for leave out saturation curve fit (to min. of 5 dilution stages) response calculation ratio (all data piont fit / leave out fit) for resolving unspecific binding issues)
+\end{itemize}
+
+The \textbf{hook} method is the standard approach (\emph{default}) where a saturation fit is executed using all data points, both with and without the application of the hook effect detection algorithm.
+
+The \textbf{hook+ubi} method carries out a fit utilizing all data points. If this is successful, it iteratively excludes (from the lowest dilution stage) from one to the entire range of dilutions until only 5 valid data points remain (for each step a saturation curve fit is carried out). If the calculated response from the saturation fit with all data points is similar to the response without dilutions, the fit with all data points is used for categorization in the non-linear least squares (nls) fit decision tree. However, if the response exceeds the \emph{ubi response ratio cutoff}, the fit excluding the dilution is considered.
+If the fit with all data points did not succeed but the ones without some dilution the first best fit is used for the nls fit.
+
+\hypertarget{example-for-hookubi}{%
+\subparagraph{\texorpdfstring{Example for \textbf{hook+ubi}}{Example for hook+ubi}}\label{example-for-hookubi}}
+
+example 1
+
+Lets say you have measured 8 dilutions from one sample (50fold, 100fold, 500fold, 5000fold, 10000fold, \ldots)
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+fit & response & response ratio to predecessors \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+all data points & 1000 & NA \\
+without 50fold dil. & 10000 & 10 \\
+without 50-100fold dil. & 20000 & 2 \\
+without 50-500fold dil. & 22000 & 1.1 \\
+\end{longtable}
+
+In this example only 3 left out fits can be performed until 5 valid data points are left.
+If the \emph{ubi response ratio cutoff} would be \textbf{2} the fit without \textbf{50-500fold dil.} would be takes as nls fit.
+If the \emph{ubi response ratio cutoff} would be \textbf{4} (default) the fit without \textbf{without 50fold dil.} would be takes as nls fit.
+
+example 2
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+fit & response & response ratio to predecessors \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+all data points & 12000 & NA \\
+without 50fold dil. & 14000 & 1.166 \\
+without 50-100fold dil. & 14500 & 1.0356 \\
+without 50-500fold dil. & 15000 & 1.0344 \\
+\end{longtable}
+
+In this example; if the \emph{ubi response ratio cutoff} would be \textbf{2} the fit without \textbf{all data points} would be takes as nls fit.
+
+\begin{quote}
+Exercise caution when using the method and be aware that variations in pipetting can occur based on the volume and the specific pipette used for the dilution!
+\end{quote}
 
 \hypertarget{xmapr-data-inspection}{%
 \subsection{xMAPr data inspection}\label{xmapr-data-inspection}}

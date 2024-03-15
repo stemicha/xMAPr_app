@@ -281,7 +281,7 @@ dashboardPage(title="xMAPr - analyzing serological assays with high precission",
                 width = 12,
                 includeHTML("www/xMAPr_introduction.html")
                 # 1. knit to html
-                  #2. remove line 17-25 from html --> scripts that jepardize the app
+                  #2. remove script lines from html --> scripts that jepardize the app
                   
 
                 )

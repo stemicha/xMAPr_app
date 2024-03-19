@@ -29,7 +29,7 @@
 
 
 ## increase upload size -----
-options(shiny.usecairo=TRUE,shiny.maxRequestSize=2000*1024^2) 
+options(shiny.usecairo=TRUE,shiny.maxRequestSize=20000*1024^2) 
 #colors for fit types:
 fit.type.colors<-c(nls="#0D47A1",nls_ubi = "hotpink",nls_with_exclusion="#2196F3",`5P_log`="#BF360C",`5P_log_with_exclusion`="#FF5722",linear_fit="#FFD600",rejected="#795548",fit_failed="#607D8B")
 
